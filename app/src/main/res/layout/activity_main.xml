@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.kevin.rfidmanager.Activity.MainActivity">
+    <LinearLayout
+        android:id="@+id/buttons_layout_on_mainpage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/home_button_id"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="@string/home_b"
+            android:textColor="@color/black"
+            android:gravity="center"
+            android:textSize="14sp"/>
+
+        <TextView
+            android:id="@+id/edit_button_id"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="@string/edit_b"
+            android:textColor="@color/black"
+            android:gravity="center"
+            android:textSize="@dimen/five_button_font_size"/>
+
+        <TextView
+            android:id="@+id/delete_button_id"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="@string/delete_b"
+            android:textColor="@color/black"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textSize="@dimen/five_button_font_size"/>
+
+        <TextView
+            android:id="@+id/add_button_id"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="@string/add_b"
+            android:textColor="@color/black"
+            android:gravity="center"
+            android:textSize="@dimen/five_button_font_size"/>
+
+        <TextView
+            android:id="@+id/setting_button_id"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="@string/setting_b"
+            android:textColor="@color/black"
+            android:layout_gravity="right"
+            android:gravity="center"
+            android:textSize="@dimen/five_button_font_size"/>
+    </LinearLayout>
+
+    <!-- activity_screen_slide.xml -->
+    <android.support.v4.view.ViewPager
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/buttons_layout_on_mainpage"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        app:fabSize="mini"
+        app:srcCompat="@android:drawable/ic_input_add"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginBottom="25dp"
+        android:layout_marginRight="25dp"
+        android:id="@+id/floatingAddButton" />
+
+</RelativeLayout>
