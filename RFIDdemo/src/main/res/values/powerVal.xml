@@ -1,0 +1,12 @@
+<resources>
+
+    <string-array name="powerVal">
+        <item>0.25W</item>
+        <item>0.50W</item>
+        <item>0.75W</item>
+        <item>1.00W</item>
+        <item>1.25W</item>
+        <item>1.50W</item>
+    </string-array>
+
+</resources>

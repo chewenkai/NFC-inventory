@@ -80,7 +80,7 @@ public class SettingFrag extends android.support.v4.app.Fragment {
                 //save password with edt.getText().toString();
                 SPUtil us = SPUtil.getInstence(getActivity().getApplicationContext());
                 us.savePassWord(newPasswordEdt.getText().toString());
-                Toast.makeText(getActivity().getApplicationContext(), R.string.password_saved, Toast.LENGTH_LONG).
+                Toast.makeText(getActivity().getApplicationContext(), R.string.password_updated, Toast.LENGTH_LONG).
                         show();
                 b.dismiss();
             }

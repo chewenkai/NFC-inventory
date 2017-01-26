@@ -1,0 +1,8 @@
+<resources>
+
+    <string-array name="devType">
+        <item>RPAN</item>
+        <item>M201</item>
+    </string-array>
+
+</resources>

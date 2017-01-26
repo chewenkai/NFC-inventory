@@ -1,0 +1,515 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TabHost xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tabhost"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical">
+
+        <TabWidget
+            android:id="@android:id/tabs"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content" />
+
+        <FrameLayout
+            android:id="@android:id/tabcontent"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <!-- 读写器页面控件 -->
+
+            <LinearLayout
+                android:id="@+id/tab_reader"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:background="#e0e0e0">
+
+                    <TextView
+                        android:id="@+id/tv_devType"
+                        android:layout_width="wrap_content"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/tv_devType" />
+
+                    <Spinner
+                        android:id="@+id/sn_devType"
+                        android:layout_width="fill_parent"
+                        android:layout_height="35dp"
+                        android:layout_toRightOf="@id/tv_devType"
+                        android:entries="@array/devType"
+                        android:prompt="@string/tv_devTypePrompt" />
+
+                    <TextView
+                        android:id="@+id/tv_commType"
+                        android:layout_width="wrap_content"
+                        android:layout_height="35dp"
+                        android:layout_below="@id/tv_devType"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/tv_commType" />
+
+                    <Spinner
+                        android:id="@+id/sn_commType"
+                        android:layout_width="fill_parent"
+                        android:layout_height="35dp"
+                        android:layout_alignTop="@id/tv_commType"
+                        android:layout_toRightOf="@id/tv_commType"
+                        android:entries="@array/commType"
+                        android:prompt="@string/sn_commPrompt" />
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="#e0e0e0"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="35dp"
+                        android:layout_gravity="center_vertical"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/tv_blueName" />
+
+                    <Spinner
+                        android:id="@+id/sn_blueName"
+                        android:layout_width="fill_parent"
+                        android:layout_height="35dp" />
+                </LinearLayout>
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="#e0e0e0">
+
+                    <TextView
+                        android:id="@+id/tv_ipAddr"
+                        android:layout_width="wrap_content"
+                        android:layout_height="35dp"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/tv_ipAddr" />
+
+                    <EditText
+                        android:id="@+id/ed_ipAddr"
+                        android:layout_width="fill_parent"
+                        android:layout_height="35dp"
+                        android:layout_toRightOf="@id/tv_ipAddr"
+                        android:digits="0123456789."
+                        android:inputType="text"
+                        android:text="@string/ed_defaultIp" />
+
+                    <TextView
+                        android:id="@+id/tv_port"
+                        android:layout_width="wrap_content"
+                        android:layout_height="35dp"
+                        android:layout_below="@id/tv_ipAddr"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/tv_port" />
+
+                    <EditText
+                        android:id="@+id/ed_port"
+                        android:layout_width="fill_parent"
+                        android:layout_height="35dp"
+                        android:layout_alignTop="@id/tv_port"
+                        android:layout_toRightOf="@id/tv_port"
+                        android:inputType="number"
+                        android:text="@string/ed_defaultPort" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="#e0e0e0">
+
+                    <TextView
+                        android:id="@+id/tv_comPath"
+                        android:layout_width="wrap_content"
+                        android:layout_height="35dp"
+                        android:layout_marginLeft="10dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/tv_comPath" />
+
+                    <Spinner
+                        android:id="@+id/sn_comName"
+                        android:layout_width="fill_parent"
+                        android:layout_height="35dp"
+                        android:layout_alignTop="@id/tv_comPath"
+                        android:layout_toRightOf="@id/tv_comPath" />
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btn_connect"
+                        style="?android:attr/absListViewStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/btn_connect" />
+
+                    <Button
+                        android:id="@+id/btn_disconnect"
+                        style="?android:attr/absListViewStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/btn_disconnect" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- 控制命令页面控件 -->
+
+            <LinearLayout
+                android:id="@+id/tab_command"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="5dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/tv_rfPower"
+                        android:textSize="15sp" />
+
+                    <Spinner
+                        android:id="@+id/sn_powerVal"
+                        android:layout_width="100dp"
+                        android:layout_height="40dp"
+                        android:entries="@array/powerVal" />
+
+                    <Button
+                        android:id="@+id/btn_readPower"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:text="@string/btn_readPower"
+                        android:textSize="15sp" />
+
+                    <Button
+                        android:id="@+id/btn_setPower"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:text="@string/btn_setPower"
+                        android:textSize="15sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="5dp"
+                        android:gravity="center_vertical"
+                        android:text="@string/tv_overflow_time"
+                        android:textSize="15sp" />
+
+                    <Spinner
+                        android:id="@+id/sn_overflow_time"
+                        android:layout_width="60dp"
+                        android:layout_height="40dp" />
+
+                    <Button
+                        android:id="@+id/btn_read_overflow_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:text="@string/btn_read_overflow_time"
+                        android:textSize="15sp" />
+
+                    <Button
+                        android:id="@+id/btn_write_overflow_time"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:text="@string/btn_write_overflow_time"
+                        android:textSize="15sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btn_getDevInfo"
+                        style="?android:attr/absListViewStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:text="@string/btn_getDevInfo"
+                        android:textSize="15sp" />
+
+                    <Button
+                        android:id="@+id/btn_setTime"
+                        style="?android:attr/absListViewStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:text="@string/btn_setTime"
+                        android:textSize="15sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btn_openRF"
+                        style="?android:attr/absListViewStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:text="@string/btn_openRF"
+                        android:textSize="15sp" />
+
+                    <Button
+                        android:id="@+id/btn_closeRF"
+                        style="?android:attr/absListViewStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:text="@string/btn_closeRF"
+                        android:textSize="15sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="match_parent"
+                    android:weightSum="2">
+
+                    <Button
+                        android:id="@+id/btn_loadDefault"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:text="@string/btn_loadDefault"
+                        android:textSize="15sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- 盘点标签页面控件 -->
+
+            <LinearLayout
+                android:id="@+id/tab_inventory"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btn_startInventory"
+                        style="?android:attr/absListViewStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:text="@string/btn_startInventory"
+                        android:textSize="15sp" />
+
+                    <Button
+                        android:id="@+id/btn_stopInventory"
+                        style="?android:attr/absListViewStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:text="@string/btn_stopInventory"
+                        android:textSize="15sp" />
+
+                    <Button
+                        android:id="@+id/btn_paraInventory"
+                        style="?android:attr/absListViewStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:text="@string/btn_paraInventory"
+                        android:textSize="15sp" />
+
+                    <Button
+                        android:id="@+id/btn_clearList"
+                        style="?android:attr/absListViewStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:text="@string/btn_clearList"
+                        android:textSize="15sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/list_inventory"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_inventoryInfo"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/tv_inventoryInfo"
+                        android:textColor="#0000FF"
+                        android:textSize="15sp" />
+
+                    <include
+                        android:id="@+id/inventorylist_title"
+                        layout="@layout/inventorylist_tittle" />
+
+                    <ListView
+                        android:id="@+id/list_inventory_record"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:background="@drawable/list_bg"
+                        android:cacheColorHint="@android:color/transparent"
+                        android:divider="#f9b68b"
+                        android:dividerHeight="1.0dp"
+                        android:fadingEdge="none"
+                        android:scrollbars="vertical"></ListView>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- 扫描记录页面控件 -->
+
+            <LinearLayout
+                android:id="@+id/tab_ScanRecord"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btn_startScanfRecord"
+                        style="?android:attr/absListViewStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:text="@string/btn_startScanRecord"
+                        android:textSize="15sp" />
+
+                    <Button
+                        android:id="@+id/btn_stopScanfRecord"
+                        style="?android:attr/absListViewStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:text="@string/btn_stopScanRecord"
+                        android:textSize="15sp" />
+
+                    <Button
+                        android:id="@+id/btn_clearScanfRecordList"
+                        style="?android:attr/absListViewStyle"
+                        android:layout_width="wrap_content"
+                        android:layout_height="40dp"
+                        android:layout_weight="1"
+                        android:text="@string/btn_clearScanList"
+                        android:textSize="15sp" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/tv_scanRecordInfo"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/tv_scanRecordInfo"
+                        android:textColor="#0000FF"
+                        android:textSize="15sp" />
+
+                    <include
+                        android:id="@+id/scan_record_list_tittle"
+                        layout="@layout/scan_record_list_tittle" />
+
+                    <ListView
+                        android:id="@+id/list_scanf_record"
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:layout_marginBottom="5dp"
+                        android:layout_marginLeft="5dp"
+                        android:layout_marginRight="5dp"
+                        android:background="@drawable/list_bg"
+                        android:cacheColorHint="@android:color/transparent"
+                        android:divider="#f9b68b"
+                        android:dividerHeight="1.0dip"
+                        android:fadingEdge="none"
+                        android:scrollbars="vertical"></ListView>
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- 标签读写 -->
+
+            <LinearLayout
+                android:id="@+id/tab_TagTypeList"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="40dp"
+                    android:background="#d0d0d0"
+                    android:gravity="center_vertical"
+                    android:text="@string/tv_protocolName"
+                    android:textSize="17sp" />
+
+                <ListView
+                    android:id="@+id/list_tagName"
+                    android:layout_width="match_parent"
+                    android:layout_height="fill_parent"
+                    android:dividerHeight="1.0dip"
+                    android:fadingEdge="none"
+                    android:scrollbars="vertical"
+                    android:footerDividersEnabled="true" />
+            </LinearLayout>
+        </FrameLayout>
+    </LinearLayout>
+
+</TabHost>

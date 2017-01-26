@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:scrollbars="none">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_icodesli_uid"
+                android:layout_width="wrap_content"
+                android:layout_height="40dip"
+                android:gravity="center_vertical"
+                android:text="@string/tv_icodesli_uid"
+                android:textSize="15sp" />
+
+            <Spinner
+                android:id="@+id/sn_icodesli_uidList"
+                android:layout_width="200dp"
+                android:layout_height="40dp" />
+
+            <Button
+                android:id="@+id/btn_icodesli_inventory"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:text="@string/btn_icodesli_inventory"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:gravity="center_vertical"
+                android:text="@string/tv_icodesli_connectmode"
+                android:textSize="15sp" />
+
+            <Spinner
+                android:id="@+id/sn_icodesli_connectMode"
+                android:layout_width="90dp"
+                android:layout_height="40dp"
+                android:entries="@array/tagConnectMode" />
+
+            <Button
+                android:id="@+id/btn_icodesli_connect"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:text="@string/btn_icodesli_connect"
+                android:textSize="15sp" />
+
+            <Button
+                android:id="@+id/btn_icodesli_disconnect"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:text="@string/btn_icodesli_disconnect"
+                android:textSize="15sp" />
+
+            <Button
+                android:id="@+id/btn_icodesli_tagInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:text="@string/btn_icodesli_tagInfo"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="@string/tv_icodesli_addr"
+                android:textSize="15sp" />
+
+            <Spinner
+                android:id="@+id/sn_icodesli_blkAddr"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:layout_weight="2"
+                android:entries="@array/nxp_blk_addr" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:text="@string/tv_icodesli_blkNum"
+                android:textSize="15sp" />
+
+            <Spinner
+                android:id="@+id/sn_icodesli_blkNum"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:layout_weight="2"
+                android:entries="@array/nxp_blk_num" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:gravity="center_vertical"
+                android:text="@string/tv_icodesli_dlkData"
+                android:textSize="15sp" />
+
+            <EditText
+                android:id="@+id/ed_icodesli_blkData"
+                android:layout_width="fill_parent"
+                android:layout_height="40dp"
+                android:digits="0123456789abcdefABCDEF"
+                android:inputType="text" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_icodesli_read"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:text="@string/btn_icodesli_read"
+                android:textSize="15sp" />
+
+            <Button
+                android:id="@+id/btn_icodesli_write"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:text="@string/btn_icodesli_write"
+                android:textSize="15sp" />
+
+            <Button
+                android:id="@+id/btn_icodesli_lockBlk"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:text="@string/btn_icodesli_lock"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical|right"
+                android:text="@string/tv_icodesli_dsfid"
+                android:textSize="15sp" />
+
+            <EditText
+                android:id="@+id/ed_icodesli_dsfid"
+                android:layout_width="50dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:digits="0123456789abcdefABCDEF"
+                android:gravity="center_vertical|center"
+                android:inputType="text"
+                android:maxLength="2"
+                android:text="@string/ed_icodesli_dsfid" />
+
+            <Button
+                android:id="@+id/btn_icodesli_setDsfid"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_weight="3"
+                android:text="@string/btn_setDsfid"
+                android:textSize="15sp" />
+
+            <Button
+                android:id="@+id/btn_icodesli_lockDsfid"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_weight="3"
+                android:text="@string/btn_lockDsfid"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical|right"
+                android:text="@string/tv_icodesli_afi"
+                android:textSize="15sp" />
+
+            <EditText
+                android:id="@+id/ed_icodesli_afi"
+                android:layout_width="50dp"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:digits="0123456789abcdefABCDEF"
+                android:gravity="center_vertical|center"
+                android:inputType="text"
+                android:maxLength="2"
+                android:text="@string/ed_icodesli_afi" />
+
+            <Button
+                android:id="@+id/btn_icodesli_setAFI"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_weight="3"
+                android:text="@string/btn_setAFI"
+                android:textSize="15sp" />
+
+            <Button
+                android:id="@+id/btn_icodesli_lockAFI"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_weight="3"
+                android:text="@string/btn_lockAFI"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btn_icodesli_enEAS"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:text="@string/btn_icodesli_enEAS"
+                android:textSize="15sp" />
+
+            <Button
+                android:id="@+id/btn_icodesli_disEnEAS"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:text="@string/btn_icodesli_disEnEAS"
+                android:textSize="15sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="20dp">
+
+            <Button
+                android:id="@+id/btn_icodesli_checkEAS"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:text="@string/btn_icodesli_checkEAS"
+                android:textSize="15sp" />
+
+            <Button
+                android:id="@+id/btn_icodesli_lockEas"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:layout_weight="1"
+                android:text="@string/btn_icodesli_lockEas"
+                android:textSize="15sp" />
+        </LinearLayout>
+    </LinearLayout>
+
+</ScrollView>

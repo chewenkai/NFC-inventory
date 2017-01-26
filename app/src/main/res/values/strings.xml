@@ -23,6 +23,7 @@
     <!--Change Password-->
     <string name="change_passwd">Changing Password</string>
     <string name="wrong_old_password">Please input correct current password</string>
+    <string name="password_updated">Your password has updated successfully.</string>
 
     <!--Main Page-->
     <string name="exit_warning">Do you really want exit?</string>
