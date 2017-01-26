@@ -8,6 +8,8 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
+import android.view.View;
 import android.widget.Toast;
 
 import com.kevin.rfidmanager.Adapter.PagerAdapter;
@@ -23,6 +25,9 @@ import org.greenrobot.greendao.query.Query;
 
 import java.util.List;
 
+/*
+The main page of RFID system.
+ */
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -33,17 +38,23 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
 
         tabLayout.addTab(tabLayout.newTab().setText("Home"));
-        tabLayout.addTab(tabLayout.newTab().setText("Detail"));
+//        tabLayout.addTab(tabLayout.newTab().setText("Detail"));
         tabLayout.addTab(tabLayout.newTab().setText("Edit"));
         tabLayout.addTab(tabLayout.newTab().setText("Delete"));
         tabLayout.addTab(tabLayout.newTab().setText("Add"));
         tabLayout.addTab(tabLayout.newTab().setText("Setting"));
-        tabLayout.setTabGravity(TabLayout.MODE_SCROLLABLE);
+        tabLayout.setTabGravity(TabLayout.GRAVITY_CENTER);
 
         final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
         final PagerAdapter adapter = new PagerAdapter
                 (getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(adapter);
+        viewPager.setOnTouchListener(new View.OnTouchListener() {
+
+            public boolean onTouch(View arg0, MotionEvent arg1) {
+                return true;
+            }
+        });
         viewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
         tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
@@ -53,18 +64,15 @@ public class MainActivity extends AppCompatActivity {
                         viewPager.setCurrentItem(ConstantManager.HOME);
                         break;
                     case 1:
-                        viewPager.setCurrentItem(ConstantManager.DETAIL);
-                        break;
-                    case 2:
                         Toast.makeText(getApplicationContext(), "edit", Toast.LENGTH_LONG).show();
                         break;
-                    case 3:
+                    case 2:
                         Toast.makeText(getApplicationContext(), "delete", Toast.LENGTH_LONG).show();
                         break;
-                    case 4:
+                    case 3:
                         Toast.makeText(getApplicationContext(), "add", Toast.LENGTH_LONG).show();
                         break;
-                    case 5:
+                    case 4:
                         viewPager.setCurrentItem(ConstantManager.SETTING);
                         break;
                     default:

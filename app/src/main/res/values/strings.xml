@@ -17,4 +17,8 @@
     <string name="login_fail">Login failed! Wrong username or password! Please retry!</string>
     <string name="diff_passwd">Two passwords are not consistant, please retry.</string>
 
+    <!--Change Password-->
+    <string name="change_passwd">Changing Password</string>
+    <string name="wrong_old_password">Please input correct current password</string>
+
 </resources>
