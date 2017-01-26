@@ -13,6 +13,7 @@ public class SPUtil {
     private static final String FIRST_OPEN = "is_this_first_use";  // is this first use?
     private static final String PERSON_NAME = "person_name";  // user name
     private static final String PERSON_PWD = "person_pwd";  // password
+    private static final String NEED_PASSWD = "need_passwd";  // is user need password to protect info?
 
     private static SPUtil instence;
     private SharedPreferences sharedPreferences;
@@ -71,6 +72,17 @@ public class SPUtil {
 
     public Boolean getFirstUseStatus() {
         boolean isFirstUse = sharedPreferences.getBoolean(FIRST_OPEN, true);
+        return isFirstUse;
+    }
+
+    public void saveNeedPassword(Boolean value) {
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putBoolean(NEED_PASSWD, value);
+        editor.commit();
+    }
+
+    public Boolean getNeedPassword() {
+        boolean isFirstUse = sharedPreferences.getBoolean(NEED_PASSWD, true);
         return isFirstUse;
     }
 

@@ -12,7 +12,9 @@
     <string name="welcome">Welcome to RFID system.</string>
     <string name="password_input_reminder">Please, set up your password. This password will be necessary in order to log into your RFID system.</string>
     <string name="password_saved">Password saved!</string>
-    <string name="empty_warning">The user name or password should not be empty!</string>
+    <string name="password_omitted">Password omitted!</string>
+    <string name="empty_warning">The password should not be empty!</string>
     <string name="login_fail">Login failed! Wrong username or password! Please retry!</string>
+    <string name="diff_passwd">Two passwords are not consistant, please retry.</string>
 
 </resources>

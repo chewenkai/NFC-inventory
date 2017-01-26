@@ -1,7 +1,6 @@
 package com.kevin.rfidmanager.Activity;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
@@ -12,14 +11,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kevin.rfidmanager.R;
 import com.kevin.rfidmanager.Utils.ExitApplication;
 import com.kevin.rfidmanager.Utils.SPUtil;
 import com.kevin.rfidmanager.Utils.StringUtil;
-import com.kevin.rfidmanager.Utils.SysUtil;
 
 import static com.kevin.rfidmanager.Utils.ConstantManager.IS_DEBUGING;
 
@@ -36,12 +36,14 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        checkIsNeedPassword();  // If do not need password, go to main page directly.
         setContentView(R.layout.activity_login);
         ExitApplication.getInstance().addActivity(this);
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();   // Hide ActionBar
         findView();
         initView();
+
     }
 
     /*
@@ -95,34 +97,81 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    /*
+    This is a dialog used for input new password when user have not set up any password.
+     */
     public void showPasswordInputDialog() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         LayoutInflater inflater = this.getLayoutInflater();
         final View dialogView = inflater.inflate(R.layout.password_input_dialog_layout, null);
         dialogBuilder.setView(dialogView);
 
-        final EditText edt = (EditText) dialogView.findViewById(R.id.password_editor);
+        final EditText firstPasswordEdt = (EditText) dialogView.findViewById(R.id.password_editor);
+        final EditText confirmPasswordEdt = (EditText) dialogView.findViewById(R.id.confirm_password);
+        final TextView message = (TextView) dialogView.findViewById(R.id.message_text_login);
+        final CheckBox checkBox = (CheckBox) dialogView.findViewById(R.id.skip_pswd_checkbox);
+
+        final TextView saveButton = (TextView) dialogView.findViewById(R.id.dialog_ok);
+        final TextView cancleButton = (TextView) dialogView.findViewById(R.id.dialog_cancle);
 
         dialogBuilder.setTitle(R.string.welcome);
         dialogBuilder.setMessage(R.string.password_input_reminder);
-        dialogBuilder.setPositiveButton("Done", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
+        final AlertDialog b = dialogBuilder.create();
+        b.show();
+
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // check CheckBox status
+                if (checkBox.isChecked()) {
+                    SPUtil.getInstence(getApplicationContext()).saveNeedPassword(false);
+                    Toast.makeText(getApplicationContext(), R.string.password_omitted, Toast.LENGTH_LONG).
+                            show();
+                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    finish();
+                    return;
+                }
+                if (firstPasswordEdt.getText().toString().isEmpty() ||
+                        confirmPasswordEdt.getText().toString().isEmpty()) {
+                    message.setText(R.string.empty_warning);
+                    message.setTextColor(getResources().getColor(R.color.warning_color));
+                    return;
+                }
+                // check password of two text editors
+                if (!firstPasswordEdt.getText().toString().
+                        equals(confirmPasswordEdt.getText().toString())) {
+                    message.setText(R.string.diff_passwd);
+                    message.setTextColor(getResources().getColor(R.color.warning_color));
+                    return;
+                }
                 //save password with edt.getText().toString();
                 SPUtil us = SPUtil.getInstence(getApplicationContext());
-                us.savePassWord(edt.getText().toString());
+                us.savePassWord(firstPasswordEdt.getText().toString());
                 Toast.makeText(getApplicationContext(), R.string.password_saved, Toast.LENGTH_LONG).
                         show();
                 startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                finish();
+                b.dismiss();
             }
         });
-        dialogBuilder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
+
+        cancleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
                 //Exit system
                 ExitApplication.getInstance().exit();
             }
         });
-        AlertDialog b = dialogBuilder.create();
-        b.show();
+    }
+
+    /*
+    Check that if user need password to protect their information.
+     */
+    private void checkIsNeedPassword() {
+        if (!SPUtil.getInstence(getApplicationContext()).getNeedPassword()) {
+            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+            finish();
+        }
     }
 
     /*
