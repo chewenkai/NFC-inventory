@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">RFIDmanager</string>
+    <!--usually used-->
+    <string name="OK">Ok</string>
+    <string name="Cancel">Cancel</string>
 
     <!--Five buttons above the main page-->
     <string name="home_b">Home</string>
@@ -21,4 +24,6 @@
     <string name="change_passwd">Changing Password</string>
     <string name="wrong_old_password">Please input correct current password</string>
 
+    <!--Main Page-->
+    <string name="exit_warning">Do you really want exit?</string>
 </resources>

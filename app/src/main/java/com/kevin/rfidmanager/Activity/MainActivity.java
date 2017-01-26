@@ -112,14 +112,14 @@ public class MainActivity extends AppCompatActivity {
 
     private void exit() {
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setMessage("确定退出吗？");
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+        builder.setMessage(R.string.exit_warning);
+        builder.setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 ExitApplication.getInstance().exit();
             }
         });
-        builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+        builder.setNegativeButton(R.string.Cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
             }
