@@ -87,8 +87,8 @@ public class InventoryParaActivity extends Activity implements OnClickListener {
                 }
                 if (bErr) {
                     new AlertDialog.Builder(this).setTitle("")
-                            .setMessage("请输入一个16进制的AFI值!")
-                            .setPositiveButton("确定", null).show();
+                            .setMessage("Please input a AFI hex value 请输入一个16进制的AFI值!")
+                            .setPositiveButton("OK 确定", null).show();
                     break;
                 }
                 bundle.putBoolean("UseDefaultPara", check_useDefault.isChecked());

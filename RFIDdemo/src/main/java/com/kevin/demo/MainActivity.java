@@ -145,7 +145,7 @@ public class MainActivity extends Activity implements OnClickListener {
         // 加page页面
         int[] layRes = {R.id.tab_reader, R.id.tab_command, R.id.tab_inventory,
                 R.id.tab_ScanRecord, R.id.tab_TagTypeList};
-        String[] layTittle = {"设备", "命令", "盘点", "扫描", "读写"};
+        String[] layTittle = {"Devices", "Command", "Inventory", "Scan", "Read/Write"};
         myTabhost.setup();
         for (int i = 0; i < layRes.length; i++) {
             TabSpec myTab = myTabhost.newTabSpec("tab" + i);
@@ -513,7 +513,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
     private void MessageBox(String sTittle, String msg) {
         new AlertDialog.Builder(this).setTitle(sTittle).setMessage(msg)
-                .setPositiveButton("确定", null).show();
+                .setPositiveButton("Ok", null).show();
     }
 
     private void OpenDev() {
@@ -522,27 +522,27 @@ public class MainActivity extends Activity implements OnClickListener {
         String devName = "";
         devName = sn_devName.getSelectedItem().toString();
         commTypeStr = sn_commType.getSelectedItem().toString();
-        if (commTypeStr.equals("蓝牙")) {
+        if (commTypeStr.equals("Bluetooth")) {
             if (sn_bluetooth.getAdapter().isEmpty()) {
-                MessageBox("选择设备", "请选择蓝牙设备！");
+                MessageBox("Select Device", "Select bluetooth device first！");
                 return;
             }
             String bluetoolName = sn_bluetooth.getSelectedItem().toString();
             if (bluetoolName == "") {
-                MessageBox("选择设备", "请选择蓝牙设备！");
+                MessageBox("Select Device", "Select bluetooth device first！！");
                 return;
             }
             conStr = String.format("RDType=%s;CommType=BLUETOOTH;Name=%s",
                     devName, bluetoolName);
-        } else if (commTypeStr.equals("串口")) {
+        } else if (commTypeStr.equals("Serial port")) {
             if (sn_comName.getAdapter().isEmpty()) {
-                MessageBox("选择设备", "请选择串口！");
+                MessageBox("Select Device", "Select serial port device first！！");
                 return;
             }
             conStr = String
                     .format("RDType=%s;CommType=COM;ComPath=%s;Baund=38400;Frame=8E1;Addr=255",
                             devName, sn_comName.getSelectedItem().toString());
-        } else if (commTypeStr.equals("网络")) {
+        } else if (commTypeStr.equals("Network")) {
             String sRemoteIp = ed_ipAddr.getText().toString();
             String sRemotePort = ed_port.getText().toString();
             conStr = String.format(
@@ -552,7 +552,7 @@ public class MainActivity extends Activity implements OnClickListener {
             return;
         }
         if (m_reader.RDR_Open(conStr) == ApiErrDefinition.NO_ERROR) {
-            Toast.makeText(this, "打开设备成功！", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Open device successful！", Toast.LENGTH_SHORT).show();
             SaveActivity();
             sn_devName.setEnabled(false);
             sn_commType.setEnabled(false);
@@ -581,7 +581,7 @@ public class MainActivity extends Activity implements OnClickListener {
             btn_write_overflow_time.setEnabled(true);
             btn_read_overflow_time.setEnabled(true);
         } else {
-            Toast.makeText(this, "打开设备失败！", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Open device fail！", Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -605,7 +605,7 @@ public class MainActivity extends Activity implements OnClickListener {
             return;
         }
         if (m_getScanRecordThrd != null && m_getScanRecordThrd.isAlive()) {
-            MessageBox("", "请先停止扫描！");
+            MessageBox("", "Stop scan first！");
             return;
         }
         m_reader.RDR_Close();
@@ -638,13 +638,13 @@ public class MainActivity extends Activity implements OnClickListener {
         StringBuffer buffer = new StringBuffer();
         iret = m_reader.RDR_GetReaderInfor(buffer);
         if (iret == ApiErrDefinition.NO_ERROR) {
-            new AlertDialog.Builder(this).setTitle("获取设备信息")
+            new AlertDialog.Builder(this).setTitle("Get device info")
                     .setMessage(buffer.toString())
-                    .setPositiveButton("确定", null).show();
+                    .setPositiveButton("OK", null).show();
         } else {
-            new AlertDialog.Builder(this).setTitle("获取设备信息")
-                    .setMessage("获取设备信息失败.err=" + iret)
-                    .setPositiveButton("确定", null).show();
+            new AlertDialog.Builder(this).setTitle("Get device info")
+                    .setMessage("Get device info fail.err=" + iret)
+                    .setPositiveButton("OK", null).show();
         }
     }
 
@@ -655,12 +655,12 @@ public class MainActivity extends Activity implements OnClickListener {
         iret = m_reader.RPAN_SetTime(t.year, t.month, t.monthDay, t.hour,
                 t.minute, t.second);
         if (iret == ApiErrDefinition.NO_ERROR) {
-            new AlertDialog.Builder(this).setTitle("设置时间").setMessage("设置时间成功")
-                    .setPositiveButton("确定", null).show();
+            new AlertDialog.Builder(this).setTitle("Set time").setMessage("Time set")
+                    .setPositiveButton("Ok", null).show();
         } else {
-            new AlertDialog.Builder(this).setTitle("设置时间")
-                    .setMessage("设置时间失败.err=" + iret)
-                    .setPositiveButton("确定", null).show();
+            new AlertDialog.Builder(this).setTitle("Set time")
+                    .setMessage("time set fail.err=" + iret)
+                    .setPositiveButton("OK", null).show();
         }
     }
 
@@ -729,13 +729,13 @@ public class MainActivity extends Activity implements OnClickListener {
 
                         }
                     }
-                    pt.tv_inventoryInfo.setText("标签总数:" + pt.inventoryList.size()
-                            + ";失败次数:" + msg.arg1);
+                    pt.tv_inventoryInfo.setText("Tag number:" + pt.inventoryList.size()
+                            + ";fail number:" + msg.arg1);
                     pt.inventoryAdapter.notifyDataSetChanged();
                     break;
                 case INVENTORY_FAIL_MSG:
-                    pt.tv_inventoryInfo.setText("标签总数:" + pt.inventoryList.size()
-                            + ";失败次数:" + msg.arg1);
+                    pt.tv_inventoryInfo.setText("Tag number:" + pt.inventoryList.size()
+                            + ";fail number:" + msg.arg1);
                     break;
                 case GETSCANRECORD:// 扫描到记录
                     @SuppressWarnings("unchecked")
@@ -755,7 +755,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
                     }
                     pt.tv_scanRecordInfo
-                            .setText("记录数:" + pt.scanfReportList.size());
+                            .setText("Record number:" + pt.scanfReportList.size());
                     pt.scanfAdapter.notifyDataSetChanged();
                     break;
                 case THREAD_END:// 线程结束

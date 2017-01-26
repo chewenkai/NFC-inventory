@@ -1,9 +1,9 @@
 <resources>
 
     <string-array name="commType">
-        <item>蓝牙</item>
-        <item>串口</item>
-        <item>网络</item>
+        <item>Bluetooth</item>
+        <item>Serial port</item>
+        <item>Network</item>
     </string-array>
 
 </resources>
