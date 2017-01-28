@@ -179,6 +179,12 @@
                         android:layout_weight="1"
                         android:text="@string/btn_disconnect" />
                 </LinearLayout>
+
+                <TextView
+                    android:id="@+id/log"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Error message will be here." />
             </LinearLayout>
 
             <!-- 控制命令页面控件 -->

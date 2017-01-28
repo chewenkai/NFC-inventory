@@ -83,6 +83,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
     private TextView tv_inventoryInfo = null;
     private TextView tv_scanRecordInfo = null;
+    private TextView log = null;
     private List<InventoryReport> inventoryList = new ArrayList<InventoryReport>();
     private List<ScanReport> scanfReportList = new ArrayList<ScanReport>();
     private InventoryAdapter inventoryAdapter = null;
@@ -137,6 +138,7 @@ public class MainActivity extends Activity implements OnClickListener {
         btn_loadDefault = (Button) findViewById(R.id.btn_loadDefault);
         tv_inventoryInfo = (TextView) findViewById(R.id.tv_inventoryInfo);
         tv_scanRecordInfo = (TextView) findViewById(R.id.tv_scanRecordInfo);
+        log = (TextView) findViewById(R.id.log);
         list_tag_name = (ListView) findViewById(R.id.list_tagName);
         sn_overflow_time = (Spinner) findViewById(R.id.sn_overflow_time);
         btn_read_overflow_time = (Button) findViewById(R.id.btn_read_overflow_time);
@@ -324,7 +326,11 @@ public class MainActivity extends Activity implements OnClickListener {
         String str = "";
         switch (v.getId()) {
             case R.id.btn_connect:// 连接设备
-                OpenDev();
+                try {
+                    OpenDev();
+                } catch (Exception e) {
+                    log.setText(e.toString());
+                }
                 break;
             case R.id.btn_disconnect:// 断开连接
                 CloseDev();
