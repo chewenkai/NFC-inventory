@@ -27,4 +27,9 @@
 
     <!--Main Page-->
     <string name="exit_warning">Do you really want exit?</string>
+
+    <!--Detail Page-->
+    <string name="dialog_title_edit_key_des">Edit key description</string>
+    <string name="dialog_title_add_key_des">Add key description</string>
+
 </resources>

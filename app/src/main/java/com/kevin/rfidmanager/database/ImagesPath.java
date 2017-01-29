@@ -1,9 +1,9 @@
 package com.kevin.rfidmanager.database;
 
 import org.greenrobot.greendao.annotation.Entity;
-import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.Index;
 import org.greenrobot.greendao.annotation.Generated;
+import org.greenrobot.greendao.annotation.Id;
+import org.greenrobot.greendao.annotation.Unique;
 
 /**
  * Created by Kevin on 2017/1/25.
@@ -11,10 +11,10 @@ import org.greenrobot.greendao.annotation.Generated;
 
 @Entity
 public class ImagesPath {
+    @Unique
     @Id(autoincrement = true)
     private Long id;
 
-    @Index(unique = true)
     private Long rfid;  // id of card and items
 
     private String imagePath;  // image path of the item
@@ -53,4 +53,6 @@ public class ImagesPath {
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
     }
+
+
 }

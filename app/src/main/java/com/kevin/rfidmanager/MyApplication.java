@@ -14,6 +14,16 @@ import org.greenrobot.greendao.database.Database;
 
 public class MyApplication extends Application {
     public DaoSession daoSession;  // database session
+
+    public long getCurrentItemID() {
+        return currentItemID;
+    }
+
+    public void setCurrentItemID(long currentItemID) {
+        this.currentItemID = currentItemID;
+    }
+
+    private long currentItemID;
     @Override
     public void onCreate() {
         super.onCreate();

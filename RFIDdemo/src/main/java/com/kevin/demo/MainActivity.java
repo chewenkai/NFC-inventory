@@ -586,7 +586,14 @@ public class MainActivity extends Activity implements OnClickListener {
         } else {
             return;
         }
-        if (m_reader.RDR_Open(conStr) == ApiErrDefinition.NO_ERROR) {
+        int errorcode = 0;
+        try {
+            errorcode = m_reader.RDR_Open(conStr);
+        } catch (Exception e) {
+            log.setText(e.toString());
+        }
+
+        if (errorcode == ApiErrDefinition.NO_ERROR) {
             Toast.makeText(this, "Open device successful！", Toast.LENGTH_SHORT).show();
             SaveActivity();
             sn_devName.setEnabled(false);

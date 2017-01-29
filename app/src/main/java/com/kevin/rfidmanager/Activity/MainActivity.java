@@ -2,33 +2,33 @@ package com.kevin.rfidmanager.Activity;
 
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
+import android.support.design.widget.TextInputEditText;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.kevin.rfidmanager.Adapter.PagerAdapter;
 import com.kevin.rfidmanager.MyApplication;
 import com.kevin.rfidmanager.R;
 import com.kevin.rfidmanager.Utils.ConstantManager;
+import com.kevin.rfidmanager.Utils.DatabaseUtil;
 import com.kevin.rfidmanager.Utils.ExitApplication;
-import com.kevin.rfidmanager.database.DaoSession;
-import com.kevin.rfidmanager.database.Items;
-import com.kevin.rfidmanager.database.ItemsDao;
-
-import org.greenrobot.greendao.query.Query;
-
-import java.util.List;
 
 /*
 The main page of RFID system.
  */
 public class MainActivity extends AppCompatActivity {
+    FloatingActionButton addButton;
+    ViewPager viewPager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.addTab(tabLayout.newTab().setText("Setting"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_CENTER);
 
-        final ViewPager viewPager = (ViewPager) findViewById(R.id.pager);
+        viewPager = (ViewPager) findViewById(R.id.pager);
         final PagerAdapter adapter = new PagerAdapter
                 (getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(adapter);
@@ -70,6 +70,7 @@ public class MainActivity extends AppCompatActivity {
                         Toast.makeText(getApplicationContext(), "delete", Toast.LENGTH_LONG).show();
                         break;
                     case 3:
+                        viewPager.setCurrentItem(ConstantManager.ADD);
                         Toast.makeText(getApplicationContext(), "add", Toast.LENGTH_LONG).show();
                         break;
                     case 4:
@@ -92,22 +93,53 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        addButton = (FloatingActionButton) findViewById(R.id.floatingAddButton);
+        addButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                addNewItem();
+            }
+        });
     }
 
+    /*
+       This is a dialog used for add new key description
+        */
+    public void addNewItem() {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        final View dialogView = inflater.inflate(R.layout.dialog_layout_two_edit_text, null);
+        dialogBuilder.setView(dialogView);
 
-    /**
-     * Query the items in database.
-     * @return Items list
-     */
-    public List<Items> queryItems(){
-        // get the items DAO
-        DaoSession daoSession = ((MyApplication) getApplication()).getDaoSession();
-        ItemsDao itemsDao = daoSession.getItemsDao();
+        final TextInputEditText newKeyDes = (TextInputEditText) dialogView.findViewById(R.id.edit_key_des_text_editor);
+        final TextInputEditText itemName = (TextInputEditText) dialogView.findViewById(R.id.item_name_edit);
+        final Button saveButton = (Button) dialogView.findViewById(R.id.dialog_change);
+        final Button cancleButton = (Button) dialogView.findViewById(R.id.dialog_cancle);
 
-        Query<Items> query = itemsDao.queryBuilder().where(ItemsDao.Properties.Id.isNotNull()).build();
-        List<Items> allItems = query.list();
+        dialogBuilder.setTitle("Just input a number as a ID of RFID card and a name of item");
+        final AlertDialog b = dialogBuilder.create();
+        b.show();
 
-        return allItems;
+        saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((MyApplication) getApplication()).setCurrentItemID(Long.parseLong(newKeyDes.getText().toString()));
+                DatabaseUtil.insertNewItem(MainActivity.this,
+                        Long.parseLong(newKeyDes.getText().toString()),
+                        itemName.getText().toString());
+                viewPager.setCurrentItem(ConstantManager.ADD);
+                b.dismiss();
+
+            }
+        });
+
+        cancleButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                b.dismiss();
+            }
+        });
     }
 
     private void exit() {

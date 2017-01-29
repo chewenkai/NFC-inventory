@@ -7,4 +7,8 @@
     <color name="black">#000000</color>
     <color name="white">#ffffff</color>
     <color name="warning_color">#ff4848</color>
+
+    <color name="add_key_des_button_color">#46cc3d</color>
+    <color name="edit_key_des_button_color">#3d80cc</color>
+    <color name="remove_key_des_button_color">#ae3438</color>
 </resources>

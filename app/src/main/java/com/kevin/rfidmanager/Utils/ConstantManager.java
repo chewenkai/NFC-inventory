@@ -6,7 +6,7 @@ package com.kevin.rfidmanager.Utils;
  */
 
 public class ConstantManager {
-    public static boolean IS_DEBUGING = false;
+    public static boolean IS_DEBUGING = true;
 
     // Main page
     public static int HOME = 0;
@@ -14,5 +14,6 @@ public class ConstantManager {
     public static int DELETE = 2;
     public static int ADD = 3;
     public static int SETTING = 4;
-
+    public static int REQUEST_MAIN_IMAGE_FILE = 5;
+    public static int REQUEST_GALLERY_IMAGE_FILE = 6;
 }

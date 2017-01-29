@@ -53,7 +53,7 @@ public class LocalReportSender implements ReportSender {
                 OutputStream fo = new FileOutputStream(logFile);
 
                 //write the data
-                fo.write(Byte.parseByte(text));
+                fo.write(text.getBytes());
 
                 //close to avoid memory leaks
                 fo.close();

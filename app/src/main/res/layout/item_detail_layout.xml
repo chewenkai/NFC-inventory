@@ -5,11 +5,50 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/item_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:text="Items detail"
+        android:layout_alignParentTop="true"
+        android:gravity="left"
+        android:paddingLeft="15dp"
+        android:text="Items Name"
         android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <LinearLayout
+        android:layout_below="@+id/item_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <ListView
+                android:id="@+id/listview_item_key_des"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"></ListView>
+
+            <TextView
+                android:id="@+id/button_add_item_key_des"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Add description"
+                android:gravity="center"
+                android:padding="10dp"
+                android:textColor="@color/white"
+                android:background="@color/add_key_des_button_color" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/iamgeview_main_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+    </LinearLayout>
 
 </RelativeLayout>

@@ -91,7 +91,7 @@ public class LoginActivity extends AppCompatActivity {
         // Are there any user info?
         SPUtil us = SPUtil.getInstence(getApplicationContext());
         String rightPassword = us.getPassWord();
-        if (rightPassword.isEmpty()){
+        if (rightPassword.isEmpty() && SPUtil.getInstence(getApplicationContext()).getNeedPassword()) {
             // first time using this app
             showPasswordInputDialog();
         }
