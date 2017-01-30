@@ -7,6 +7,7 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -28,6 +29,7 @@ import java.util.List;
 public class KeyDesListAdapter extends ArrayAdapter<KeyDescription> {
     private KeyDesListAdapter instance = this;
     private Activity currentActivity = null;
+    private Boolean hideButton = false;
 
     // View lookup cache
     private static class ViewHolder {
@@ -36,9 +38,9 @@ public class KeyDesListAdapter extends ArrayAdapter<KeyDescription> {
         LinearLayout delete;
     }
 
-    public KeyDesListAdapter(Context context, List<KeyDescription> item_key_des) {
-
+    public KeyDesListAdapter(Context context, List<KeyDescription> item_key_des, Boolean hideButton) {
         super(context, R.layout.key_description_listview_llayout, item_key_des);
+        this.hideButton = hideButton;
     }
 
     public void setCurrentActivity(Activity activity) {
@@ -68,19 +70,25 @@ public class KeyDesListAdapter extends ArrayAdapter<KeyDescription> {
         // Populate the data from the data object via the viewHolder object
         // into the template view.
         viewHolder.keyDescription.setText(keyDescription.getKeyDescription());
-        viewHolder.edit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showEditDialog(keyDescription);
-            }
-        });
-        viewHolder.delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                deleteItemsKeyDes(keyDescription);
-                updateList();
-            }
-        });
+        if (hideButton){
+            viewHolder.edit.setVisibility(View.GONE);
+            viewHolder.delete.setVisibility(View.GONE);
+        }else {
+            viewHolder.edit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showEditDialog(keyDescription);
+                }
+            });
+            viewHolder.delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    deleteItemsKeyDes(keyDescription);
+                    updateList();
+                }
+            });
+        }
+
         // Return the completed view to render on screen
         return convertView;
     }

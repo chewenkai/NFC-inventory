@@ -2,26 +2,39 @@ package com.kevin.rfidmanager.Adapter;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.ClipData;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.kevin.rfidmanager.Activity.MainActivity;
+import com.kevin.rfidmanager.Fragments.ItemDetailFrag;
 import com.kevin.rfidmanager.MyApplication;
 import com.kevin.rfidmanager.R;
 import com.kevin.rfidmanager.Utils.BitMapUtil;
 import com.kevin.rfidmanager.Utils.ConstantManager;
 import com.kevin.rfidmanager.Utils.DatabaseUtil;
+import com.kevin.rfidmanager.Utils.ExitApplication;
+import com.kevin.rfidmanager.Utils.IntentUtil;
 import com.kevin.rfidmanager.database.DaoSession;
 import com.kevin.rfidmanager.database.ImagesPath;
+import com.kevin.rfidmanager.database.ImagesPathDao;
+import com.kevin.rfidmanager.database.Items;
+import com.kevin.rfidmanager.database.KeyDescriptionDao;
 
 import java.util.List;
 
@@ -29,13 +42,13 @@ import java.util.List;
  * Created by Kevin on 2017/1/29.
  */
 
-public class GallaryAdaper extends RecyclerView.Adapter<GallaryAdaper.ViewHolder> {
-    public Activity activity;
-    List<ImagesPath> paths;
+public class ItemListAdaper extends RecyclerView.Adapter<ItemListAdaper.ViewHolder> {
+    final public Activity activity;
+    List<Items> itemes;
 
-    public GallaryAdaper(Activity activity, List<ImagesPath> paths) {
+    public ItemListAdaper(Activity activity, List<Items> itemes) {
         this.activity = activity;
-        this.paths = paths;
+        this.itemes = itemes;
     }
 
     public Context getContext() {
@@ -48,7 +61,7 @@ public class GallaryAdaper extends RecyclerView.Adapter<GallaryAdaper.ViewHolder
         LayoutInflater inflater = LayoutInflater.from(context);
 
         // Inflate the custom layout
-        View contactView = inflater.inflate(R.layout.gallary_layout, parent, false);
+        View contactView = inflater.inflate(R.layout.item_adapter_layout, parent, false);
 
         // Return a new holder instance
         ViewHolder viewHolder = new ViewHolder(contactView);
@@ -58,7 +71,7 @@ public class GallaryAdaper extends RecyclerView.Adapter<GallaryAdaper.ViewHolder
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         // Get the data model based on position
-        final ImagesPath path = paths.get(position);
+        final Items item = itemes.get(position);
 
         // Set item views based on your views and data model
         ImageView image = holder.image;
@@ -66,8 +79,9 @@ public class GallaryAdaper extends RecyclerView.Adapter<GallaryAdaper.ViewHolder
         Bitmap bitmap = null;
         if (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE)
                 == PackageManager.PERMISSION_GRANTED) {
-            bitmap = BitmapFactory.decodeFile(path.getImagePath());
-        } else {
+            bitmap = BitmapFactory.decodeFile(item.getMainImagePath());
+        }
+        if (bitmap == null){
 //                bitmap = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), Uri.parse(path.getImagePath()));
             bitmap = BitmapFactory.decodeResource(activity.getResources(), R.drawable.image_read_fail);
         }
@@ -82,29 +96,33 @@ public class GallaryAdaper extends RecyclerView.Adapter<GallaryAdaper.ViewHolder
         image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Nothing
+                ((MyApplication)activity.getApplication()).setCurrentItemID(item.getRfid());
+                ((MainActivity)activity).adapter.tab2.refreshUI();
+                ((MainActivity)activity).viewPager.setCurrentItem(ConstantManager.DETAIL, false);
             }
         });
-        Button button = holder.removeButton;
-        button.setText("Delete");
-        button.setOnClickListener(new View.OnClickListener() {
+
+        image.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
-            public void onClick(View v) {
-                DaoSession daoSession = ((MyApplication) activity.getApplicationContext()).getDaoSession();
-                daoSession.getImagesPathDao().delete(path);
-                updateUI();
+            public boolean onLongClick(View v) {
+
+                deleteItemDialog(item);
+                return true;
             }
         });
+
+        TextView itemName = holder.itemName;
+        itemName.setText(item.getItemName());
     }
 
     @Override
     public int getItemCount() {
-        return paths.size();
+        return itemes.size();
     }
 
     public void updateUI() {
-        this.paths.clear();
-        this.paths.addAll(DatabaseUtil.queryImagesPaths(activity));
+        this.itemes.clear();
+        this.itemes.addAll(DatabaseUtil.queryItems(activity));
         this.notifyDataSetChanged();
     }
 
@@ -114,7 +132,7 @@ public class GallaryAdaper extends RecyclerView.Adapter<GallaryAdaper.ViewHolder
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
         public ImageView image;
-        public Button removeButton;
+        public TextView itemName;
 
         // We also create a constructor that accepts the entire item row
         // and does the view lookups to find each subview
@@ -123,38 +141,38 @@ public class GallaryAdaper extends RecyclerView.Adapter<GallaryAdaper.ViewHolder
             // to access the context from any ViewHolder instance.
             super(itemView);
 
-            image = (ImageView) itemView.findViewById(R.id.gallary_image);
-            removeButton = (Button) itemView.findViewById(R.id.remove_gallary_button);
+            image = (ImageView) itemView.findViewById(R.id.item_thumb);
+            itemName = (TextView) itemView.findViewById(R.id.list_item_name);
         }
     }
 
-    public void getPermmision() {
-        if (ContextCompat.checkSelfPermission(activity,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE) + ContextCompat
-                .checkSelfPermission(activity,
-                        Manifest.permission.MANAGE_DOCUMENTS)
-                != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale
-                    (activity, Manifest.permission.WRITE_EXTERNAL_STORAGE) ||
-                    ActivityCompat.shouldShowRequestPermissionRationale
-                            (activity, Manifest.permission.MANAGE_DOCUMENTS)) {
-
-                ActivityCompat.requestPermissions(activity,
-                        new String[]{Manifest.permission
-                                .WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_CONTACTS},
-                        100);
-
-            } else {
-                ActivityCompat.requestPermissions(activity,
-                        new String[]{Manifest.permission
-                                .WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_CONTACTS},
-                        100);
+    /*
+    This is a dialog used for delete item
+     */
+    public void deleteItemDialog(final Items item) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+        builder.setTitle(R.string.delete_confirm_title);
+        builder.setMessage(R.string.delete_confirm);
+        builder.setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                DaoSession daoSession = ((MyApplication) activity.getApplication()).getDaoSession();
+                daoSession.getItemsDao().delete(item);
+                // delete image path
+                daoSession.getImagesPathDao().deleteInTx(daoSession.getImagesPathDao().queryBuilder().
+                where(ImagesPathDao.Properties.Rfid.eq(item.getRfid())).build().list());
+                // delete key description
+                daoSession.getKeyDescriptionDao().deleteInTx(daoSession.getKeyDescriptionDao().queryBuilder().
+                where(KeyDescriptionDao.Properties.Rfid.eq(item.getRfid())).build().list());
+                Toast.makeText(activity, R.string.delete_success, Toast.LENGTH_LONG).show();
+                updateUI();
             }
-        } else {
-            //Call whatever you want
-//            myMethod();
-        }
-
+        });
+        builder.setNegativeButton(R.string.Cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        builder.create().show();
     }
-
 }

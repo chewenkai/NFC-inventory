@@ -128,6 +128,7 @@ public class LoginActivity extends AppCompatActivity {
                     Toast.makeText(getApplicationContext(), R.string.password_omitted, Toast.LENGTH_LONG).
                             show();
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    b.dismiss();
                     finish();
                     return;
                 }

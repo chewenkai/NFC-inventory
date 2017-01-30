@@ -111,4 +111,11 @@ public class DatabaseUtil {
             return items.get(0);
         }
     }
+
+    public static void updateDetailDescription(Activity activity, String detailDes){
+        DaoSession daoSession = ((MyApplication) activity.getApplication()).getDaoSession();
+        Items item = getCurrentItem(activity);
+        item.setDetailDescription(detailDes);
+        daoSession.getItemsDao().insertOrReplace(item);
+    }
 }

@@ -11,7 +11,6 @@ import org.greenrobot.greendao.annotation.Unique;
 
 @Entity
 public class KeyDescription {
-
     @Unique
     @Id(autoincrement = true)
     private Long id;

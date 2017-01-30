@@ -1,9 +1,15 @@
 package com.kevin.rfidmanager.Utils;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 
+import com.kbeanie.multipicker.api.ImagePicker;
+import com.kbeanie.multipicker.api.callbacks.ImagePickerCallback;
+import com.kbeanie.multipicker.api.entity.ChosenImage;
+
 import java.io.File;
+import java.util.List;
 
 /**
  * This class is not needed now, but may used in future. Ignore this util using it.
@@ -120,5 +126,25 @@ public class IntentUtil {
         intent.setAction(Intent.ACTION_VIEW);
         intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
         return intent;
+    }
+
+    public static void pickFiles(Activity activity){
+        ImagePicker imagePicker = new ImagePicker(activity);
+        imagePicker.setImagePickerCallback(new ImagePickerCallback(){
+                                               @Override
+                                               public void onImagesChosen(List<ChosenImage> images) {
+                                                   // Display images
+                                               }
+
+                                               @Override
+                                               public void onError(String message) {
+                                                   // Do error handling
+                                               }
+                                           }
+        );
+        // imagePicker.allowMultiple(); // Default is false
+        // imagePicker.shouldGenerateMetadata(false); // Default is true
+        // imagePicker.shouldGenerateThumbnails(false); // Default is true
+        imagePicker.pickImage();
     }
 }

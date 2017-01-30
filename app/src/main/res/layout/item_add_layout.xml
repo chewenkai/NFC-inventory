@@ -7,6 +7,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -14,20 +17,10 @@
             android:layout_height="200dp"
             android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/item_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
-                android:gravity="left"
-                android:paddingLeft="2dp"
-                android:text="Items Name"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
-
             <LinearLayout
-                android:layout_below="@+id/item_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
                 android:orientation="horizontal"
                 android:paddingLeft="5dp">
 
@@ -36,54 +29,137 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:orientation="vertical">
+                    <TextView
+                        android:id="@+id/item_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true"
+                        android:gravity="left"
+                        android:paddingLeft="2dp"
+                        android:text="Items Name"
+                        android:textAppearance="?android:attr/textAppearanceLarge"
+                        android:textStyle="italic|bold" />
 
                     <ListView
                         android:id="@+id/listview_item_key_des"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"></ListView>
+                        android:layout_weight="1"
+                        android:divider="@null"
+                        android:dividerHeight="0dp"/>
 
                     <TextView
                         android:id="@+id/button_add_item_key_des"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:text="Add description"
+                        android:background="@color/add_key_des_button_color"
                         android:gravity="center"
                         android:padding="10dp"
-                        android:textColor="@color/white"
-                        android:background="@color/add_key_des_button_color" />
+                        android:text="ADD KEY DESCRIPTION"
+                        android:textColor="@color/white" />
                 </LinearLayout>
 
-                <ImageView
-                    android:id="@+id/iamgeview_main_image"
-                    android:layout_width="match_parent"
+                <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_margin="10dp"
                     android:layout_weight="1"
-                    android:layout_gravity="center_vertical"
-                    android:src="@drawable/add_image" />
+                    android:clickable="true"
+                    android:padding="0dp"
+                    card_view:cardBackgroundColor="#E6E6E6"
+                    card_view:cardCornerRadius="7dp"
+                    card_view:cardElevation="30dp">
+
+                    <ImageView
+                        android:id="@+id/iamgeview_main_image"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center_vertical"
+                        android:minHeight="300dp"
+                        android:minWidth="250dp"
+                        android:scaleType="centerCrop"
+                        android:src="@drawable/add_image" />
+
+                </android.support.v7.widget.CardView>
+
             </LinearLayout>
         </RelativeLayout>
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:id="@+id/add_gallery_image"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_gravity="center_vertical"
-                android:src="@drawable/add_image" />
-
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/recycle_gallery"
+            android:layout_height="wrap_content">
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
-            </android.support.v7.widget.RecyclerView>
-        </LinearLayout>
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/recycle_gallery"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                    </android.support.v7.widget.RecyclerView>
+
+                    <android.support.v7.widget.AppCompatButton
+                        android:id="@+id/add_gallery_image"
+                        style="@style/Widget.AppCompat.Button.Colored"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:text="Add more Images"
+                        android:textSize="13sp" />
+
+                </LinearLayout>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/detail_description"
+                    android:gravity="top"
+                    android:layout_margin="10dp"
+                    android:textStyle="bold"/>
+
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <EditText
+                        android:id="@+id/detail_description"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:minHeight="250dp"
+                        android:hint="Description..."
+                        android:gravity="top"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginRight="10dp"
+                        android:layout_marginBottom="10dp"
+                        android:background="@color/paper_color"
+                        android:inputType="textMultiLine"
+                        style="@style/FullWidthEditText"/>
+
+                    <Button
+                        android:id="@+id/save_des"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/save"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="20dp"
+                        />
+
+                </RelativeLayout>
+
+
+            </LinearLayout>
+
+        </ScrollView>
+
 
     </LinearLayout>
 

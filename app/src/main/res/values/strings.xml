@@ -27,9 +27,16 @@
 
     <!--Main Page-->
     <string name="exit_warning">Do you really want exit?</string>
+    <string name="delete_confirm_title"> will be deleted permanently</string>
+    <string name="delete_confirm"> Are you sure you want to delete it permanently?</string>
+    <string name="delete_success">Delete successful</string>
 
-    <!--Detail Page-->
+    <!--Add Page-->
     <string name="dialog_title_edit_key_des">Edit key description</string>
     <string name="dialog_title_add_key_des">Add key description</string>
+    <string name="no_access">Permission derail!</string>
+    <string name="detail_description">Detail description:</string>
+    <string name="no_images_available">No images available</string>
+    <string name="saved_item">saved</string>
 
 </resources>

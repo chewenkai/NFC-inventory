@@ -1,5 +1,18 @@
 package com.kevin.rfidmanager.Utils;
 
+import android.app.Activity;
+import android.content.ContentUris;
+import android.content.Context;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
+import android.support.v4.content.CursorLoader;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -32,4 +45,28 @@ public class StringUtil {
         Matcher matcher = pattern.matcher(str);
         return matcher.matches();
     }
+
+    public static Bitmap getThumbnailBitmap(Activity activity, Uri uri){
+        String[] proj = { MediaStore.Images.Media.DATA };
+
+        // This method was deprecated in API level 11
+        // Cursor cursor = managedQuery(contentUri, proj, null, null, null);
+
+        CursorLoader cursorLoader = new CursorLoader(activity, uri, proj, null, null, null);
+        Cursor cursor = cursorLoader.loadInBackground();
+
+        int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media._ID);
+
+        cursor.moveToFirst();
+        long imageId = cursor.getLong(column_index);
+        //cursor.close();
+
+        Bitmap bitmap = MediaStore.Images.Thumbnails.getThumbnail(
+                activity.getContentResolver(), imageId,
+                MediaStore.Images.Thumbnails.MINI_KIND,
+                (BitmapFactory.Options) null );
+
+        return bitmap;
+    }
+
 }

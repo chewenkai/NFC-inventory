@@ -4,7 +4,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-import com.kevin.rfidmanager.Fragments.ItemsAddFrag;
+import com.kevin.rfidmanager.Fragments.ItemDetailFrag;
+import com.kevin.rfidmanager.Fragments.ItemsEditFrag;
 import com.kevin.rfidmanager.Fragments.ItemsListFrag;
 import com.kevin.rfidmanager.Fragments.SettingFrag;
 
@@ -14,6 +15,10 @@ import com.kevin.rfidmanager.Fragments.SettingFrag;
 
 public class PagerAdapter extends FragmentStatePagerAdapter {
     int mNumOfTabs;
+    public ItemsListFrag tab1 = new ItemsListFrag();
+    public ItemDetailFrag tab2 = new ItemDetailFrag();
+    public ItemsEditFrag tab3 = new ItemsEditFrag();
+    public SettingFrag tab4 = new SettingFrag();
 
     public PagerAdapter(FragmentManager fm, int NumOfTabs) {
         super(fm);
@@ -25,23 +30,15 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
 
         switch (position) {
             case 0:
-                ItemsListFrag tab1 = new ItemsListFrag();
                 return tab1;
-            case 1:  // Edit
-                ItemsAddFrag tab3 = new ItemsAddFrag();
+            case 1:  // Detail
+                return tab2;
+            case 2:  // Edit
                 return tab3;
-            case 2:  // Delete
-                ItemsAddFrag tab4 = new ItemsAddFrag();
+            case 3:  // Setting
                 return tab4;
-            case 3:  // Add
-                ItemsAddFrag tab5 = new ItemsAddFrag();
-                return tab5;
-            case 4:  // Setting
-                SettingFrag tab6 = new SettingFrag();
-                return tab6;
             default:
-                ItemsAddFrag tab7 = new ItemsAddFrag();
-                return tab7;
+                return tab4;
         }
     }
 

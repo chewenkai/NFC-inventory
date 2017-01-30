@@ -2,13 +2,17 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <!--<color name="colorAccent">#FF4081</color>-->
+    <color name="colorAccent">#ea3F51B5</color>
 
     <color name="black">#000000</color>
     <color name="white">#ffffff</color>
+    <color name="gray">#cacaca</color>
     <color name="warning_color">#ff4848</color>
 
     <color name="add_key_des_button_color">#46cc3d</color>
     <color name="edit_key_des_button_color">#3d80cc</color>
     <color name="remove_key_des_button_color">#ae3438</color>
+    <color name="paper_color">#c6a677</color>
+    <color name="item_name_bg">#aa13110d</color>
 </resources>
