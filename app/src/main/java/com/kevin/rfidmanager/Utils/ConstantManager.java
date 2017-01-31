@@ -6,7 +6,7 @@ package com.kevin.rfidmanager.Utils;
  */
 
 public class ConstantManager {
-    public static boolean IS_DEBUGING = true;
+    public static boolean IS_DEBUGING = false;
 
     // Main page
     public static int HOME = 0;
