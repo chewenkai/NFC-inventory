@@ -1,8 +1,11 @@
 package com.kevin.rfidmanager.Utils;
 
 import android.app.Activity;
+import android.content.Context;
+import android.os.Environment;
 
 import com.kevin.rfidmanager.MyApplication;
+import com.kevin.rfidmanager.R;
 import com.kevin.rfidmanager.database.DaoSession;
 import com.kevin.rfidmanager.database.ImagesPath;
 import com.kevin.rfidmanager.database.ImagesPathDao;
@@ -13,6 +16,10 @@ import com.kevin.rfidmanager.database.KeyDescriptionDao;
 
 import org.greenrobot.greendao.query.Query;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.nio.channels.FileChannel;
 import java.util.List;
 
 /**
@@ -122,5 +129,49 @@ public class DatabaseUtil {
         Items item = getCurrentItem(activity);
         item.setDetailDescription(detailDes);
         daoSession.getItemsDao().insertOrReplace(item);
+    }
+
+    public static void importDB(Context context) {
+        try {
+            File sd = Environment.getExternalStorageDirectory();
+            if (sd.canWrite()) {
+                File backupDB = context.getDatabasePath(context.getString(R.string.database_name));
+                String backupDBPath = String.format("%s.bak", context.getString(R.string.database_name));
+                File currentDB = new File(sd, backupDBPath);
+
+                FileChannel src = new FileInputStream(currentDB).getChannel();
+                FileChannel dst = new FileOutputStream(backupDB).getChannel();
+                dst.transferFrom(src, 0, src.size());
+                src.close();
+                dst.close();
+
+//                MyApplication.toastSomething(context, "Import Successful!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void exportDB(Context context) {
+        try {
+            File sd = Environment.getExternalStorageDirectory();
+            File data = Environment.getDataDirectory();
+
+            if (sd.canWrite()) {
+                String backupDBPath = String.format("%s.bak", context.getString(R.string.database_name));
+                File currentDB = context.getDatabasePath(context.getString(R.string.database_name));
+                File backupDB = new File(sd, backupDBPath);
+
+                FileChannel src = new FileInputStream(currentDB).getChannel();
+                FileChannel dst = new FileOutputStream(backupDB).getChannel();
+                dst.transferFrom(src, 0, src.size());
+                src.close();
+                dst.close();
+
+//                MyApplication.toastSomething(context, "Backup Successful!");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }

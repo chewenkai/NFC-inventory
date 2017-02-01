@@ -77,14 +77,18 @@ public class ItemListAdaper extends RecyclerView.Adapter<ItemListAdaper.ViewHold
 
         // Set item views based on your views and data model
         ImageView image = holder.image;
-
-        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE)
-                == PackageManager.PERMISSION_GRANTED) {
-            Picasso.with(activity).load(new File(item.getMainImagePath())).resize(ConstantManager.DEFAULT_IMAGE_WIDTH,
-                    ConstantManager.DEFAULT_IMAGE_HEIGHT).centerCrop().into(image);
-        } else {
+        if (item.getMainImagePath() == null){
             Picasso.with(activity).load(R.drawable.image_read_fail).resize(ConstantManager.DEFAULT_IMAGE_WIDTH,
                     ConstantManager.DEFAULT_IMAGE_HEIGHT).centerCrop().into(image);
+        }else{
+            if (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED) {
+                Picasso.with(activity).load(new File(item.getMainImagePath())).resize(ConstantManager.DEFAULT_IMAGE_WIDTH,
+                        ConstantManager.DEFAULT_IMAGE_HEIGHT).centerCrop().into(image);
+            } else {
+                Picasso.with(activity).load(R.drawable.image_read_fail).resize(ConstantManager.DEFAULT_IMAGE_WIDTH,
+                        ConstantManager.DEFAULT_IMAGE_HEIGHT).centerCrop().into(image);
+            }
         }
 
         image.setOnClickListener(new View.OnClickListener() {

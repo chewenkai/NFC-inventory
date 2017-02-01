@@ -15,6 +15,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kevin.rfidmanager.R;
+import com.kevin.rfidmanager.Utils.DatabaseUtil;
 import com.kevin.rfidmanager.Utils.SPUtil;
 
 public class SettingFrag extends android.support.v4.app.Fragment {
@@ -28,16 +29,29 @@ public class SettingFrag extends android.support.v4.app.Fragment {
 
     private void initUI(View v) {
         backupDatabaseButton = (Button) v.findViewById(R.id.backup_database_button);
+        backupDatabaseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatabaseUtil.exportDB(getActivity());
+            }
+        });
         restoreDatabaseButton = (Button) v.findViewById(R.id.restore_database_button);
+        restoreDatabaseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DatabaseUtil.importDB(getActivity());
+            }
+        });
         changePasswordButton = (Button) v.findViewById(R.id.change_password);
-        changeRFIDRangeButton = (Button) v.findViewById(R.id.change_rfid_range);
-
         changePasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 showPasswordChangeDialog();
             }
         });
+
+        changeRFIDRangeButton = (Button) v.findViewById(R.id.change_rfid_range);
+
     }
 
     /*

@@ -29,7 +29,8 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
 
-        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this, "rfid-db");
+        DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(this,
+                getResources().getString(R.string.database_name));
         Database db = helper.getWritableDb();
         daoSession = new DaoMaster(db).newSession();
 
