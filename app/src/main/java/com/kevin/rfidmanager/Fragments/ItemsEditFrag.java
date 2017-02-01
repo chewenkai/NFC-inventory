@@ -170,6 +170,7 @@ public class ItemsEditFrag extends android.support.v4.app.Fragment {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                packUpImm();
                 DatabaseUtil.updateDetailDescription(getActivity(), detailDescription.getText().toString());
                 Toast.makeText(getActivity(), R.string.saved_item, Toast.LENGTH_LONG).show();
                 ((MainActivity)getActivity()).viewPager.setCurrentItem(ConstantManager.HOME, false);
