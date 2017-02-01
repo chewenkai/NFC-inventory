@@ -47,6 +47,9 @@ import com.kevin.rfidmanager.database.KeyDescription;
 import com.kevin.rfidmanager.database.KeyDescriptionDao;
 import com.nbsp.materialfilepicker.MaterialFilePicker;
 import com.nbsp.materialfilepicker.ui.FilePickerActivity;
+import com.squareup.picasso.Picasso;
+
+import java.io.File;
 
 import static com.kevin.rfidmanager.Utils.ConstantManager.PERMISSION_REQUEST_CODE;
 
@@ -77,6 +80,13 @@ public class ItemDetailFrag extends android.support.v4.app.Fragment {
     }
 
     private void initUI(View v) {
+        if (getActivity() == null)
+            return;
+
+        if (((MyApplication) getActivity().getApplication()).getCurrentItemID() ==
+                ConstantManager.DEFAULT_RFID)
+            return;
+
         itemName = (TextView) v.findViewById(R.id.item_name);
         itemName.setText(DatabaseUtil.getCurrentItem(getActivity()).getItemName());
 
@@ -90,30 +100,14 @@ public class ItemDetailFrag extends android.support.v4.app.Fragment {
         mainImage = (ImageView) v.findViewById(R.id.iamgeview_main_image);
         String mainImagePath = DatabaseUtil.getCurrentItem(getActivity()).getMainImagePath();
         if (mainImagePath != null){
-            Bitmap bitmap = null;
             if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
                     == PackageManager.PERMISSION_GRANTED) {
-                bitmap = BitmapFactory.decodeFile(mainImagePath);
+                Picasso.with(getActivity()).load(new File(mainImagePath)).resize(ConstantManager.DEFAULT_IMAGE_WIDTH,
+                        ConstantManager.DEFAULT_IMAGE_HEIGHT).centerCrop().into(mainImage);
             } else {
-                bitmap = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.image_read_fail);
+                Picasso.with(getActivity()).load(R.drawable.image_read_fail).resize(ConstantManager.DEFAULT_IMAGE_WIDTH,
+                        ConstantManager.DEFAULT_IMAGE_HEIGHT).centerCrop().into(mainImage);
             }
-            if (mainImage!=null&&mainImage.getWidth()!=0&&mainImage.getHeight()!=0 ){
-                bitmap = BitMapUtil.createScaleBitmap(bitmap, mainImage.getWidth(), mainImage.getHeight(), 4);
-            }else{
-                bitmap = BitMapUtil.createScaleBitmap(bitmap, ConstantManager.DEFAULT_IMAGE_WIDTH,
-                        ConstantManager.DEFAULT_IMAGE_HEIGHT, 4);
-            }
-            mainImage.setImageBitmap(bitmap);
-        }else {  // Do not set main image, use default one
-            Bitmap bitmap = null;
-            bitmap = BitmapFactory.decodeResource(getActivity().getResources(), R.drawable.image_read_fail);
-            if (mainImage!=null&&mainImage.getWidth()!=0&&mainImage.getHeight()!=0 ){
-                bitmap = BitMapUtil.createScaleBitmap(bitmap, mainImage.getWidth(), mainImage.getHeight(), 4);
-            }else{
-                bitmap = BitMapUtil.createScaleBitmap(bitmap, ConstantManager.DEFAULT_IMAGE_WIDTH,
-                        ConstantManager.DEFAULT_IMAGE_HEIGHT, 4);
-            }
-            mainImage.setImageBitmap(bitmap);
         }
         mainImage.setOnClickListener(new View.OnClickListener() {
             @Override

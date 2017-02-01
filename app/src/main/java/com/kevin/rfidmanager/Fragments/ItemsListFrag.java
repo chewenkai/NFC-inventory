@@ -13,8 +13,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.kevin.rfidmanager.Adapter.ItemListAdaper;
+import com.kevin.rfidmanager.MyApplication;
 import com.kevin.rfidmanager.R;
+import com.kevin.rfidmanager.Utils.ConstantManager;
 import com.kevin.rfidmanager.Utils.DatabaseUtil;
+import com.kevin.rfidmanager.database.Items;
+
+import java.util.List;
 
 public class ItemsListFrag extends android.support.v4.app.Fragment {
     private RecyclerView recyclerView;
@@ -28,7 +33,12 @@ public class ItemsListFrag extends android.support.v4.app.Fragment {
 
     private void initUI(View v) {
         recyclerView = (RecyclerView) v.findViewById(R.id.recycle_item_list);
-        itemListAdapter = new ItemListAdaper(getActivity(), DatabaseUtil.queryItems(getActivity()));
+        List<Items> items = DatabaseUtil.queryItems(getActivity());
+        if (items.size() != 0)
+            ((MyApplication) getActivity().getApplication()).setCurrentItemID(items.get(0).getRfid());
+        else
+            ((MyApplication) getActivity().getApplication()).setCurrentItemID(ConstantManager.DEFAULT_RFID);
+        itemListAdapter = new ItemListAdaper(getActivity(), items);
         recyclerView.setAdapter(itemListAdapter);
         StaggeredGridLayoutManager gridLayoutManager =
                 new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);// First param is number of columns and second param is orientation i.e Vertical or Horizontal

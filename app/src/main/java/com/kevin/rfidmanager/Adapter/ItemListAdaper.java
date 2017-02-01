@@ -35,7 +35,9 @@ import com.kevin.rfidmanager.database.ImagesPath;
 import com.kevin.rfidmanager.database.ImagesPathDao;
 import com.kevin.rfidmanager.database.Items;
 import com.kevin.rfidmanager.database.KeyDescriptionDao;
+import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -76,23 +78,15 @@ public class ItemListAdaper extends RecyclerView.Adapter<ItemListAdaper.ViewHold
         // Set item views based on your views and data model
         ImageView image = holder.image;
 
-        Bitmap bitmap = null;
         if (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE)
                 == PackageManager.PERMISSION_GRANTED) {
-            bitmap = BitmapFactory.decodeFile(item.getMainImagePath());
-        }
-        if (bitmap == null){
-//                bitmap = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), Uri.parse(path.getImagePath()));
-            bitmap = BitmapFactory.decodeResource(activity.getResources(), R.drawable.image_read_fail);
-        }
-        if (image!=null&&image.getWidth()!=0&& image.getHeight()!=0){
-            bitmap = BitMapUtil.createScaleBitmap(bitmap, image.getWidth(), image.getHeight(), 4);
-        }else{
-            bitmap = BitMapUtil.createScaleBitmap(bitmap, ConstantManager.DEFAULT_IMAGE_WIDTH,
-                    ConstantManager.DEFAULT_IMAGE_HEIGHT, 4);
+            Picasso.with(activity).load(new File(item.getMainImagePath())).resize(ConstantManager.DEFAULT_IMAGE_WIDTH,
+                    ConstantManager.DEFAULT_IMAGE_HEIGHT).centerCrop().into(image);
+        } else {
+            Picasso.with(activity).load(R.drawable.image_read_fail).resize(ConstantManager.DEFAULT_IMAGE_WIDTH,
+                    ConstantManager.DEFAULT_IMAGE_HEIGHT).centerCrop().into(image);
         }
 
-        image.setImageBitmap(bitmap);
         image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

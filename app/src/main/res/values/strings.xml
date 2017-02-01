@@ -38,5 +38,6 @@
     <string name="detail_description">Detail description:</string>
     <string name="no_images_available">No images available</string>
     <string name="saved_item">saved</string>
+    <string name="delete">DELETE</string>
 
 </resources>

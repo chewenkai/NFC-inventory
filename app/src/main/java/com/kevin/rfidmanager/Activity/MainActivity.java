@@ -74,7 +74,8 @@ public class MainActivity extends AppCompatActivity {
                         viewPager.setCurrentItem(ConstantManager.HOME, false);
                         break;
                     case 1:
-                        if (((MyApplication) MainActivity.this.getApplication()).getCurrentItemID() == 0){
+                        if (((MyApplication) MainActivity.this.getApplication()).getCurrentItemID()
+                                == ConstantManager.DEFAULT_RFID){
                             Toast.makeText(getApplicationContext(), "Please select item first.", Toast.LENGTH_LONG).show();
                         }else {
                             adapter.tab2.refreshUI();
@@ -82,7 +83,8 @@ public class MainActivity extends AppCompatActivity {
                         }
                         break;
                     case 2:
-                        if (((MyApplication) MainActivity.this.getApplication()).getCurrentItemID() == 0){
+                        if (((MyApplication) MainActivity.this.getApplication()).getCurrentItemID()
+                                == ConstantManager.DEFAULT_RFID){
                             Toast.makeText(getApplicationContext(), "Please select item first.", Toast.LENGTH_LONG).show();
                         }else {
                             adapter.tab3.refreshUI();

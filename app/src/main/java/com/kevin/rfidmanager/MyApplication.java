@@ -3,6 +3,7 @@ package com.kevin.rfidmanager;
 import android.app.Application;
 import android.util.Log;
 
+import com.kevin.rfidmanager.Utils.ConstantManager;
 import com.kevin.rfidmanager.database.DaoMaster;
 import com.kevin.rfidmanager.database.DaoSession;
 
@@ -23,7 +24,7 @@ public class MyApplication extends Application {
         this.currentItemID = currentItemID;
     }
 
-    private long currentItemID;
+    private long currentItemID = ConstantManager.DEFAULT_RFID;
     @Override
     public void onCreate() {
         super.onCreate();

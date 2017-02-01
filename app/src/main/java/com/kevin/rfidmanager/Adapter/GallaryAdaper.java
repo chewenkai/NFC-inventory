@@ -22,7 +22,9 @@ import com.kevin.rfidmanager.Utils.ConstantManager;
 import com.kevin.rfidmanager.Utils.DatabaseUtil;
 import com.kevin.rfidmanager.database.DaoSession;
 import com.kevin.rfidmanager.database.ImagesPath;
+import com.squareup.picasso.Picasso;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -65,22 +67,15 @@ public class GallaryAdaper extends RecyclerView.Adapter<GallaryAdaper.ViewHolder
         // Set item views based on your views and data model
         ImageView image = holder.image;
 
-        Bitmap bitmap = null;
         if (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE)
                 == PackageManager.PERMISSION_GRANTED) {
-            bitmap = BitmapFactory.decodeFile(path.getImagePath());
+            Picasso.with(activity).load(new File(path.getImagePath())).resize(ConstantManager.DEFAULT_IMAGE_WIDTH,
+                    ConstantManager.DEFAULT_IMAGE_HEIGHT).centerCrop().into(image);
         } else {
-//                bitmap = MediaStore.Images.Media.getBitmap(activity.getContentResolver(), Uri.parse(path.getImagePath()));
-            bitmap = BitmapFactory.decodeResource(activity.getResources(), R.drawable.image_read_fail);
-        }
-        if (image!=null&&image.getWidth()!=0&& image.getHeight()!=0){
-            bitmap = BitMapUtil.createScaleBitmap(bitmap, image.getWidth(), image.getHeight(), 4);
-        }else{
-            bitmap = BitMapUtil.createScaleBitmap(bitmap, ConstantManager.DEFAULT_IMAGE_WIDTH,
-                    ConstantManager.DEFAULT_IMAGE_HEIGHT, 4);
+            Picasso.with(activity).load(R.drawable.image_read_fail).resize(ConstantManager.DEFAULT_IMAGE_WIDTH,
+                    ConstantManager.DEFAULT_IMAGE_HEIGHT).centerCrop().into(image);
         }
 
-        image.setImageBitmap(bitmap);
         image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -88,7 +83,7 @@ public class GallaryAdaper extends RecyclerView.Adapter<GallaryAdaper.ViewHolder
             }
         });
         Button button = holder.removeButton;
-        button.setText("Delete");
+        button.setText(R.string.delete);
         if (hide){
             button.setVisibility(View.GONE);
         }
