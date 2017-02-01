@@ -110,6 +110,9 @@ public class ItemDetailFrag extends android.support.v4.app.Fragment {
                 Picasso.with(getActivity()).load(R.drawable.image_read_fail).resize(ConstantManager.DEFAULT_IMAGE_WIDTH,
                         ConstantManager.DEFAULT_IMAGE_HEIGHT).centerCrop().into(mainImage);
             }
+        }else {
+            Picasso.with(getActivity()).load(R.drawable.image_read_fail).resize(ConstantManager.DEFAULT_IMAGE_WIDTH,
+                    ConstantManager.DEFAULT_IMAGE_HEIGHT).centerCrop().into(mainImage);
         }
         mainImage.setOnClickListener(new View.OnClickListener() {
             @Override
