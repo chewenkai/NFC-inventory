@@ -5,8 +5,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.RecyclerView;
@@ -16,14 +14,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 
-import com.kevin.rfidmanager.Activity.MainActivity;
+import com.kevin.rfidmanager.Activity.GalleryActivity;
 import com.kevin.rfidmanager.Activity.PhotoActivity;
 import com.kevin.rfidmanager.MyApplication;
 import com.kevin.rfidmanager.R;
-import com.kevin.rfidmanager.Utils.BitMapUtil;
 import com.kevin.rfidmanager.Utils.ConstantManager;
 import com.kevin.rfidmanager.Utils.DatabaseUtil;
-import com.kevin.rfidmanager.Utils.IntentUtil;
 import com.kevin.rfidmanager.database.DaoSession;
 import com.kevin.rfidmanager.database.ImagesPath;
 import com.squareup.picasso.Picasso;
@@ -64,7 +60,7 @@ public class GallaryAdaper extends RecyclerView.Adapter<GallaryAdaper.ViewHolder
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         // Get the data model based on position
         final ImagesPath path = paths.get(position);
 
@@ -83,8 +79,8 @@ public class GallaryAdaper extends RecyclerView.Adapter<GallaryAdaper.ViewHolder
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
-                intent.putExtra(ConstantManager.INTENT_STRING_EXTRA_FILE_PATH, path.getImagePath());
-                intent.setClass(activity, PhotoActivity.class);
+                intent.putExtra(ConstantManager.GALLERY_CLICK_POSITION, position);
+                intent.setClass(activity, GalleryActivity.class);
                 activity.startActivity(intent);
             }
         });

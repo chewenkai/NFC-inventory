@@ -22,6 +22,7 @@
         </activity>
         <activity android:name=".Activity.MainActivity" />
         <activity android:name=".Activity.PhotoActivity"></activity>
+        <activity android:name=".Activity.GalleryActivity"/>
     </application>
 
 </manifest>

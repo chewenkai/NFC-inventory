@@ -1,8 +1,8 @@
 package com.kevin.rfidmanager.Activity;
 
 import android.graphics.drawable.Drawable;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 
 import com.kevin.rfidmanager.R;
