@@ -39,5 +39,6 @@
     <string name="no_images_available">No images available</string>
     <string name="saved_item">saved</string>
     <string name="delete">DELETE</string>
+    <string name="image_regexp">.*\\.jpg|jpeg|gif|png$</string>
 
 </resources>

@@ -53,6 +53,36 @@ public class DatabaseUtil {
     }
 
     /**
+     * Get the current item which is on focus.
+     *
+     * @param activity
+     * @return
+     */
+    public static Items getCurrentItem(Activity activity) {
+
+        DaoSession daoSession = ((MyApplication) activity.getApplication()).getDaoSession();
+        ItemsDao itemsDao = daoSession.getItemsDao();
+        List<Items> items = itemsDao.queryBuilder().where(ItemsDao.Properties.Rfid.
+                eq(((MyApplication) activity.getApplication()).getCurrentItemID())).build().list();
+        if (items.size() == 1) {
+            return items.get(0);
+        } else if (items.size() == 0) {
+            return new Items(null, 0l, "None", null, null);
+        } else {
+            boolean first = true;
+            for (Items item :
+                    items) {
+                if (first) {
+                    first = false;
+                    continue;
+                }
+                itemsDao.delete(item);
+            }
+            return items.get(0);
+        }
+    }
+
+    /**
      * Query the key description of item in database.
      *
      * @return Items list
@@ -83,35 +113,10 @@ public class DatabaseUtil {
     }
 
     /**
-     * Get the current item which is on focus.
      *
      * @param activity
-     * @return
+     * @param detailDes
      */
-    public static Items getCurrentItem(Activity activity) {
-
-        DaoSession daoSession = ((MyApplication) activity.getApplication()).getDaoSession();
-        ItemsDao itemsDao = daoSession.getItemsDao();
-        List<Items> items = itemsDao.queryBuilder().where(ItemsDao.Properties.Rfid.
-                eq(((MyApplication) activity.getApplication()).getCurrentItemID())).build().list();
-        if (items.size() == 1) {
-            return items.get(0);
-        } else if (items.size() == 0) {
-            return new Items(null, 0l, "None", null, null);
-        } else {
-            boolean first = true;
-            for (Items item :
-                    items) {
-                if (first) {
-                    first = false;
-                    continue;
-                }
-                itemsDao.delete(item);
-            }
-            return items.get(0);
-        }
-    }
-
     public static void updateDetailDescription(Activity activity, String detailDes){
         DaoSession daoSession = ((MyApplication) activity.getApplication()).getDaoSession();
         Items item = getCurrentItem(activity);

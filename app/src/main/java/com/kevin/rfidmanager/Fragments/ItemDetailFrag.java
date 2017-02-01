@@ -112,18 +112,7 @@ public class ItemDetailFrag extends android.support.v4.app.Fragment {
         mainImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                int permissionCheck = ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE);
-                if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
-                    ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
-                } else {
-                    new MaterialFilePicker()
-                            .withSupportFragment(ItemDetailFrag.this)
-                            .withRequestCode(ConstantManager.REQUEST_MAIN_IMAGE_FILE)
-//                            .withFilter(Pattern.compile(".*\\.jpg$")) // Filtering files and directories by file name using regexp
-                            .withFilterDirectories(false) // Set directories filterable (false by default)
-                            .withHiddenFiles(true) // Show hidden files and folders
-                            .start();
-                }
+               //
             }
         });
 

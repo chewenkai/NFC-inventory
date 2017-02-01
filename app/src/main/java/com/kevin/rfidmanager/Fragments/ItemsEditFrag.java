@@ -6,17 +6,10 @@ package com.kevin.rfidmanager.Fragments;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -25,8 +18,6 @@ import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -43,7 +34,6 @@ import com.kevin.rfidmanager.Adapter.GallaryAdaper;
 import com.kevin.rfidmanager.Adapter.KeyDesListAdapter;
 import com.kevin.rfidmanager.MyApplication;
 import com.kevin.rfidmanager.R;
-import com.kevin.rfidmanager.Utils.BitMapUtil;
 import com.kevin.rfidmanager.Utils.ConstantManager;
 import com.kevin.rfidmanager.Utils.DatabaseUtil;
 import com.kevin.rfidmanager.database.DaoSession;
@@ -56,6 +46,7 @@ import com.nbsp.materialfilepicker.ui.FilePickerActivity;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.util.regex.Pattern;
 
 import static com.kevin.rfidmanager.Utils.ConstantManager.PERMISSION_REQUEST_CODE;
 
@@ -136,7 +127,7 @@ public class ItemsEditFrag extends android.support.v4.app.Fragment {
                     new MaterialFilePicker()
                             .withSupportFragment(ItemsEditFrag.this)
                             .withRequestCode(ConstantManager.REQUEST_MAIN_IMAGE_FILE)
-//                            .withFilter(Pattern.compile(".*\\.jpg$")) // Filtering files and directories by file name using regexp
+                            .withFilter(Pattern.compile(getActivity().getResources().getString(R.string.image_regexp))) // Filtering files and directories by file name using regexp
                             .withFilterDirectories(false) // Set directories filterable (false by default)
                             .withHiddenFiles(true) // Show hidden files and folders
                             .start();
@@ -163,7 +154,7 @@ public class ItemsEditFrag extends android.support.v4.app.Fragment {
                     new MaterialFilePicker()
                             .withSupportFragment(ItemsEditFrag.this)
                             .withRequestCode(ConstantManager.REQUEST_GALLERY_IMAGE_FILE)
-//                            .withFilter(Pattern.compile(".*\\.jpg$")) // Filtering files and directories by file name using regexp
+                            .withFilter(Pattern.compile(getActivity().getResources().getString(R.string.image_regexp))) // Filtering files and directories by file name using regexp
                             .withFilterDirectories(false) // Set directories filterable (false by default)
                             .withHiddenFiles(true) // Show hidden files and folders
                             .start();
@@ -271,7 +262,7 @@ public class ItemsEditFrag extends android.support.v4.app.Fragment {
             @Override
             public void onClick(View v) {
                 insertNewItemKeyDes(newKeyDes.getText().toString());
-                desListAdapter.updateList();
+                desListAdapter.updateKeyDescriptionList();
                 b.dismiss();
                 packUpImm();
 

@@ -7,7 +7,6 @@ import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
@@ -84,7 +83,7 @@ public class KeyDesListAdapter extends ArrayAdapter<KeyDescription> {
                 @Override
                 public void onClick(View v) {
                     deleteItemsKeyDes(keyDescription);
-                    updateList();
+                    updateKeyDescriptionList();
                 }
             });
         }
@@ -103,6 +102,8 @@ public class KeyDesListAdapter extends ArrayAdapter<KeyDescription> {
         dialogBuilder.setView(dialogView);
 
         final TextInputEditText newKeyDes = (TextInputEditText) dialogView.findViewById(R.id.edit_key_des_text_editor);
+        // The original key description should be shown in the text box when editing key description.
+        newKeyDes.setText(keyDescription.getKeyDescription());
 
         final Button saveButton = (Button) dialogView.findViewById(R.id.dialog_change);
         final Button cancleButton = (Button) dialogView.findViewById(R.id.dialog_cancle);
@@ -115,7 +116,7 @@ public class KeyDesListAdapter extends ArrayAdapter<KeyDescription> {
             @Override
             public void onClick(View v) {
                 editItemsKeyDes(keyDescription, newKeyDes.getText().toString());
-                updateList();
+                updateKeyDescriptionList();
                 b.dismiss();
 
             }
@@ -129,7 +130,10 @@ public class KeyDesListAdapter extends ArrayAdapter<KeyDescription> {
         });
     }
 
-    public void updateList() {
+    /**
+     * Update the Key Description list
+     */
+    public void updateKeyDescriptionList() {
         this.clear();
         this.addAll(DatabaseUtil.queryItemsKeyDes(currentActivity,
                 ((MyApplication) currentActivity.getApplication()).getCurrentItemID()));
@@ -147,13 +151,18 @@ public class KeyDesListAdapter extends ArrayAdapter<KeyDescription> {
         keyDescriptionDao.delete(keyDescription);
     }
 
+    /**
+     * Update the key description
+     * @param keyDescription
+     * @param newKeyDes
+     */
     public void editItemsKeyDes(KeyDescription keyDescription, String newKeyDes) {
         keyDescription.setKeyDescription(newKeyDes);
         // get the key description DAO
         DaoSession daoSession = ((MyApplication) currentActivity.getApplication()).getDaoSession();
         KeyDescriptionDao keyDescriptionDao = daoSession.getKeyDescriptionDao();
         keyDescriptionDao.insertOrReplace(keyDescription);
-        updateList();
+        updateKeyDescriptionList();
     }
 
 }
