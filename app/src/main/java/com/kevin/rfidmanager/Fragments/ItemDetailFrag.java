@@ -33,6 +33,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kevin.rfidmanager.Activity.MainActivity;
+import com.kevin.rfidmanager.Activity.PhotoActivity;
 import com.kevin.rfidmanager.Adapter.GallaryAdaper;
 import com.kevin.rfidmanager.Adapter.KeyDesListAdapter;
 import com.kevin.rfidmanager.MyApplication;
@@ -40,6 +41,7 @@ import com.kevin.rfidmanager.R;
 import com.kevin.rfidmanager.Utils.BitMapUtil;
 import com.kevin.rfidmanager.Utils.ConstantManager;
 import com.kevin.rfidmanager.Utils.DatabaseUtil;
+import com.kevin.rfidmanager.Utils.IntentUtil;
 import com.kevin.rfidmanager.database.DaoSession;
 import com.kevin.rfidmanager.database.ImagesPath;
 import com.kevin.rfidmanager.database.Items;
@@ -98,7 +100,7 @@ public class ItemDetailFrag extends android.support.v4.app.Fragment {
         desListAdapter.setCurrentActivity(getActivity());
 
         mainImage = (ImageView) v.findViewById(R.id.iamgeview_main_image);
-        String mainImagePath = DatabaseUtil.getCurrentItem(getActivity()).getMainImagePath();
+        final String mainImagePath = DatabaseUtil.getCurrentItem(getActivity()).getMainImagePath();
         if (mainImagePath != null){
             if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
                     == PackageManager.PERMISSION_GRANTED) {
@@ -112,7 +114,11 @@ public class ItemDetailFrag extends android.support.v4.app.Fragment {
         mainImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               //
+               // Open picture
+                Intent intent = new Intent();
+                intent.putExtra(ConstantManager.INTENT_STRING_EXTRA_FILE_PATH, mainImagePath);
+                intent.setClass(getActivity(), PhotoActivity.class);
+                getActivity().startActivity(intent);
             }
         });
 

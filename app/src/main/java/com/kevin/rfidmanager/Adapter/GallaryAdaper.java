@@ -3,6 +3,7 @@ package com.kevin.rfidmanager.Adapter;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -15,11 +16,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 
+import com.kevin.rfidmanager.Activity.MainActivity;
+import com.kevin.rfidmanager.Activity.PhotoActivity;
 import com.kevin.rfidmanager.MyApplication;
 import com.kevin.rfidmanager.R;
 import com.kevin.rfidmanager.Utils.BitMapUtil;
 import com.kevin.rfidmanager.Utils.ConstantManager;
 import com.kevin.rfidmanager.Utils.DatabaseUtil;
+import com.kevin.rfidmanager.Utils.IntentUtil;
 import com.kevin.rfidmanager.database.DaoSession;
 import com.kevin.rfidmanager.database.ImagesPath;
 import com.squareup.picasso.Picasso;
@@ -75,11 +79,13 @@ public class GallaryAdaper extends RecyclerView.Adapter<GallaryAdaper.ViewHolder
             Picasso.with(activity).load(R.drawable.image_read_fail).resize(ConstantManager.DEFAULT_IMAGE_WIDTH,
                     ConstantManager.DEFAULT_IMAGE_HEIGHT).centerCrop().into(image);
         }
-
         image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Nothing
+                Intent intent = new Intent();
+                intent.putExtra(ConstantManager.INTENT_STRING_EXTRA_FILE_PATH, path.getImagePath());
+                intent.setClass(activity, PhotoActivity.class);
+                activity.startActivity(intent);
             }
         });
         Button button = holder.removeButton;
