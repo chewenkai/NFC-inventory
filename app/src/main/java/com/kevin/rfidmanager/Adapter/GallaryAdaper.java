@@ -32,10 +32,12 @@ import java.util.List;
 public class GallaryAdaper extends RecyclerView.Adapter<GallaryAdaper.ViewHolder> {
     public Activity activity;
     List<ImagesPath> paths;
+    private boolean hide;
 
-    public GallaryAdaper(Activity activity, List<ImagesPath> paths) {
+    public GallaryAdaper(Activity activity, List<ImagesPath> paths, boolean hide) {
         this.activity = activity;
         this.paths = paths;
+        this.hide = hide;
     }
 
     public Context getContext() {
@@ -87,6 +89,9 @@ public class GallaryAdaper extends RecyclerView.Adapter<GallaryAdaper.ViewHolder
         });
         Button button = holder.removeButton;
         button.setText("Delete");
+        if (hide){
+            button.setVisibility(View.GONE);
+        }
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

@@ -71,6 +71,8 @@ public class ItemsEditFrag extends android.support.v4.app.Fragment {
 
     private View view;
 
+    private boolean hideButtons = false;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -99,7 +101,7 @@ public class ItemsEditFrag extends android.support.v4.app.Fragment {
         key_des_list = (ListView) v.findViewById(R.id.listview_item_key_des);
         desListAdapter = new KeyDesListAdapter(getActivity(),
                 DatabaseUtil.queryItemsKeyDes(getActivity(),
-                        ((MyApplication) getActivity().getApplication()).getCurrentItemID()), false);
+                        ((MyApplication) getActivity().getApplication()).getCurrentItemID()), hideButtons);
         key_des_list.setAdapter(desListAdapter);
         desListAdapter.setCurrentActivity(getActivity());
 
@@ -181,7 +183,7 @@ public class ItemsEditFrag extends android.support.v4.app.Fragment {
         });
 
         recyclerView = (RecyclerView) v.findViewById(R.id.recycle_gallery);
-        gallaryAdaper = new GallaryAdaper(getActivity(), DatabaseUtil.queryImagesPaths(getActivity()));
+        gallaryAdaper = new GallaryAdaper(getActivity(), DatabaseUtil.queryImagesPaths(getActivity()), hideButtons);
         recyclerView.setAdapter(gallaryAdaper);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         layoutManager.scrollToPosition(0);// Optionally customize the position you want to default scroll to

@@ -65,6 +65,8 @@ public class ItemDetailFrag extends android.support.v4.app.Fragment {
 
     private View view;
 
+    private boolean hideEditButtons = true;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
@@ -81,7 +83,7 @@ public class ItemDetailFrag extends android.support.v4.app.Fragment {
         key_des_list = (ListView) v.findViewById(R.id.listview_item_key_des);
         desListAdapter = new KeyDesListAdapter(getActivity(),
                 DatabaseUtil.queryItemsKeyDes(getActivity(),
-                        ((MyApplication) getActivity().getApplication()).getCurrentItemID()),true);
+                        ((MyApplication) getActivity().getApplication()).getCurrentItemID()), hideEditButtons);
         key_des_list.setAdapter(desListAdapter);
         desListAdapter.setCurrentActivity(getActivity());
 
@@ -145,7 +147,7 @@ public class ItemDetailFrag extends android.support.v4.app.Fragment {
         saveButton.setVisibility(View.GONE);
 
         recyclerView = (RecyclerView) v.findViewById(R.id.recycle_gallery);
-        gallaryAdaper = new GallaryAdaper(getActivity(), DatabaseUtil.queryImagesPaths(getActivity()));
+        gallaryAdaper = new GallaryAdaper(getActivity(), DatabaseUtil.queryImagesPaths(getActivity()), hideEditButtons);
         recyclerView.setAdapter(gallaryAdaper);
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         layoutManager.scrollToPosition(0);// Optionally customize the position you want to default scroll to
