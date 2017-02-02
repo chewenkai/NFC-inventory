@@ -40,6 +40,7 @@ import com.kevin.rfidmanager.MyApplication;
 import com.kevin.rfidmanager.R;
 import com.kevin.rfidmanager.Utils.ConstantManager;
 import com.kevin.rfidmanager.Utils.DatabaseUtil;
+import com.kevin.rfidmanager.Utils.ScreenUtil;
 import com.kevin.rfidmanager.database.DaoSession;
 import com.kevin.rfidmanager.database.ImagesPath;
 import com.kevin.rfidmanager.database.Items;
@@ -53,10 +54,12 @@ import java.io.File;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import static com.kevin.rfidmanager.Utils.ConstantManager.DEFAULT_IMAGE_HEIGHT_DP;
+import static com.kevin.rfidmanager.Utils.ConstantManager.DEFAULT_IMAGE_WIDTH_DP;
 import static com.kevin.rfidmanager.Utils.ConstantManager.PERMISSION_REQUEST_CODE;
 
 public class ItemsEditFrag extends android.support.v4.app.Fragment {
-    private TextView itemName, addKeyDes;
+    private TextView itemName, addKeyDes, detailDescriptionTitle;
     private ListView key_des_list;
     private ImageView mainImage;
     private AppCompatButton addGalleryButton;
@@ -126,11 +129,11 @@ public class ItemsEditFrag extends android.support.v4.app.Fragment {
 
                                                                   if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
                                                                           == PackageManager.PERMISSION_GRANTED) {
-                                                                      Picasso.with(getActivity()).load(new File(item.getMainImagePath())).resize(ConstantManager.DEFAULT_IMAGE_WIDTH,
-                                                                              ConstantManager.DEFAULT_IMAGE_HEIGHT).centerCrop().into(mainImage);
+                                                                      Picasso.with(getActivity()).load(new File(item.getMainImagePath())).resize(ScreenUtil.dpToPx(getActivity(), DEFAULT_IMAGE_WIDTH_DP),
+                                                                              ScreenUtil.dpToPx(getActivity(), DEFAULT_IMAGE_HEIGHT_DP)).centerCrop().into(mainImage);
                                                                   } else {
-                                                                      Picasso.with(getActivity()).load(R.drawable.image_read_fail).resize(ConstantManager.DEFAULT_IMAGE_WIDTH,
-                                                                              ConstantManager.DEFAULT_IMAGE_HEIGHT).centerCrop().into(mainImage);
+                                                                      Picasso.with(getActivity()).load(R.drawable.image_read_fail).resize(ScreenUtil.dpToPx(getActivity(), DEFAULT_IMAGE_WIDTH_DP),
+                                                                              ScreenUtil.dpToPx(getActivity(), DEFAULT_IMAGE_HEIGHT_DP)).centerCrop().into(mainImage);
                                                                   }
                                                               }
                                                           }
@@ -160,11 +163,11 @@ public class ItemsEditFrag extends android.support.v4.app.Fragment {
         if (mainImagePath != null) {
             if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
                     == PackageManager.PERMISSION_GRANTED) {
-                Picasso.with(getActivity()).load(new File(mainImagePath)).resize(ConstantManager.DEFAULT_IMAGE_WIDTH,
-                        ConstantManager.DEFAULT_IMAGE_HEIGHT).centerCrop().into(mainImage);
+                Picasso.with(getActivity()).load(new File(mainImagePath)).resize(ScreenUtil.dpToPx(getActivity(), DEFAULT_IMAGE_WIDTH_DP),
+                        ScreenUtil.dpToPx(getActivity(), DEFAULT_IMAGE_HEIGHT_DP)).centerCrop().into(mainImage);
             } else {
-                Picasso.with(getActivity()).load(R.drawable.image_read_fail).resize(ConstantManager.DEFAULT_IMAGE_WIDTH,
-                        ConstantManager.DEFAULT_IMAGE_HEIGHT).centerCrop().into(mainImage);
+                Picasso.with(getActivity()).load(R.drawable.image_read_fail).resize(ScreenUtil.dpToPx(getActivity(), DEFAULT_IMAGE_WIDTH_DP),
+                        ScreenUtil.dpToPx(getActivity(), DEFAULT_IMAGE_HEIGHT_DP)).centerCrop().into(mainImage);
             }
         }
         mainImage.setOnClickListener(new View.OnClickListener() {
@@ -207,6 +210,8 @@ public class ItemsEditFrag extends android.support.v4.app.Fragment {
 
             }
         });
+
+        detailDescriptionTitle = (TextView) v.findViewById(R.id.detail_description_title);
 
         detailDescription = (EditText) v.findViewById(R.id.detail_description);
         detailDescription.setText(DatabaseUtil.getCurrentItem(getActivity()).getDetailDescription());

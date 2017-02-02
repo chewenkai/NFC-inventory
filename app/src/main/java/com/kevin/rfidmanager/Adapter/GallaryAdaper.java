@@ -15,17 +15,20 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.kevin.rfidmanager.Activity.GalleryActivity;
-import com.kevin.rfidmanager.Activity.PhotoActivity;
 import com.kevin.rfidmanager.MyApplication;
 import com.kevin.rfidmanager.R;
 import com.kevin.rfidmanager.Utils.ConstantManager;
 import com.kevin.rfidmanager.Utils.DatabaseUtil;
+import com.kevin.rfidmanager.Utils.ScreenUtil;
 import com.kevin.rfidmanager.database.DaoSession;
 import com.kevin.rfidmanager.database.ImagesPath;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.List;
+
+import static com.kevin.rfidmanager.Utils.ConstantManager.DEFAULT_IMAGE_HEIGHT_DP;
+import static com.kevin.rfidmanager.Utils.ConstantManager.DEFAULT_IMAGE_WIDTH_DP;
 
 /**
  * Created by Kevin on 2017/1/29.
@@ -69,11 +72,11 @@ public class GallaryAdaper extends RecyclerView.Adapter<GallaryAdaper.ViewHolder
 
         if (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE)
                 == PackageManager.PERMISSION_GRANTED) {
-            Picasso.with(activity).load(new File(path.getImagePath())).resize(ConstantManager.DEFAULT_IMAGE_WIDTH,
-                    ConstantManager.DEFAULT_IMAGE_HEIGHT).centerCrop().into(image);
+            Picasso.with(activity).load(new File(path.getImagePath())).resize(ScreenUtil.dpToPx(activity, DEFAULT_IMAGE_WIDTH_DP),
+                    ScreenUtil.dpToPx(activity, DEFAULT_IMAGE_HEIGHT_DP)).centerCrop().into(image);
         } else {
-            Picasso.with(activity).load(R.drawable.image_read_fail).resize(ConstantManager.DEFAULT_IMAGE_WIDTH,
-                    ConstantManager.DEFAULT_IMAGE_HEIGHT).centerCrop().into(image);
+            Picasso.with(activity).load(R.drawable.image_read_fail).resize(ScreenUtil.dpToPx(activity, DEFAULT_IMAGE_WIDTH_DP),
+                    ScreenUtil.dpToPx(activity, DEFAULT_IMAGE_HEIGHT_DP)).centerCrop().into(image);
         }
         image.setOnClickListener(new View.OnClickListener() {
             @Override

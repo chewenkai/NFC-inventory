@@ -1,5 +1,8 @@
 package com.kevin.rfidmanager.Utils;
 
+import android.util.DisplayMetrics;
+
+
 /**
  * Define all constants we need in this project.
  * Created by Kevin on 2017/1/26
@@ -20,7 +23,9 @@ public class ConstantManager {
 
     // General
     public static int DEFAULT_IMAGE_WIDTH = 300;
-    public static int DEFAULT_IMAGE_HEIGHT = 400;
+    public static int DEFAULT_IMAGE_HEIGHT = 300;
+    public static int DEFAULT_IMAGE_WIDTH_DP = 120;
+    public static int DEFAULT_IMAGE_HEIGHT_DP = 120;
 
     // Extra name in PhotoActivity
     public static String INTENT_STRING_EXTRA_FILE_PATH = "image_view_file_path_extra";

@@ -30,6 +30,7 @@ import com.kevin.rfidmanager.Utils.ConstantManager;
 import com.kevin.rfidmanager.Utils.DatabaseUtil;
 import com.kevin.rfidmanager.Utils.ExitApplication;
 import com.kevin.rfidmanager.Utils.IntentUtil;
+import com.kevin.rfidmanager.Utils.ScreenUtil;
 import com.kevin.rfidmanager.database.DaoSession;
 import com.kevin.rfidmanager.database.ImagesPath;
 import com.kevin.rfidmanager.database.ImagesPathDao;
@@ -39,6 +40,9 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.List;
+
+import static com.kevin.rfidmanager.Utils.ConstantManager.DEFAULT_IMAGE_HEIGHT_DP;
+import static com.kevin.rfidmanager.Utils.ConstantManager.DEFAULT_IMAGE_WIDTH_DP;
 
 /**
  * Created by Kevin on 2017/1/29.
@@ -78,16 +82,16 @@ public class ItemListAdaper extends RecyclerView.Adapter<ItemListAdaper.ViewHold
         // Set item views based on your views and data model
         ImageView image = holder.image;
         if (item.getMainImagePath() == null){
-            Picasso.with(activity).load(R.drawable.image_read_fail).resize(ConstantManager.DEFAULT_IMAGE_WIDTH,
-                    ConstantManager.DEFAULT_IMAGE_HEIGHT).centerCrop().into(image);
+            Picasso.with(activity).load(R.drawable.image_read_fail).resize(ScreenUtil.dpToPx(activity, DEFAULT_IMAGE_WIDTH_DP),
+                    ScreenUtil.dpToPx(activity, DEFAULT_IMAGE_HEIGHT_DP)).centerCrop().into(image);
         }else{
             if (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE)
                     == PackageManager.PERMISSION_GRANTED) {
-                Picasso.with(activity).load(new File(item.getMainImagePath())).resize(ConstantManager.DEFAULT_IMAGE_WIDTH,
-                        ConstantManager.DEFAULT_IMAGE_HEIGHT).centerCrop().into(image);
+                Picasso.with(activity).load(new File(item.getMainImagePath())).resize(ScreenUtil.dpToPx(activity, DEFAULT_IMAGE_WIDTH_DP),
+                        ScreenUtil.dpToPx(activity, DEFAULT_IMAGE_HEIGHT_DP)).centerCrop().into(image);
             } else {
-                Picasso.with(activity).load(R.drawable.image_read_fail).resize(ConstantManager.DEFAULT_IMAGE_WIDTH,
-                        ConstantManager.DEFAULT_IMAGE_HEIGHT).centerCrop().into(image);
+                Picasso.with(activity).load(R.drawable.image_read_fail).resize(ScreenUtil.dpToPx(activity, DEFAULT_IMAGE_WIDTH_DP),
+                        ScreenUtil.dpToPx(activity, DEFAULT_IMAGE_HEIGHT_DP)).centerCrop().into(image);
             }
         }
 

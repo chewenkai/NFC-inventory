@@ -42,6 +42,7 @@ import com.kevin.rfidmanager.Utils.BitMapUtil;
 import com.kevin.rfidmanager.Utils.ConstantManager;
 import com.kevin.rfidmanager.Utils.DatabaseUtil;
 import com.kevin.rfidmanager.Utils.IntentUtil;
+import com.kevin.rfidmanager.Utils.ScreenUtil;
 import com.kevin.rfidmanager.database.DaoSession;
 import com.kevin.rfidmanager.database.ImagesPath;
 import com.kevin.rfidmanager.database.Items;
@@ -53,10 +54,12 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 
+import static com.kevin.rfidmanager.Utils.ConstantManager.DEFAULT_IMAGE_HEIGHT_DP;
+import static com.kevin.rfidmanager.Utils.ConstantManager.DEFAULT_IMAGE_WIDTH_DP;
 import static com.kevin.rfidmanager.Utils.ConstantManager.PERMISSION_REQUEST_CODE;
 
 public class ItemDetailFrag extends android.support.v4.app.Fragment {
-    private TextView itemName, addKeyDes;
+    private TextView itemName, addKeyDes, detailDescriptionTitle;
     private ListView key_des_list;
     private ImageView mainImage;
     private AppCompatButton addGalleryButton;
@@ -104,15 +107,15 @@ public class ItemDetailFrag extends android.support.v4.app.Fragment {
         if (mainImagePath != null){
             if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
                     == PackageManager.PERMISSION_GRANTED) {
-                Picasso.with(getActivity()).load(new File(mainImagePath)).resize(ConstantManager.DEFAULT_IMAGE_WIDTH,
-                        ConstantManager.DEFAULT_IMAGE_HEIGHT).centerCrop().into(mainImage);
+                Picasso.with(getActivity()).load(new File(mainImagePath)).resize(ScreenUtil.dpToPx(getActivity(), DEFAULT_IMAGE_WIDTH_DP),
+                        ScreenUtil.dpToPx(getActivity(), DEFAULT_IMAGE_HEIGHT_DP)).centerCrop().into(mainImage);
             } else {
-                Picasso.with(getActivity()).load(R.drawable.image_read_fail).resize(ConstantManager.DEFAULT_IMAGE_WIDTH,
-                        ConstantManager.DEFAULT_IMAGE_HEIGHT).centerCrop().into(mainImage);
+                Picasso.with(getActivity()).load(R.drawable.image_read_fail).resize(ScreenUtil.dpToPx(getActivity(), DEFAULT_IMAGE_WIDTH_DP),
+                        ScreenUtil.dpToPx(getActivity(), DEFAULT_IMAGE_HEIGHT_DP)).centerCrop().into(mainImage);
             }
         }else {
-            Picasso.with(getActivity()).load(R.drawable.image_read_fail).resize(ConstantManager.DEFAULT_IMAGE_WIDTH,
-                    ConstantManager.DEFAULT_IMAGE_HEIGHT).centerCrop().into(mainImage);
+            Picasso.with(getActivity()).load(R.drawable.image_read_fail).resize(ScreenUtil.dpToPx(getActivity(), DEFAULT_IMAGE_WIDTH_DP),
+                    ScreenUtil.dpToPx(getActivity(), DEFAULT_IMAGE_HEIGHT_DP)).centerCrop().into(mainImage);
         }
         mainImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,6 +130,9 @@ public class ItemDetailFrag extends android.support.v4.app.Fragment {
 
         addKeyDes = (TextView) v.findViewById(R.id.button_add_item_key_des);
         addKeyDes.setVisibility(View.GONE);
+
+        detailDescriptionTitle = (TextView) v.findViewById(R.id.detail_description_title);
+        detailDescriptionTitle.setVisibility(View.GONE);
 
         addGalleryButton = (AppCompatButton) v.findViewById(R.id.add_gallery_image);
         addGalleryButton.setVisibility(View.GONE);
