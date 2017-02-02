@@ -11,11 +11,13 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.LinearLayoutManager;
@@ -122,9 +124,16 @@ public class ItemDetailFrag extends android.support.v4.app.Fragment {
             public void onClick(View v) {
                // Open picture
                 Intent intent = new Intent();
-                intent.putExtra(ConstantManager.INTENT_STRING_EXTRA_FILE_PATH, mainImagePath);
-                intent.setClass(getActivity(), PhotoActivity.class);
-                getActivity().startActivity(intent);
+                intent.setAction(Intent.ACTION_VIEW);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                intent.setDataAndType(FileProvider.getUriForFile(getActivity(),
+                        getActivity().getApplicationContext().getPackageName() + ".provider", new File(mainImagePath)), "image/*");
+                startActivity(intent);
+//                Intent intent = new Intent();
+//                intent.putExtra(ConstantManager.INTENT_STRING_EXTRA_FILE_PATH, mainImagePath);
+//                intent.setClass(getActivity(), PhotoActivity.class);
+//                getActivity().startActivity(intent);
             }
         });
 
