@@ -1,9 +1,13 @@
 package com.kevin.rfidmanager.Activity;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +26,7 @@ import com.kevin.rfidmanager.Utils.SPUtil;
 import com.kevin.rfidmanager.Utils.StringUtil;
 
 import static com.kevin.rfidmanager.Utils.ConstantManager.IS_DEBUGING;
+import static com.kevin.rfidmanager.Utils.ConstantManager.PERMISSION_REQUEST_CODE;
 
 
 /**
@@ -41,6 +46,7 @@ public class LoginActivity extends AppCompatActivity {
         ExitApplication.getInstance().addActivity(this);
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();   // Hide ActionBar
+        checkPermission();
         findView();
         initView();
 
@@ -172,6 +178,13 @@ public class LoginActivity extends AppCompatActivity {
         if (!SPUtil.getInstence(getApplicationContext()).getNeedPassword()) {
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
             finish();
+        }
+    }
+
+    private void checkPermission(){
+        int permissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
         }
     }
 

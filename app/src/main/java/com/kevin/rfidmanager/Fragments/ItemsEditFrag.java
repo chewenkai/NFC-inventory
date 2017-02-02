@@ -29,6 +29,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.kbeanie.multipicker.api.ImagePicker;
+import com.kbeanie.multipicker.api.Picker;
+import com.kbeanie.multipicker.api.callbacks.ImagePickerCallback;
+import com.kbeanie.multipicker.api.entity.ChosenImage;
 import com.kevin.rfidmanager.Activity.MainActivity;
 import com.kevin.rfidmanager.Adapter.GallaryAdaper;
 import com.kevin.rfidmanager.Adapter.KeyDesListAdapter;
@@ -46,6 +50,7 @@ import com.nbsp.materialfilepicker.ui.FilePickerActivity;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
+import java.util.List;
 import java.util.regex.Pattern;
 
 import static com.kevin.rfidmanager.Utils.ConstantManager.PERMISSION_REQUEST_CODE;
@@ -62,7 +67,7 @@ public class ItemsEditFrag extends android.support.v4.app.Fragment {
     private KeyDesListAdapter desListAdapter;
 
     private Button saveButton;
-
+    private ImagePicker imageGalleryPicker = null;
     private View view;
 
     private boolean hideButtons = false;
@@ -95,6 +100,51 @@ public class ItemsEditFrag extends android.support.v4.app.Fragment {
         if (((MyApplication) getActivity().getApplication()).getCurrentItemID() ==
                 ConstantManager.DEFAULT_RFID)
             return;
+
+        imageGalleryPicker = new ImagePicker(this);
+        imageGalleryPicker.setImagePickerCallback(new ImagePickerCallback() {
+                                                      @Override
+                                                      public void onImagesChosen(List<ChosenImage> images) {
+                                                          // Display images
+                                                          for (ChosenImage image :
+                                                                  images) {
+                                                              if (image.getRequestId() == ConstantManager.REQUEST_GALLERY_IMAGE_FILE) {
+                                                                  ImagesPath imagePath = new ImagesPath(null,
+                                                                          ((MyApplication) getActivity().getApplication()).getCurrentItemID(),
+                                                                          image.getOriginalPath());
+                                                                  // Add file path to database
+                                                                  DaoSession daoSession = ((MyApplication) getActivity().getApplication()).getDaoSession();
+                                                                  daoSession.insert(imagePath);
+                                                                  gallaryAdaper.updateUI();
+                                                              }
+                                                              else if (image.getRequestId() == ConstantManager.REQUEST_MAIN_IMAGE_FILE){
+                                                                  // Add file path to database
+                                                                  DaoSession daoSession = ((MyApplication) getActivity().getApplication()).getDaoSession();
+                                                                  Items item = DatabaseUtil.getCurrentItem(getActivity());
+                                                                  item.setMainImagePath(image.getOriginalPath());
+                                                                  daoSession.insertOrReplace(item);
+
+                                                                  if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
+                                                                          == PackageManager.PERMISSION_GRANTED) {
+                                                                      Picasso.with(getActivity()).load(new File(item.getMainImagePath())).resize(ConstantManager.DEFAULT_IMAGE_WIDTH,
+                                                                              ConstantManager.DEFAULT_IMAGE_HEIGHT).centerCrop().into(mainImage);
+                                                                  } else {
+                                                                      Picasso.with(getActivity()).load(R.drawable.image_read_fail).resize(ConstantManager.DEFAULT_IMAGE_WIDTH,
+                                                                              ConstantManager.DEFAULT_IMAGE_HEIGHT).centerCrop().into(mainImage);
+                                                                  }
+                                                              }
+                                                          }
+                                                      }
+
+                                                      @Override
+                                                      public void onError(String message) {
+                                                          // Do error handling
+                                                      }
+                                                  }
+        );
+        imageGalleryPicker.shouldGenerateMetadata(false); // Default is true
+        imageGalleryPicker.shouldGenerateThumbnails(false); // Default is true
+
         itemName = (TextView) v.findViewById(R.id.item_name);
         itemName.setText(DatabaseUtil.getCurrentItem(getActivity()).getItemName());
 
@@ -107,7 +157,7 @@ public class ItemsEditFrag extends android.support.v4.app.Fragment {
 
         mainImage = (ImageView) v.findViewById(R.id.iamgeview_main_image);
         String mainImagePath = DatabaseUtil.getCurrentItem(getActivity()).getMainImagePath();
-        if (mainImagePath != null){
+        if (mainImagePath != null) {
             if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
                     == PackageManager.PERMISSION_GRANTED) {
                 Picasso.with(getActivity()).load(new File(mainImagePath)).resize(ConstantManager.DEFAULT_IMAGE_WIDTH,
@@ -124,13 +174,7 @@ public class ItemsEditFrag extends android.support.v4.app.Fragment {
                 if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
                 } else {
-                    new MaterialFilePicker()
-                            .withSupportFragment(ItemsEditFrag.this)
-                            .withRequestCode(ConstantManager.REQUEST_MAIN_IMAGE_FILE)
-                            .withFilter(Pattern.compile(getActivity().getResources().getString(R.string.image_regexp))) // Filtering files and directories by file name using regexp
-                            .withFilterDirectories(false) // Set directories filterable (false by default)
-                            .withHiddenFiles(true) // Show hidden files and folders
-                            .start();
+                    pickMainImage();
                 }
             }
         });
@@ -151,13 +195,14 @@ public class ItemsEditFrag extends android.support.v4.app.Fragment {
                 if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
                     ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_REQUEST_CODE);
                 } else {
-                    new MaterialFilePicker()
-                            .withSupportFragment(ItemsEditFrag.this)
-                            .withRequestCode(ConstantManager.REQUEST_GALLERY_IMAGE_FILE)
-                            .withFilter(Pattern.compile(getActivity().getResources().getString(R.string.image_regexp))) // Filtering files and directories by file name using regexp
-                            .withFilterDirectories(false) // Set directories filterable (false by default)
-                            .withHiddenFiles(true) // Show hidden files and folders
-                            .start();
+                    pickImage();
+//                    new MaterialFilePicker()
+//                            .withSupportFragment(ItemsEditFrag.this)
+//                            .withRequestCode(ConstantManager.REQUEST_GALLERY_IMAGE_FILE)
+//                            .withFilter(Pattern.compile(getActivity().getResources().getString(R.string.image_regexp))) // Filtering files and directories by file name using regexp
+//                            .withFilterDirectories(false) // Set directories filterable (false by default)
+//                            .withHiddenFiles(true) // Show hidden files and folders
+//                            .start();
                 }
 
             }
@@ -173,7 +218,7 @@ public class ItemsEditFrag extends android.support.v4.app.Fragment {
                 packUpImm();
                 DatabaseUtil.updateDetailDescription(getActivity(), detailDescription.getText().toString());
                 Toast.makeText(getActivity(), R.string.saved_item, Toast.LENGTH_LONG).show();
-                ((MainActivity)getActivity()).viewPager.setCurrentItem(ConstantManager.HOME, false);
+                ((MainActivity) getActivity()).viewPager.setCurrentItem(ConstantManager.HOME, false);
             }
         });
 
@@ -188,9 +233,10 @@ public class ItemsEditFrag extends android.support.v4.app.Fragment {
         recyclerView.setLayoutManager(gridLayoutManager);// Attach the layout manager to the recycler view
         recyclerView.setHasFixedSize(true);
 
+
     }
 
-//    @Override
+    //    @Override
 //    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 //        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
 //        if (requestCode == PERMISSION_REQUEST_CODE) {
@@ -209,35 +255,9 @@ public class ItemsEditFrag extends android.support.v4.app.Fragment {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == ConstantManager.REQUEST_MAIN_IMAGE_FILE
-                && resultCode == Activity.RESULT_OK) {
-            String filePath = data.getStringExtra(FilePickerActivity.RESULT_FILE_PATH);
-            // Add file path to database
-            DaoSession daoSession = ((MyApplication) getActivity().getApplication()).getDaoSession();
-            Items item = DatabaseUtil.getCurrentItem(getActivity());
-            item.setMainImagePath(filePath);
-            daoSession.insertOrReplace(item);
-
-            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
-                    == PackageManager.PERMISSION_GRANTED) {
-                Picasso.with(getActivity()).load(new File(item.getMainImagePath())).resize(ConstantManager.DEFAULT_IMAGE_WIDTH,
-                        ConstantManager.DEFAULT_IMAGE_HEIGHT).centerCrop().into(mainImage);
-            } else {
-                Picasso.with(getActivity()).load(R.drawable.image_read_fail).resize(ConstantManager.DEFAULT_IMAGE_WIDTH,
-                        ConstantManager.DEFAULT_IMAGE_HEIGHT).centerCrop().into(mainImage);
-            }
-        } else if (requestCode == ConstantManager.REQUEST_GALLERY_IMAGE_FILE &&
+        if (requestCode == Picker.PICK_IMAGE_DEVICE &&
                 resultCode == Activity.RESULT_OK) {
-            // Get the Uri of the selected file
-            String filePath = data.getStringExtra(FilePickerActivity.RESULT_FILE_PATH);
-
-            ImagesPath imagePath = new ImagesPath(null,
-                    ((MyApplication) getActivity().getApplication()).getCurrentItemID(),
-                    filePath);
-            // Add file path to database
-            DaoSession daoSession = ((MyApplication) getActivity().getApplication()).getDaoSession();
-            daoSession.insert(imagePath);
-            gallaryAdaper.updateUI();
+            imageGalleryPicker.submit(data);
         }
     }
 
@@ -287,6 +307,18 @@ public class ItemsEditFrag extends android.support.v4.app.Fragment {
         keyDescriptionDao.insert(keyDescription);
     }
 
+    private void pickImage() {
+        imageGalleryPicker.allowMultiple(); // Default is false
+        imageGalleryPicker.setRequestId(ConstantManager.REQUEST_GALLERY_IMAGE_FILE);
+        imageGalleryPicker.pickImage();
+    }
+
+    private void pickMainImage() {
+        imageGalleryPicker.allowMultiple();
+        imageGalleryPicker.setRequestId(ConstantManager.REQUEST_MAIN_IMAGE_FILE);
+        imageGalleryPicker.pickImage();
+    }
+
     /*
     Hide input method
      */
@@ -297,8 +329,8 @@ public class ItemsEditFrag extends android.support.v4.app.Fragment {
         }
     }
 
-    public void refreshUI(){
-        if (view!=null)
+    public void refreshUI() {
+        if (view != null)
             initUI(view);
     }
 }
