@@ -41,5 +41,7 @@
     <string name="saved_item">saved</string>
     <string name="delete">X</string>
     <string name="image_regexp">.*\\.jpg|jpeg|gif|png$</string>
+    <string name="backup_success">Backup Successful!</string>
+    <string name="import_success">Import Successful!</string>
 
 </resources>

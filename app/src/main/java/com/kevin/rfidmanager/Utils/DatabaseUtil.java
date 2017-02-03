@@ -144,8 +144,7 @@ public class DatabaseUtil {
                 dst.transferFrom(src, 0, src.size());
                 src.close();
                 dst.close();
-
-//                MyApplication.toastSomething(context, "Import Successful!");
+                ((MyApplication) context.getApplicationContext()).toast(context.getString(R.string.import_success));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -168,7 +167,7 @@ public class DatabaseUtil {
                 src.close();
                 dst.close();
 
-//                MyApplication.toastSomething(context, "Backup Successful!");
+                ((MyApplication) context.getApplicationContext()).toast(context.getString(R.string.backup_success));
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -1,7 +1,9 @@
 package com.kevin.rfidmanager;
 
 import android.app.Application;
+import android.content.Context;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.kevin.rfidmanager.Utils.ConstantManager;
 import com.kevin.rfidmanager.database.DaoMaster;
@@ -43,5 +45,9 @@ public class MyApplication extends Application {
         }
         else
             return daoSession;
+    }
+
+    public void toast( String s) {
+        Toast.makeText(this, s, Toast.LENGTH_LONG).show();
     }
 }
