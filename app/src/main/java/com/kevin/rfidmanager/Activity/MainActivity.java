@@ -112,54 +112,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        addButton = (FloatingActionButton) findViewById(R.id.floatingAddButton);
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addNewItem();
-            }
-        });
 
-    }
 
-    /*
-       This is a dialog used for add new key description
-        */
-    public void addNewItem() {
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
-        LayoutInflater inflater = this.getLayoutInflater();
-        final View dialogView = inflater.inflate(R.layout.dialog_layout_two_edit_text, null);
-        dialogBuilder.setView(dialogView);
-
-        final TextInputEditText newKeyDes = (TextInputEditText) dialogView.findViewById(R.id.edit_key_des_text_editor);
-        final TextInputEditText itemName = (TextInputEditText) dialogView.findViewById(R.id.item_name_edit);
-        final Button saveButton = (Button) dialogView.findViewById(R.id.dialog_change);
-        final Button cancleButton = (Button) dialogView.findViewById(R.id.dialog_cancle);
-
-        dialogBuilder.setTitle("Just input a number as a ID of RFID card and a name of item");
-        final AlertDialog b = dialogBuilder.create();
-        b.show();
-
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO New item retain old detail description bug
-                ((MyApplication) getApplication()).setCurrentItemID(Long.parseLong(newKeyDes.getText().toString()));
-                DatabaseUtil.insertNewItem(MainActivity.this,
-                        Long.parseLong(newKeyDes.getText().toString()),
-                        itemName.getText().toString());
-                viewPager.setCurrentItem(ConstantManager.EDIT, false);
-                b.dismiss();
-
-            }
-        });
-
-        cancleButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                b.dismiss();
-            }
-        });
     }
 
     private void exit() {
