@@ -101,6 +101,7 @@ public class MainActivity extends AppCompatActivity {
                         SPUtil.getInstence(getApplicationContext()).saveNeedPassword(true);
                         startActivity(new Intent(MainActivity.this, LoginActivity.class));
                         finish();
+                        break;
                     default:
                         Log.e(getClass().getName(), "Wrong tab number");
                         break;

@@ -38,7 +38,7 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
             case 3:  // Setting
                 return tab4;
             default:
-                return tab4;
+                return new SettingFrag();
         }
     }
 
