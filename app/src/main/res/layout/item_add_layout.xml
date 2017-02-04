@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
     android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="@color/white"
-        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true">
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
+        android:background="@color/white"
+        android:orientation="vertical">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -21,92 +21,82 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
+                android:paddingEnd="5dp"
                 android:paddingLeft="5dp"
-                android:paddingStart="5dp"
                 android:paddingRight="5dp"
-                android:paddingEnd="5dp">
+                android:paddingStart="5dp">
 
                 <LinearLayout
-                    android:layout_width="wrap_content"
+                    android:id="@+id/layout_linear_item_name_des"
+                    android:layout_width="200dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
                     android:orientation="vertical">
 
                     <EditText
                         android:id="@+id/item_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="start"
-                        android:paddingLeft="2dp"
-                        android:paddingStart="2dp"
-                        android:paddingRight="2dp"
-                        android:paddingEnd="2dp"
                         android:layout_margin="10dp"
-                        android:nextFocusUp="@id/item_name"
+                        android:gravity="start"
                         android:nextFocusLeft="@id/item_name"
+                        android:nextFocusUp="@id/item_name"
+                        android:paddingEnd="2dp"
+                        android:paddingLeft="2dp"
+                        android:paddingRight="2dp"
+                        android:paddingStart="2dp"
                         android:text="@string/items_name"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
                         android:textStyle="italic|bold" />
 
                     <TextView
                         android:id="@+id/textview_item_name"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_margin="10dp"
                         android:gravity="start"
                         android:paddingLeft="2dp"
                         android:paddingRight="2dp"
-                        android:layout_margin="10dp"
                         android:text="@string/items_name"
-                        android:textAppearance="?android:attr/textAppearanceLarge"
                         android:textStyle="italic|bold"
                         android:visibility="gone" />
 
                     <ListView
                         android:id="@+id/listview_item_key_des"
                         android:layout_width="wrap_content"
-                        android:background="@color/white"
                         android:layout_height="0dp"
                         android:layout_weight="1"
+                        android:background="@color/white"
                         android:divider="@null"
                         android:dividerHeight="0dp" />
 
                     <Button
                         android:id="@+id/button_add_item_key_des"
-                        android:layout_width="wrap_content"
+                        style="@style/Base.Widget.AppCompat.Button.Colored"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        style="@style/Base.Widget.AppCompat.Button.Colored"
                         android:gravity="center"
                         android:padding="10dp"
-                        android:textSize="13sp"
                         android:text="@string/add_key_description"
-                        android:textColor="@color/white" />
+                        android:textColor="@color/white"
+                        android:textSize="13sp" />
                 </LinearLayout>
 
-                <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                <ImageView
+                    android:id="@+id/iamgeview_main_image"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:layout_margin="10dp"
-                    android:layout_weight="1"
-                    android:clickable="true"
-                    android:padding="0dp">
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentEnd="true"
+                    android:layout_toRightOf="@+id/layout_linear_item_name_des"
+                    android:layout_toEndOf="@+id/layout_linear_item_name_des"
+                    android:layout_gravity="center_vertical"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/add_image" />
 
-                    <ImageView
-                        android:id="@+id/iamgeview_main_image"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_vertical"
-                        android:scaleType="centerInside"
-                        android:src="@drawable/add_image" />
-
-                </FrameLayout>
-
-            </LinearLayout>
+            </RelativeLayout>
         </RelativeLayout>
 
         <ScrollView
@@ -158,8 +148,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="10dp"
-                    android:layout_marginStart="10dp"
                     android:layout_marginEnd="10dp"
+                    android:layout_marginStart="10dp"
                     android:background="@color/paper_color"
                     android:gravity="top|start"
                     android:hint="@string/description"
@@ -171,12 +161,12 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:layout_gravity="end"
-                    android:layout_marginRight="20dp"
-                    android:layout_marginLeft="20dp"
                     android:layout_marginBottom="10dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
                     android:src="@drawable/save"
                     app:cb_color="@color/colorAccent"
-                    app:cb_pressedRingWidth="8dip"/>
+                    app:cb_pressedRingWidth="8dip" />
 
             </LinearLayout>
 
