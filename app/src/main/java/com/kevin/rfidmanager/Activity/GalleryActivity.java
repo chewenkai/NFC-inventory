@@ -10,7 +10,6 @@ import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.kevin.rfidmanager.R;
 import com.kevin.rfidmanager.Utils.ConstantManager;
 import com.kevin.rfidmanager.Utils.DatabaseUtil;
-import com.kevin.rfidmanager.Utils.ExitApplication;
 import com.kevin.rfidmanager.database.ImagesPath;
 
 import java.io.File;
@@ -24,7 +23,6 @@ public class GalleryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
-        ExitApplication.getInstance().addActivity(this);
         imageView = (SliderLayout) findViewById(R.id.show_photo_view);
         default_position = getIntent().getIntExtra(ConstantManager.GALLERY_CLICK_POSITION, 0);
         List<ImagesPath> imagesPaths = DatabaseUtil.queryImagesPaths(this);

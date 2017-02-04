@@ -5,11 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="0dp"
+    android:background="@color/white"
     tools:context="com.kevin.rfidmanager.Activity.PhotoActivity">
 
     <com.daimajia.slider.library.SliderLayout
         android:id="@+id/show_photo_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:background="@color/white"/>
 
 </RelativeLayout>

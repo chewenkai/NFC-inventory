@@ -21,7 +21,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kevin.rfidmanager.R;
-import com.kevin.rfidmanager.Utils.ExitApplication;
 import com.kevin.rfidmanager.Utils.SPUtil;
 import com.kevin.rfidmanager.Utils.StringUtil;
 
@@ -44,7 +43,6 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         checkIsNeedPassword();  // If do not need password, go to main page directly.
         setContentView(R.layout.activity_login);
-        ExitApplication.getInstance().addActivity(this);
         ActionBar actionBar = getSupportActionBar();
         actionBar.hide();   // Hide ActionBar
         checkPermission();
@@ -192,7 +190,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //Exit system
-                ExitApplication.getInstance().exit();
+               finish();
             }
         });
     }

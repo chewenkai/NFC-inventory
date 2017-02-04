@@ -1,36 +1,19 @@
 package com.kevin.rfidmanager.Activity;
 
-import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
-import android.support.design.widget.TextInputEditText;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.kevin.rfidmanager.Adapter.PagerAdapter;
-import com.kevin.rfidmanager.Fragments.ItemDetailFrag;
-import com.kevin.rfidmanager.Fragments.ItemsEditFrag;
-import com.kevin.rfidmanager.Fragments.ItemsListFrag;
-import com.kevin.rfidmanager.Fragments.SettingFrag;
 import com.kevin.rfidmanager.MyApplication;
 import com.kevin.rfidmanager.R;
 import com.kevin.rfidmanager.Utils.ConstantManager;
-import com.kevin.rfidmanager.Utils.DatabaseUtil;
-import com.kevin.rfidmanager.Utils.ExitApplication;
 import com.kevin.rfidmanager.Utils.NonSwipeableViewPager;
 import com.kevin.rfidmanager.Utils.SPUtil;
 
@@ -38,7 +21,6 @@ import com.kevin.rfidmanager.Utils.SPUtil;
 The main page of RFID system.
  */
 public class MainActivity extends AppCompatActivity {
-    FloatingActionButton addButton;
     public NonSwipeableViewPager viewPager;
     public PagerAdapter adapter;
     public TabLayout tabLayout;
@@ -47,7 +29,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ExitApplication.getInstance().addActivity(this);
         tabLayout = (TabLayout) findViewById(R.id.tab_layout);
 
         tabLayout.addTab(tabLayout.newTab().setText("Home"));
@@ -100,6 +81,11 @@ public class MainActivity extends AppCompatActivity {
                     case 4:
                         SPUtil.getInstence(getApplicationContext()).saveNeedPassword(true);
                         startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                        adapter.tab1=null;
+                        adapter.tab2=null;
+                        adapter.tab3=null;
+                        adapter.tab4=null;
+                        adapter = null;
                         finish();
                         break;
                     default:
@@ -130,7 +116,7 @@ public class MainActivity extends AppCompatActivity {
         builder.setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                ExitApplication.getInstance().exit();
+                finish();
             }
         });
         builder.setNegativeButton(R.string.Cancel, new DialogInterface.OnClickListener() {
@@ -151,4 +137,5 @@ public class MainActivity extends AppCompatActivity {
         return super.onKeyUp(keyCode, event);
 
     }
+
 }
