@@ -2,6 +2,7 @@ package com.kevin.rfidmanager.Activity;
 
 import android.Manifest;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -31,6 +32,7 @@ import com.kevin.rfidmanager.Utils.ConstantManager;
 import com.kevin.rfidmanager.Utils.DatabaseUtil;
 import com.kevin.rfidmanager.Utils.ExitApplication;
 import com.kevin.rfidmanager.Utils.NonSwipeableViewPager;
+import com.kevin.rfidmanager.Utils.SPUtil;
 
 /*
 The main page of RFID system.
@@ -52,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.addTab(tabLayout.newTab().setText("Detail"));
         tabLayout.addTab(tabLayout.newTab().setText("Edit"));
         tabLayout.addTab(tabLayout.newTab().setText("Setting"));
+        tabLayout.addTab(tabLayout.newTab().setText("Sign Out"));
         tabLayout.setTabGravity(TabLayout.GRAVITY_CENTER);
 
         viewPager = (NonSwipeableViewPager) findViewById(R.id.pager);
@@ -94,6 +97,10 @@ public class MainActivity extends AppCompatActivity {
                     case 3:
                         viewPager.setCurrentItem(ConstantManager.SETTING, false);
                         break;
+                    case 4:
+                        SPUtil.getInstence(getApplicationContext()).saveNeedPassword(true);
+                        startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                        finish();
                     default:
                         Log.e(getClass().getName(), "Wrong tab number");
                         break;

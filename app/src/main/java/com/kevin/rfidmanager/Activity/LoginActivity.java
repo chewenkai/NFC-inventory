@@ -34,9 +34,10 @@ import static com.kevin.rfidmanager.Utils.ConstantManager.PERMISSION_REQUEST_COD
  * Created by Kevin on 2017/1/26
  */
 public class LoginActivity extends AppCompatActivity {
+    private EditText mPersonEdit;   // user name editor
     private EditText mPwdEdit;  // Password text editor
-    private Button mLoginBtn;   // Login button
-    private String mPwdStr;
+    private Button mLoginBtn, mRegisterButton;   // Login button
+    private String mUserNameStr, mPwdStr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,8 +57,10 @@ public class LoginActivity extends AppCompatActivity {
      * find view in layout file.(xml file)
      */
     private void findView() {
+        mPersonEdit = (EditText) findViewById(R.id.login_activity_personname_edittext);
         mPwdEdit = (EditText) findViewById(R.id.login_activity_password_edittext);
         mLoginBtn = (Button) findViewById(R.id.login_activity_login_btn);
+        mRegisterButton = (Button) findViewById(R.id.login_activity_regist_btn);
     }
 
     /*
@@ -72,14 +75,22 @@ public class LoginActivity extends AppCompatActivity {
                 if (IS_DEBUGING) {
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
                 }
+                mUserNameStr = mPersonEdit.getText().toString();
+                if (StringUtil.isEmpty(mUserNameStr)) {
+                    Snackbar.make(v, R.string.empty_username_warning, Snackbar.LENGTH_LONG).show();
+                    return;
+                }
                 mPwdStr = mPwdEdit.getText().toString();
-                if (StringUtil.isEmpty(mPwdStr))
-                    Snackbar.make(v, R.string.empty_warning, Snackbar.LENGTH_LONG).show();
+                if (StringUtil.isEmpty(mPwdStr)) {
+                    Snackbar.make(v, R.string.empty_password_warning, Snackbar.LENGTH_LONG).show();
+                    return;
+                }
 
                 // compare two string
                 SPUtil us = SPUtil.getInstence(getApplicationContext());
                 String rightPassword = us.getPassWord();
-                if (mPwdStr.equals(rightPassword)){
+                String rightUsername = us.getPersonName();
+                if (mPwdStr.equals(rightPassword) && mUserNameStr.equals(rightUsername)){
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
                 }else{
                     Snackbar.make(v, R.string.login_fail, Snackbar.LENGTH_LONG).show();
@@ -87,6 +98,14 @@ public class LoginActivity extends AppCompatActivity {
                 packUpImm();
             }
         });
+
+        mRegisterButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPasswordInputDialog();
+            }
+        });
+
         passwordReminder();
     }
 
@@ -112,6 +131,7 @@ public class LoginActivity extends AppCompatActivity {
         final View dialogView = inflater.inflate(R.layout.password_input_dialog_layout, null);
         dialogBuilder.setView(dialogView);
 
+        final EditText usernameEdt = (EditText) dialogView.findViewById(R.id.username_editor);
         final EditText firstPasswordEdt = (EditText) dialogView.findViewById(R.id.password_editor);
         final EditText confirmPasswordEdt = (EditText) dialogView.findViewById(R.id.confirm_password);
         final TextView message = (TextView) dialogView.findViewById(R.id.message_text_login);
@@ -138,9 +158,14 @@ public class LoginActivity extends AppCompatActivity {
                     finish();
                     return;
                 }
+                if (usernameEdt.getText().toString().isEmpty()) {
+                    message.setText(R.string.empty_username_warning);
+                    message.setTextColor(getResources().getColor(R.color.warning_color));
+                    return;
+                }
                 if (firstPasswordEdt.getText().toString().isEmpty() ||
                         confirmPasswordEdt.getText().toString().isEmpty()) {
-                    message.setText(R.string.empty_warning);
+                    message.setText(R.string.empty_password_warning);
                     message.setTextColor(getResources().getColor(R.color.warning_color));
                     return;
                 }
@@ -154,6 +179,7 @@ public class LoginActivity extends AppCompatActivity {
                 //save password with edt.getText().toString();
                 SPUtil us = SPUtil.getInstence(getApplicationContext());
                 us.savePassWord(firstPasswordEdt.getText().toString());
+                us.savePersonName(usernameEdt.getText().toString());
                 Toast.makeText(getApplicationContext(), R.string.password_saved, Toast.LENGTH_LONG).
                         show();
                 startActivity(new Intent(LoginActivity.this, MainActivity.class));

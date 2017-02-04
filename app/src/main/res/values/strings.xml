@@ -13,11 +13,17 @@
     <string name="setting_b">Setting</string>
 
     <!--login UI-->
+    <string name="input_user_name">Input username here</string>
+    <string name="input_new_password">Input new password here</string>
+    <string name="input_password_again">Input your password again</string>
+    <string name="no_password_required_this_time">No password is required at this time.</string>
+    <string name="do_not_show_this_again">Do not show this message again.</string>
     <string name="welcome">Welcome to RFID system.</string>
     <string name="password_input_reminder">Please, set up your password. This password will be necessary in order to log into your RFID system.</string>
-    <string name="password_saved">Password saved!</string>
+    <string name="password_saved">Username and password saved!</string>
     <string name="password_omitted">Password omitted!</string>
-    <string name="empty_warning">The password should not be empty!</string>
+    <string name="empty_username_warning">The username should not be empty!</string>
+    <string name="empty_password_warning">The password should not be empty!</string>
     <string name="login_fail">Login failed! Wrong username or password! Please retry!</string>
     <string name="diff_passwd">Two passwords are not consistant, please retry.</string>
 
@@ -47,5 +53,7 @@
     <string name="items_name">Items Name</string>
     <string name="add_more_images">Add more Images</string>
     <string name="description">Description...</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
 
 </resources>

@@ -20,12 +20,23 @@
         android:textColor="@color/black"
         android:textSize="30sp" />
 
+    <android.support.design.widget.TextInputLayout
+        android:id="@+id/login_activity_personname_textinputlayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/login_activity_welcome_text"
+        android:hint="Input user name here">
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/login_activity_personname_edittext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
         android:id="@+id/password_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/login_activity_welcome_text"
+        android:layout_below="@id/login_activity_personname_textinputlayout"
         android:hint="Input password here"
         app:hintAnimationEnabled="true">
 
@@ -36,14 +47,33 @@
             android:inputType="textPassword" />
     </android.support.design.widget.TextInputLayout>
 
-    <Button
-        android:id="@+id/login_activity_login_btn"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/password_layout"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/btn_login_background"
-        android:text="Login"
-        android:textColor="@color/white"
-        android:textSize="16sp" />
+        android:orientation="horizontal"
+        android:layout_below="@id/password_layout">
+        <Button
+            android:id="@+id/login_activity_login_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/btn_login_background"
+            android:text="@string/login"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:layout_weight="1"/>
+        <Button
+            android:id="@+id/login_activity_regist_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/btn_login_background"
+            android:text="@string/register"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+
 </RelativeLayout>
