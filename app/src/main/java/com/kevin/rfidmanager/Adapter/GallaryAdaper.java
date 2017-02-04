@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.kevin.rfidmanager.Activity.GalleryActivity;
 import com.kevin.rfidmanager.MyApplication;
@@ -87,8 +88,7 @@ public class GallaryAdaper extends RecyclerView.Adapter<GallaryAdaper.ViewHolder
                 activity.startActivity(intent);
             }
         });
-        Button button = holder.removeButton;
-        button.setText(R.string.delete);
+        RelativeLayout button = holder.removeButton;
         if (hide){
             button.setVisibility(View.GONE);
         }
@@ -119,7 +119,7 @@ public class GallaryAdaper extends RecyclerView.Adapter<GallaryAdaper.ViewHolder
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
         public ImageView image;
-        public Button removeButton;
+        public RelativeLayout removeButton;
 
         // We also create a constructor that accepts the entire item row
         // and does the view lookups to find each subview
@@ -129,7 +129,7 @@ public class GallaryAdaper extends RecyclerView.Adapter<GallaryAdaper.ViewHolder
             super(itemView);
 
             image = (ImageView) itemView.findViewById(R.id.gallary_image);
-            removeButton = (Button) itemView.findViewById(R.id.remove_gallary_button);
+            removeButton = (RelativeLayout) itemView.findViewById(R.id.remove_gallary_button);
         }
     }
 

@@ -120,7 +120,7 @@ public class DatabaseUtil {
     }
 
     /**
-     *
+     * Update new detail description into database.
      * @param activity
      * @param detailDes
      */
@@ -128,6 +128,18 @@ public class DatabaseUtil {
         DaoSession daoSession = ((MyApplication) activity.getApplication()).getDaoSession();
         Items item = getCurrentItem(activity);
         item.setDetailDescription(detailDes);
+        daoSession.getItemsDao().insertOrReplace(item);
+    }
+
+    /**
+     * Update new item name into database.
+     * @param activity
+     * @param newItemName
+     */
+    public static void updateItemName(Activity activity, String newItemName){
+        DaoSession daoSession = ((MyApplication) activity.getApplication()).getDaoSession();
+        Items item = getCurrentItem(activity);
+        item.setItemName(newItemName);
         daoSession.getItemsDao().insertOrReplace(item);
     }
 

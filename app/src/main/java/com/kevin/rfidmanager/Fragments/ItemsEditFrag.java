@@ -59,11 +59,11 @@ import static com.kevin.rfidmanager.Utils.ConstantManager.DEFAULT_IMAGE_WIDTH_DP
 import static com.kevin.rfidmanager.Utils.ConstantManager.PERMISSION_REQUEST_CODE;
 
 public class ItemsEditFrag extends android.support.v4.app.Fragment {
-    private TextView itemName, addKeyDes, detailDescriptionTitle;
+    private TextView addKeyDes, detailDescriptionTitle;
     private ListView key_des_list;
     private ImageView mainImage;
     private AppCompatButton addGalleryButton;
-    private EditText detailDescription;
+    private EditText itemName,detailDescription;
 
     private RecyclerView recyclerView;
     private GallaryAdaper gallaryAdaper;
@@ -148,7 +148,7 @@ public class ItemsEditFrag extends android.support.v4.app.Fragment {
         imageGalleryPicker.shouldGenerateMetadata(false); // Default is true
         imageGalleryPicker.shouldGenerateThumbnails(false); // Default is true
 
-        itemName = (TextView) v.findViewById(R.id.item_name);
+        itemName = (EditText) v.findViewById(R.id.item_name);
         itemName.setText(DatabaseUtil.getCurrentItem(getActivity()).getItemName());
 
         key_des_list = (ListView) v.findViewById(R.id.listview_item_key_des);
@@ -221,6 +221,7 @@ public class ItemsEditFrag extends android.support.v4.app.Fragment {
             @Override
             public void onClick(View v) {
                 packUpImm();
+                DatabaseUtil.updateItemName(getActivity(), itemName.getText().toString());
                 DatabaseUtil.updateDetailDescription(getActivity(), detailDescription.getText().toString());
                 Toast.makeText(getActivity(), R.string.saved_item, Toast.LENGTH_LONG).show();
                 ((MainActivity) getActivity()).viewPager.setCurrentItem(ConstantManager.HOME, false);
@@ -303,6 +304,10 @@ public class ItemsEditFrag extends android.support.v4.app.Fragment {
         });
     }
 
+    /**
+     *  Insert the new Item Key Description into database.
+     * @param newDes
+     */
     public void insertNewItemKeyDes(String newDes) {
         KeyDescription keyDescription = new KeyDescription(null,
                 ((MyApplication) getActivity().getApplication()).getCurrentItemID(), newDes);

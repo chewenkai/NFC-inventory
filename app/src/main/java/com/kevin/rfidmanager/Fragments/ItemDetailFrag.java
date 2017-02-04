@@ -61,11 +61,11 @@ import static com.kevin.rfidmanager.Utils.ConstantManager.DEFAULT_IMAGE_WIDTH_DP
 import static com.kevin.rfidmanager.Utils.ConstantManager.PERMISSION_REQUEST_CODE;
 
 public class ItemDetailFrag extends android.support.v4.app.Fragment {
-    private TextView itemName, addKeyDes, detailDescriptionTitle;
+    private TextView textViewItemName, addKeyDes, detailDescriptionTitle;
     private ListView key_des_list;
     private ImageView mainImage;
     private AppCompatButton addGalleryButton;
-    private EditText detailDescription;
+    private EditText detailDescription, itemName;
 
     private RecyclerView recyclerView;
     private GallaryAdaper gallaryAdaper;
@@ -94,8 +94,12 @@ public class ItemDetailFrag extends android.support.v4.app.Fragment {
                 ConstantManager.DEFAULT_RFID)
             return;
 
-        itemName = (TextView) v.findViewById(R.id.item_name);
-        itemName.setText(DatabaseUtil.getCurrentItem(getActivity()).getItemName());
+        itemName = (EditText) v.findViewById(R.id.item_name);
+        itemName.setVisibility(View.GONE);
+
+        textViewItemName = (TextView) v.findViewById(R.id.textview_item_name);
+        textViewItemName.setText(DatabaseUtil.getCurrentItem(getActivity()).getItemName());
+        textViewItemName.setVisibility(View.VISIBLE);
 
         key_des_list = (ListView) v.findViewById(R.id.listview_item_key_des);
         desListAdapter = new KeyDesListAdapter(getActivity(),
