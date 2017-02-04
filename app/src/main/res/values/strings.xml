@@ -43,5 +43,9 @@
     <string name="image_regexp">.*\\.jpg|jpeg|gif|png$</string>
     <string name="backup_success">Backup Successful!</string>
     <string name="import_success">Import Successful!</string>
+    <string name="add_key_description">ADD KEY DESCRIPTION</string>
+    <string name="items_name">Items Name</string>
+    <string name="add_more_images">Add more Images</string>
+    <string name="description">Description...</string>
 
 </resources>

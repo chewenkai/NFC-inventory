@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="@color/edit_key_des_button_color" />
+    <solid android:color="@color/colorAccent" />
     <padding
         android:left="0dp"
         android:top="0dp"

@@ -42,7 +42,7 @@
                         android:paddingStart="2dp"
                         android:paddingRight="2dp"
                         android:paddingEnd="2dp"
-                        android:text="Items Name"
+                        android:text="@string/items_name"
                         android:textAppearance="?android:attr/textAppearanceLarge"
                         android:textStyle="italic|bold" />
 
@@ -53,7 +53,7 @@
                         android:gravity="start"
                         android:paddingLeft="2dp"
                         android:paddingRight="2dp"
-                        android:text="Items Name"
+                        android:text="@string/items_name"
                         android:textAppearance="?android:attr/textAppearanceLarge"
                         android:textStyle="italic|bold"
                         android:visibility="gone" />
@@ -66,15 +66,16 @@
                         android:divider="@null"
                         android:dividerHeight="0dp" />
 
-                    <TextView
+                    <Button
                         android:id="@+id/button_add_item_key_des"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:background="@color/add_key_des_button_color"
+                        style="@style/Base.Widget.AppCompat.Button.Colored"
                         android:gravity="center"
                         android:padding="10dp"
-                        android:text="ADD KEY DESCRIPTION"
+                        android:textSize="13sp"
+                        android:text="@string/add_key_description"
                         android:textColor="@color/white" />
                 </LinearLayout>
 
@@ -133,7 +134,7 @@
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
                         android:gravity="center"
-                        android:text="Add more Images"
+                        android:text="@string/add_more_images"
                         android:textSize="13sp" />
 
                 </LinearLayout>
@@ -157,7 +158,7 @@
                     android:layout_marginEnd="10dp"
                     android:background="@color/paper_color"
                     android:gravity="top|start"
-                    android:hint="Description..."
+                    android:hint="@string/description"
                     android:inputType="textMultiLine"
                     android:minHeight="250dp" />
 
