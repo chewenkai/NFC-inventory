@@ -24,6 +24,7 @@ public class ConstantManager {
     // General
     public static int DEFAULT_IMAGE_WIDTH = 300;
     public static int DEFAULT_IMAGE_HEIGHT = 300;
+    public static int MAIN_IMAGE_WIDTH_DP = 250;
     public static int DEFAULT_IMAGE_WIDTH_DP = 120;
     public static int DEFAULT_IMAGE_HEIGHT_DP = 120;
 

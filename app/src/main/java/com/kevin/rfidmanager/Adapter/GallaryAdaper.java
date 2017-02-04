@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -71,15 +72,24 @@ public class GallaryAdaper extends RecyclerView.Adapter<GallaryAdaper.ViewHolder
         final ImagesPath path = paths.get(position);
 
         // Set item views based on your views and data model
-        ImageView image = holder.image;
-
+        final ImageView image = holder.image;
+        image.getViewTreeObserver()
+                .addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                    // Wait until layout to call Picasso
+                    @Override
+                    public void onGlobalLayout() {
+                        // Ensure we call this only once
+                        image.getViewTreeObserver()
+                                .removeOnGlobalLayoutListener(this);
+                    }
+                });
         if (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE)
                 == PackageManager.PERMISSION_GRANTED) {
-            Picasso.with(activity).load(new File(path.getImagePath())).resize(ScreenUtil.dpToPx(activity, DEFAULT_IMAGE_WIDTH_DP),
-                    ScreenUtil.dpToPx(activity, DEFAULT_IMAGE_HEIGHT_DP)).centerInside().into(image);
+            Picasso.with(activity).load(new File(path.getImagePath())).resize(0,
+                    ScreenUtil.dpToPx(activity, DEFAULT_IMAGE_HEIGHT_DP)).into(image);
         } else {
-            Picasso.with(activity).load(R.drawable.image_read_fail).resize(ScreenUtil.dpToPx(activity, DEFAULT_IMAGE_WIDTH_DP),
-                    ScreenUtil.dpToPx(activity, DEFAULT_IMAGE_HEIGHT_DP)).centerInside().into(image);
+            Picasso.with(activity).load(R.drawable.image_read_fail).resizeDimen(0,
+                    ScreenUtil.dpToPx(activity, DEFAULT_IMAGE_HEIGHT_DP)).into(image);
         }
         image.setOnClickListener(new View.OnClickListener() {
             @Override

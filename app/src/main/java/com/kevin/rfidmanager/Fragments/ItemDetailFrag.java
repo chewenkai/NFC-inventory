@@ -112,7 +112,8 @@ public class ItemDetailFrag extends android.support.v4.app.Fragment {
         if (mainImagePath != null){
             if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
                     == PackageManager.PERMISSION_GRANTED) {
-                Picasso.with(getActivity()).load(new File(mainImagePath)).into(mainImage);
+                Picasso.with(getActivity()).load(new File(mainImagePath)).resize(
+                        ScreenUtil.dpToPx(getActivity(),ConstantManager.MAIN_IMAGE_WIDTH_DP),0).into(mainImage);
                 mainImage.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -168,9 +169,9 @@ public class ItemDetailFrag extends android.support.v4.app.Fragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         layoutManager.scrollToPosition(0);// Optionally customize the position you want to default scroll to
         recyclerView.setLayoutManager(layoutManager);// Attach layout manager to the RecyclerView
-        StaggeredGridLayoutManager gridLayoutManager =
-                new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.HORIZONTAL);// First param is number of columns and second param is orientation i.e Vertical or Horizontal
-        recyclerView.setLayoutManager(gridLayoutManager);// Attach the layout manager to the recycler view
+//        StaggeredGridLayoutManager gridLayoutManager =
+//                new StaggeredGridLayoutManager(1, StaggeredGridLayoutManager.HORIZONTAL);// First param is number of columns and second param is orientation i.e Vertical or Horizontal
+//        recyclerView.setLayoutManager(gridLayoutManager);// Attach the layout manager to the recycler view
         recyclerView.setHasFixedSize(true);
 
     }
