@@ -86,6 +86,7 @@ public class MainActivity extends AppCompatActivity {
                         adapter.tab3=null;
                         adapter.tab4=null;
                         adapter = null;
+                        ((MyApplication) getApplication()).setCurrentItemID(ConstantManager.DEFAULT_RFID);
                         finish();
                         break;
                     default:
