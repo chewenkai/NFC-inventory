@@ -1,8 +1,10 @@
 package com.kevin.rfidmanager.Utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.telephony.TelephonyManager;
+import android.view.inputmethod.InputMethodManager;
 
 import java.util.Calendar;
 import java.util.Date;
@@ -67,5 +69,15 @@ public class SysUtil {
 
         }
         return false;
+    }
+
+    /*
+    Hide input method
+     */
+    public static void packUpImm(Activity activity) {
+        InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        if (imm != null) {
+            imm.hideSoftInputFromWindow(activity.getWindow().getDecorView().getWindowToken(), 0);
+        }
     }
 }

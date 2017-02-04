@@ -142,10 +142,11 @@ public class SettingFrag extends android.support.v4.app.Fragment {
             public void onClick(View v) {
                 if (getActivity().getFilesDir().canWrite()){
                     try {
-                        File backupDB = getActivity().getDatabasePath(getActivity().getString(R.string.database_name));
+                        File currentDB = getActivity().getDatabasePath(getActivity().getString(R.string.database_name));
+
                         String backupDBPath = String.format("%s.bak", getActivity().getString(R.string.database_name));
-                        File currentDB = new File(getActivity().getFilesDir(), backupDBPath);
-                        currentDB.createNewFile();
+                        File backupDB = new File(getActivity().getFilesDir(), backupDBPath);
+                        backupDB.createNewFile();
                         FileChannel src = new FileInputStream(currentDB).getChannel();
                         FileChannel dst = new FileOutputStream(backupDB).getChannel();
                         dst.transferFrom(src, 0, src.size());
@@ -169,9 +170,9 @@ public class SettingFrag extends android.support.v4.app.Fragment {
                 if (sd.canWrite()) {
                     try {
 
-                        File backupDB = getActivity().getDatabasePath(getActivity().getString(R.string.database_name));
+                        File currentDB = getActivity().getDatabasePath(getActivity().getString(R.string.database_name));
                         String backupDBPath = String.format("%s.bak", getActivity().getString(R.string.database_name));
-                        File currentDB = new File(sd, backupDBPath);
+                        File backupDB = new File(sd, backupDBPath);
 
                         FileChannel src = new FileInputStream(currentDB).getChannel();
                         FileChannel dst = new FileOutputStream(backupDB).getChannel();
@@ -210,17 +211,17 @@ public class SettingFrag extends android.support.v4.app.Fragment {
         dialogBuilder.setView(dialogView);
 
         final TextView textView = (TextView) dialogView.findViewById(R.id.backup_dialog_message);
-        final CircleButton internal_backup = (CircleButton) dialogView.findViewById(R.id.store_internal_space);
-        final CircleButton sd_backup = (CircleButton) dialogView.findViewById(R.id.store_sd_space);
+        final CircleButton internal_restore = (CircleButton) dialogView.findViewById(R.id.store_internal_space);
+        final CircleButton sd_restore = (CircleButton) dialogView.findViewById(R.id.store_sd_space);
 
-        internal_backup.setOnClickListener(new View.OnClickListener() {
+        internal_restore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (getActivity().getFilesDir().canWrite()){
                     try {
                         String backupDBPath = String.format("%s.bak", getActivity().getString(R.string.database_name));
-                        File currentDB = getActivity().getDatabasePath(getActivity().getString(R.string.database_name));
-                        File backupDB = new File(getActivity().getFilesDir(), backupDBPath);
+                        File backupDB = getActivity().getDatabasePath(getActivity().getString(R.string.database_name));
+                        File currentDB = new File(getActivity().getFilesDir(), backupDBPath);
                         if (!backupDB.exists()){
                             textView.setText(R.string.no_backup_File_data);
                         }
@@ -240,7 +241,7 @@ public class SettingFrag extends android.support.v4.app.Fragment {
             }
         });
 
-        sd_backup.setOnClickListener(new View.OnClickListener() {
+        sd_restore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 File sd = Environment.getExternalStorageDirectory();
@@ -248,8 +249,8 @@ public class SettingFrag extends android.support.v4.app.Fragment {
                     try {
 
                         String backupDBPath = String.format("%s.bak", getActivity().getString(R.string.database_name));
-                        File currentDB = getActivity().getDatabasePath(getActivity().getString(R.string.database_name));
-                        File backupDB = new File(sd, backupDBPath);
+                        File backupDB = getActivity().getDatabasePath(getActivity().getString(R.string.database_name));
+                        File currentDB = new File(sd, backupDBPath);
 
                         if (!backupDB.exists()){
                             textView.setText(R.string.no_backup_File_TF);

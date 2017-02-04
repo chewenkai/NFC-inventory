@@ -15,6 +15,7 @@ import android.widget.TextView;
 import com.kevin.rfidmanager.MyApplication;
 import com.kevin.rfidmanager.R;
 import com.kevin.rfidmanager.Utils.DatabaseUtil;
+import com.kevin.rfidmanager.Utils.SysUtil;
 import com.kevin.rfidmanager.database.DaoSession;
 import com.kevin.rfidmanager.database.KeyDescription;
 import com.kevin.rfidmanager.database.KeyDescriptionDao;
@@ -95,7 +96,7 @@ public class KeyDesListAdapter extends ArrayAdapter<KeyDescription> {
     }
 
     /*
-    This is a dialog used for input new password when user have not set up any password.
+    This is a dialog used for edit key description
      */
     public void showEditDialog(final KeyDescription keyDescription) {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this.currentActivity);
@@ -120,7 +121,6 @@ public class KeyDesListAdapter extends ArrayAdapter<KeyDescription> {
                 editItemsKeyDes(keyDescription, newKeyDes.getText().toString());
                 updateKeyDescriptionList();
                 b.dismiss();
-
             }
         });
 

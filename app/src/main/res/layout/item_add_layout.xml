@@ -46,6 +46,8 @@
                         android:paddingRight="2dp"
                         android:paddingEnd="2dp"
                         android:layout_margin="10dp"
+                        android:nextFocusUp="@id/item_name"
+                        android:nextFocusLeft="@id/item_name"
                         android:text="@string/items_name"
                         android:textAppearance="?android:attr/textAppearanceLarge"
                         android:textStyle="italic|bold" />
