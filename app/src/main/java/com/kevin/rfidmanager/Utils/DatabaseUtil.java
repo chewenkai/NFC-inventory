@@ -13,6 +13,8 @@ import com.kevin.rfidmanager.database.Items;
 import com.kevin.rfidmanager.database.ItemsDao;
 import com.kevin.rfidmanager.database.KeyDescription;
 import com.kevin.rfidmanager.database.KeyDescriptionDao;
+import com.kevin.rfidmanager.database.Users;
+import com.kevin.rfidmanager.database.UsersDao;
 
 import org.greenrobot.greendao.query.Query;
 
@@ -28,6 +30,37 @@ import java.util.List;
 
 public class DatabaseUtil {
     /**
+     * add a new user
+     *
+     * @param activity
+     * @param username
+     * @param password
+     */
+    public static boolean addNewUser(Activity activity, String username, String password) {
+        DaoSession daoSession = ((MyApplication) activity.getApplication()).getDaoSession();
+        UsersDao usersDao = daoSession.getUsersDao();
+
+        if (usersDao.queryBuilder().where(UsersDao.Properties.UserName.eq(username)).build().list().size() > 0)
+            return false;
+
+        Users user = new Users(null, username, password);
+        usersDao.insert(user);
+        return true;
+    }
+
+    /**
+     * Query the users by username
+     * @param activity
+     * @param username
+     * @return
+     */
+    public static List<Users> queryUsers(Activity activity, String username){
+        DaoSession daoSession = ((MyApplication) activity.getApplication()).getDaoSession();
+        UsersDao usersDao = daoSession.getUsersDao();
+        return usersDao.queryBuilder().where(UsersDao.Properties.UserName.eq(username)).build().list();
+    }
+
+    /**
      * Query the items in database.
      *
      * @return Items list
@@ -37,7 +70,8 @@ public class DatabaseUtil {
         DaoSession daoSession = ((MyApplication) activity.getApplication()).getDaoSession();
         ItemsDao itemsDao = daoSession.getItemsDao();
 
-        Query<Items> query = itemsDao.queryBuilder().where(ItemsDao.Properties.Id.isNotNull()).build();
+        String userName = ((MyApplication) activity.getApplication()).getUserName();
+        Query<Items> query = itemsDao.queryBuilder().where(ItemsDao.Properties.UserName.eq(userName)).build();
         List<Items> allItems = query.list();
 
         return allItems;
@@ -55,7 +89,7 @@ public class DatabaseUtil {
         DaoSession daoSession = ((MyApplication) activity.getApplication()).getDaoSession();
         ItemsDao itemsDao = daoSession.getItemsDao();
 
-        Items item = new Items(null, id, itemName, null, null);
+        Items item = new Items(null, ((MyApplication) activity.getApplication()).getUserName(), id, itemName, null, null);
         itemsDao.insert(item);
     }
 
@@ -74,7 +108,7 @@ public class DatabaseUtil {
         if (items.size() == 1) {
             return items.get(0);
         } else if (items.size() == 0) {
-            return new Items(null, 0l, "None", null, null);
+            return new Items(null, ((MyApplication) activity.getApplication()).getUserName(), 0l, "None", null, null);
         } else {
             boolean first = true;
             for (Items item :
@@ -121,10 +155,11 @@ public class DatabaseUtil {
 
     /**
      * Update new detail description into database.
+     *
      * @param activity
      * @param detailDes
      */
-    public static void updateDetailDescription(Activity activity, String detailDes){
+    public static void updateDetailDescription(Activity activity, String detailDes) {
         DaoSession daoSession = ((MyApplication) activity.getApplication()).getDaoSession();
         Items item = getCurrentItem(activity);
         item.setDetailDescription(detailDes);
@@ -133,10 +168,11 @@ public class DatabaseUtil {
 
     /**
      * Update new item name into database.
+     *
      * @param activity
      * @param newItemName
      */
-    public static void updateItemName(Activity activity, String newItemName){
+    public static void updateItemName(Activity activity, String newItemName) {
         DaoSession daoSession = ((MyApplication) activity.getApplication()).getDaoSession();
         Items item = getCurrentItem(activity);
         item.setItemName(newItemName);
@@ -157,6 +193,8 @@ public class DatabaseUtil {
                 src.close();
                 dst.close();
                 ((MyApplication) context.getApplicationContext()).toast(context.getString(R.string.import_success));
+            } else {
+
             }
         } catch (Exception e) {
             e.printStackTrace();

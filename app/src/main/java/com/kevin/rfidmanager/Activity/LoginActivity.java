@@ -20,9 +20,16 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.kevin.rfidmanager.MyApplication;
 import com.kevin.rfidmanager.R;
+import com.kevin.rfidmanager.Utils.DatabaseUtil;
 import com.kevin.rfidmanager.Utils.SPUtil;
 import com.kevin.rfidmanager.Utils.StringUtil;
+import com.kevin.rfidmanager.database.DaoSession;
+import com.kevin.rfidmanager.database.Users;
+import com.kevin.rfidmanager.database.UsersDao;
+
+import java.util.List;
 
 import static com.kevin.rfidmanager.Utils.ConstantManager.IS_DEBUGING;
 import static com.kevin.rfidmanager.Utils.ConstantManager.PERMISSION_REQUEST_CODE;
@@ -85,14 +92,19 @@ public class LoginActivity extends AppCompatActivity {
                 }
 
                 // compare two string
-                SPUtil us = SPUtil.getInstence(getApplicationContext());
-                String rightPassword = us.getPassWord();
-                String rightUsername = us.getPersonName();
-                if (mPwdStr.equals(rightPassword) && mUserNameStr.equals(rightUsername)){
-                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                }else{
-                    Snackbar.make(v, R.string.login_fail, Snackbar.LENGTH_LONG).show();
+                List<Users> users = DatabaseUtil.queryUsers(LoginActivity.this, mUserNameStr);
+                if (users.size() == 0)
+                    Snackbar.make(v, R.string.user_not_exist, Snackbar.LENGTH_LONG).show();
+                else {
+                    Users user = users.get(0);
+                    if (mPwdStr.equals(user.getPassWord())){
+                        ((MyApplication) getApplication()).setUserName(user.getUserName());
+                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    }else{
+                        Snackbar.make(v, R.string.login_fail, Snackbar.LENGTH_LONG).show();
+                    }
                 }
+
                 packUpImm();
             }
         });
@@ -112,9 +124,10 @@ public class LoginActivity extends AppCompatActivity {
      */
     private void passwordReminder() {
         // Are there any user info?
-        SPUtil us = SPUtil.getInstence(getApplicationContext());
-        String rightPassword = us.getPassWord();
-        if (rightPassword.isEmpty() && SPUtil.getInstence(getApplicationContext()).getNeedPassword()) {
+        DaoSession daoSession = ((MyApplication) getApplication()).getDaoSession();
+        UsersDao usersDao = daoSession.getUsersDao();
+        List<Users> users = usersDao.queryBuilder().where(UsersDao.Properties.UserName.isNotNull()).build().list();
+        if (users.size()==0 && SPUtil.getInstence(getApplicationContext()).getNeedPassword()) {
             // first time using this app
             showPasswordInputDialog();
         }
@@ -151,6 +164,8 @@ public class LoginActivity extends AppCompatActivity {
                     SPUtil.getInstence(getApplicationContext()).saveNeedPassword(false);
                     Toast.makeText(getApplicationContext(), R.string.password_omitted, Toast.LENGTH_LONG).
                             show();
+                    DatabaseUtil.addNewUser(LoginActivity.this, getString(R.string.default_username), "");
+                    ((MyApplication) getApplication()).setUserName(getString(R.string.default_username));
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
                     b.dismiss();
                     finish();
@@ -175,13 +190,18 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
                 //save password with edt.getText().toString();
-                SPUtil us = SPUtil.getInstence(getApplicationContext());
-                us.savePassWord(firstPasswordEdt.getText().toString());
-                us.savePersonName(usernameEdt.getText().toString());
-                Toast.makeText(getApplicationContext(), R.string.password_saved, Toast.LENGTH_LONG).
-                        show();
-                startActivity(new Intent(LoginActivity.this, MainActivity.class));
-                finish();
+                if (DatabaseUtil.addNewUser(LoginActivity.this, usernameEdt.getText().toString(), firstPasswordEdt.getText().toString())){
+                    ((MyApplication) getApplication()).setUserName(usernameEdt.getText().toString());
+                    Toast.makeText(getApplicationContext(), R.string.password_saved, Toast.LENGTH_LONG).
+                            show();
+                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    finish();
+                }else {
+                    message.setText(R.string.username_exist);
+                    message.setTextColor(getResources().getColor(R.color.warning_color));
+                    return;
+                }
+
                 b.dismiss();
             }
         });
@@ -190,7 +210,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //Exit system
-               finish();
+               b.dismiss();
             }
         });
     }
@@ -201,6 +221,7 @@ public class LoginActivity extends AppCompatActivity {
     private void checkIsNeedPassword() {
         if (!SPUtil.getInstence(getApplicationContext()).getNeedPassword()) {
             startActivity(new Intent(LoginActivity.this, MainActivity.class));
+            ((MyApplication) getApplication()).setUserName(getString(R.string.default_username));
             finish();
         }
     }

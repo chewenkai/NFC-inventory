@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
     android:orientation="vertical">
 
@@ -37,24 +38,26 @@
 
                     <EditText
                         android:id="@+id/item_name"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="start"
                         android:paddingLeft="2dp"
                         android:paddingStart="2dp"
                         android:paddingRight="2dp"
                         android:paddingEnd="2dp"
+                        android:layout_margin="10dp"
                         android:text="@string/items_name"
                         android:textAppearance="?android:attr/textAppearanceLarge"
                         android:textStyle="italic|bold" />
 
                     <TextView
                         android:id="@+id/textview_item_name"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="start"
                         android:paddingLeft="2dp"
                         android:paddingRight="2dp"
+                        android:layout_margin="10dp"
                         android:text="@string/items_name"
                         android:textAppearance="?android:attr/textAppearanceLarge"
                         android:textStyle="italic|bold"
@@ -161,15 +164,17 @@
                     android:inputType="textMultiLine"
                     android:minHeight="250dp" />
 
-                <Button
+                <at.markushi.ui.CircleButton
                     android:id="@+id/save_des"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
                     android:layout_gravity="end"
                     android:layout_marginRight="20dp"
                     android:layout_marginLeft="20dp"
                     android:layout_marginBottom="10dp"
-                    android:background="@drawable/save" />
+                    android:src="@drawable/save"
+                    app:cb_color="@color/colorAccent"
+                    app:cb_pressedRingWidth="8dip"/>
 
             </LinearLayout>
 

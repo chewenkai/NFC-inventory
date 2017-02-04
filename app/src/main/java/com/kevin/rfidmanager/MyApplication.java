@@ -16,6 +16,17 @@ import org.greenrobot.greendao.database.Database;
  */
 
 public class MyApplication extends Application {
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    private String userName;
+
     public DaoSession daoSession;  // database session
 
     public long getCurrentItemID() {

@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.kevin.rfidmanager.Activity.MainActivity;
 import com.kevin.rfidmanager.Adapter.ItemListAdaper;
@@ -22,7 +23,10 @@ import com.kevin.rfidmanager.MyApplication;
 import com.kevin.rfidmanager.R;
 import com.kevin.rfidmanager.Utils.ConstantManager;
 import com.kevin.rfidmanager.Utils.DatabaseUtil;
+import com.kevin.rfidmanager.database.DaoSession;
 import com.kevin.rfidmanager.database.Items;
+import com.kevin.rfidmanager.database.ItemsDao;
+import com.kevin.rfidmanager.database.UsersDao;
 
 import java.util.List;
 
@@ -69,7 +73,7 @@ public class ItemsListFrag extends android.support.v4.app.Fragment {
         final View dialogView = inflater.inflate(R.layout.dialog_layout_two_edit_text, null);
         dialogBuilder.setView(dialogView);
 
-        final TextInputEditText newKeyDes = (TextInputEditText) dialogView.findViewById(R.id.edit_key_des_text_editor);
+        final TextInputEditText itemID = (TextInputEditText) dialogView.findViewById(R.id.edit_key_des_text_editor);
         final TextInputEditText itemName = (TextInputEditText) dialogView.findViewById(R.id.item_name_edit);
         final Button saveButton = (Button) dialogView.findViewById(R.id.dialog_change);
         final Button cancleButton = (Button) dialogView.findViewById(R.id.dialog_cancle);
@@ -81,10 +85,24 @@ public class ItemsListFrag extends android.support.v4.app.Fragment {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO New item retain old detail description bug
-                ((MyApplication) getActivity().getApplication()).setCurrentItemID(Long.parseLong(newKeyDes.getText().toString()));
+                Long new_id=null;
+                try {
+                    new_id = Long.parseLong(itemID.getText().toString());
+                }catch (NumberFormatException e){
+                    Toast.makeText(getActivity(), "please input number as ID", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                // Are there any user info?
+                DaoSession daoSession = ((MyApplication) getActivity().getApplication()).getDaoSession();
+                ItemsDao itemsDao = daoSession.getItemsDao();
+                List<Items> items = itemsDao.queryBuilder().where(ItemsDao.Properties.Rfid.eq(new_id)).build().list();
+                if (items.size()>0){
+                    Toast.makeText(getActivity(), "The ID card is exist, please change a ID", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                ((MyApplication) getActivity().getApplication()).setCurrentItemID(Long.parseLong(itemID.getText().toString()));
                 DatabaseUtil.insertNewItem(getActivity(),
-                        Long.parseLong(newKeyDes.getText().toString()),
+                        Long.parseLong(itemID.getText().toString()),
                         itemName.getText().toString());
                 ((MainActivity)getActivity()).viewPager.setCurrentItem(ConstantManager.EDIT, false);
                 b.dismiss();

@@ -28,6 +28,8 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.util.List;
 
+import at.markushi.ui.CircleButton;
+
 import static com.kevin.rfidmanager.Utils.ConstantManager.DEFAULT_IMAGE_HEIGHT_DP;
 import static com.kevin.rfidmanager.Utils.ConstantManager.DEFAULT_IMAGE_WIDTH_DP;
 
@@ -88,7 +90,7 @@ public class GallaryAdaper extends RecyclerView.Adapter<GallaryAdaper.ViewHolder
                 activity.startActivity(intent);
             }
         });
-        RelativeLayout button = holder.removeButton;
+        CircleButton button = holder.removeButton;
         if (hide){
             button.setVisibility(View.GONE);
         }
@@ -119,7 +121,7 @@ public class GallaryAdaper extends RecyclerView.Adapter<GallaryAdaper.ViewHolder
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
         public ImageView image;
-        public RelativeLayout removeButton;
+        public CircleButton removeButton;
 
         // We also create a constructor that accepts the entire item row
         // and does the view lookups to find each subview
@@ -129,7 +131,7 @@ public class GallaryAdaper extends RecyclerView.Adapter<GallaryAdaper.ViewHolder
             super(itemView);
 
             image = (ImageView) itemView.findViewById(R.id.gallary_image);
-            removeButton = (RelativeLayout) itemView.findViewById(R.id.remove_gallary_button);
+            removeButton = (CircleButton) itemView.findViewById(R.id.remove_gallary_button);
         }
     }
 

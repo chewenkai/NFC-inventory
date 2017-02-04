@@ -21,6 +21,8 @@ import com.kevin.rfidmanager.database.KeyDescriptionDao;
 
 import java.util.List;
 
+import at.markushi.ui.CircleButton;
+
 /**
  * Created by Kevin on 2017/1/29.
  */
@@ -33,8 +35,8 @@ public class KeyDesListAdapter extends ArrayAdapter<KeyDescription> {
     // View lookup cache
     private static class ViewHolder {
         TextView keyDescription;
-        LinearLayout edit;
-        LinearLayout delete;
+        CircleButton edit;
+        CircleButton delete;
     }
 
     public KeyDesListAdapter(Context context, List<KeyDescription> item_key_des, Boolean hideButton) {
@@ -58,8 +60,8 @@ public class KeyDesListAdapter extends ArrayAdapter<KeyDescription> {
             LayoutInflater inflater = LayoutInflater.from(getContext());
             convertView = inflater.inflate(R.layout.key_description_listview_llayout, parent, false);
             viewHolder.keyDescription = (TextView) convertView.findViewById(R.id.text_key_des);
-            viewHolder.edit = (LinearLayout) convertView.findViewById(R.id.layout_edit_key_des);
-            viewHolder.delete = (LinearLayout) convertView.findViewById(R.id.layout_remove_key_des);
+            viewHolder.edit = (CircleButton) convertView.findViewById(R.id.layout_edit_key_des);
+            viewHolder.delete = (CircleButton) convertView.findViewById(R.id.layout_remove_key_des);
             // Cache the viewHolder object inside the fresh view
             convertView.setTag(viewHolder);
         } else {

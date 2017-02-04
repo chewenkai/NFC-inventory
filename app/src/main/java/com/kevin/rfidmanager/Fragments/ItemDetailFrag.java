@@ -56,6 +56,8 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 
+import at.markushi.ui.CircleButton;
+
 
 public class ItemDetailFrag extends android.support.v4.app.Fragment {
     private TextView textViewItemName, addKeyDes, detailDescriptionTitle;
@@ -68,7 +70,7 @@ public class ItemDetailFrag extends android.support.v4.app.Fragment {
     private GallaryAdaper gallaryAdaper;
     private KeyDesListAdapter desListAdapter;
 
-    private Button saveButton;
+    private CircleButton saveButton;
 
     private View view;
 
@@ -111,25 +113,38 @@ public class ItemDetailFrag extends android.support.v4.app.Fragment {
             if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
                     == PackageManager.PERMISSION_GRANTED) {
                 Picasso.with(getActivity()).load(new File(mainImagePath)).into(mainImage);
+                mainImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // Open picture
+                        Intent intent = new Intent();
+                        intent.setAction(Intent.ACTION_VIEW);
+                        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        intent.setDataAndType(FileProvider.getUriForFile(getActivity(),
+                                getActivity().getApplicationContext().getPackageName() + ".provider", new File(mainImagePath)), "image/*");
+                        startActivity(intent);
+                    }
+                });
             } else {
                 Picasso.with(getActivity()).load(R.drawable.image_read_fail).into(mainImage);
+                mainImage.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        // Open picture
+                    }
+                });
             }
         }else {
             Picasso.with(getActivity()).load(R.drawable.image_read_fail).into(mainImage);
+            mainImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    // Open picture
+                }
+            });
         }
-        mainImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-               // Open picture
-                Intent intent = new Intent();
-                intent.setAction(Intent.ACTION_VIEW);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                intent.setDataAndType(FileProvider.getUriForFile(getActivity(),
-                        getActivity().getApplicationContext().getPackageName() + ".provider", new File(mainImagePath)), "image/*");
-                startActivity(intent);
-            }
-        });
+
 
         addKeyDes = (TextView) v.findViewById(R.id.button_add_item_key_des);
         addKeyDes.setVisibility(View.GONE);
@@ -144,7 +159,7 @@ public class ItemDetailFrag extends android.support.v4.app.Fragment {
         detailDescription.setText(DatabaseUtil.getCurrentItem(getActivity()).getDetailDescription());
         detailDescription.setEnabled(false);
 
-        saveButton = (Button) v.findViewById(R.id.save_des);
+        saveButton = (CircleButton) v.findViewById(R.id.save_des);
         saveButton.setVisibility(View.GONE);
 
         recyclerView = (RecyclerView) v.findViewById(R.id.recycle_gallery);

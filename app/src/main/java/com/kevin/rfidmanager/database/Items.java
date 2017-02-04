@@ -16,19 +16,21 @@ public class Items {
     @Id(autoincrement = true)
     private Long id;
 
+    private String userName;  // user name
+
     private Long rfid;  // id of card and items
 
-    @NotNull
     private String itemName;  // the name of item
 
     private String mainImagePath;  // thumb of item
 
     private String detailDescription;  // description of item
 
-    @Generated(hash = 1208772428)
-    public Items(Long id, Long rfid, @NotNull String itemName, String mainImagePath,
-            String detailDescription) {
+    @Generated(hash = 168323232)
+    public Items(Long id, String userName, Long rfid, String itemName,
+            String mainImagePath, String detailDescription) {
         this.id = id;
+        this.userName = userName;
         this.rfid = rfid;
         this.itemName = itemName;
         this.mainImagePath = mainImagePath;
@@ -77,6 +79,14 @@ public class Items {
 
     public void setDetailDescription(String detailDescription) {
         this.detailDescription = detailDescription;
+    }
+
+    public String getUserName() {
+        return this.userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
     }
 
 

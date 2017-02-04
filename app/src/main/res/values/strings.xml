@@ -24,8 +24,10 @@
     <string name="password_omitted">Password omitted!</string>
     <string name="empty_username_warning">The username should not be empty!</string>
     <string name="empty_password_warning">The password should not be empty!</string>
-    <string name="login_fail">Login failed! Wrong username or password! Please retry!</string>
+    <string name="login_fail">Login failed! Wrong password! Please retry!</string>
     <string name="diff_passwd">Two passwords are not consistant, please retry.</string>
+    <string name="login">Login</string>
+    <string name="register">Register</string>
 
     <!--Change Password-->
     <string name="change_passwd">Changing Password</string>
@@ -53,7 +55,24 @@
     <string name="items_name">Items Name</string>
     <string name="add_more_images">Add more Images</string>
     <string name="description">Description...</string>
-    <string name="login">Login</string>
-    <string name="register">Register</string>
+
+    <!--Setting Page-->
+    <string name="select_backup_position">Select a location to backup</string>
+    <string name="select_restore_position">Select a backup position to restore</string>
+    <string name="no_tf">No TF card has been detected. Please, make sure the TF card is inside the device and try again.</string>
+    <string name="backup_successful">Your database has been successfully loaded into TF card.</string>
+    <string name="backup_internal_successful">Your database has been successfully loaded into internal memory.</string>
+    <string name="restore_successful">Your database has been successfully restored.</string>
+    <string name="internal_memory_read_fail">Can not read internal memory.</string>
+    <string name="tf_ncard">TF\nCard</string>
+    <string name="internal_nmemory">Internal\nMemory</string>
+    <string name="restore_warning">The restore database will be loaded into your RFID system, the current data will be lost without backup. </string>
+    <string name="no_backup_File_TF">There are no backup file on TF card.</string>
+    <string name="no_backup_File_data">There are no backup file on internal memory.</string>
+    <string name="default_username">Default User</string>
+    <string name="username_exist">The username is exist.</string>
+    <string name="user_not_exist">User name not exist.</string>
+
+    <!--Others-->
 
 </resources>

@@ -54,6 +54,8 @@ import java.io.File;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import at.markushi.ui.CircleButton;
+
 import static com.kevin.rfidmanager.Utils.ConstantManager.DEFAULT_IMAGE_HEIGHT_DP;
 import static com.kevin.rfidmanager.Utils.ConstantManager.DEFAULT_IMAGE_WIDTH_DP;
 import static com.kevin.rfidmanager.Utils.ConstantManager.PERMISSION_REQUEST_CODE;
@@ -69,7 +71,7 @@ public class ItemsEditFrag extends android.support.v4.app.Fragment {
     private GallaryAdaper gallaryAdaper;
     private KeyDesListAdapter desListAdapter;
 
-    private Button saveButton;
+    private CircleButton saveButton;
     private ImagePicker imageGalleryPicker = null;
     private View view;
 
@@ -212,7 +214,7 @@ public class ItemsEditFrag extends android.support.v4.app.Fragment {
         detailDescription = (EditText) v.findViewById(R.id.detail_description);
         detailDescription.setText(DatabaseUtil.getCurrentItem(getActivity()).getDetailDescription());
 
-        saveButton = (Button) v.findViewById(R.id.save_des);
+        saveButton = (CircleButton) v.findViewById(R.id.save_des);
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
