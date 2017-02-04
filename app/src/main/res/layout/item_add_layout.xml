@@ -101,7 +101,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_vertical"
-                        android:scaleType="fitXY"
+                        android:scaleType="centerInside"
                         android:src="@drawable/add_image" />
 
                 </FrameLayout>
