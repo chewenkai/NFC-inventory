@@ -5,6 +5,7 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/white"
     tools:context="com.kevin.rfidmanager.Activity.MainActivity">
 
     <android.support.design.widget.TabLayout
@@ -12,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:tabSelectedTextColor="@color/colorPrimary"
+        android:background="@color/white"
         app:tabTextAppearance="@style/MyTabLayoutTextAppearance"
         android:minHeight="?attr/actionBarSize"
         android:layout_alignParentTop="true"
@@ -24,6 +26,7 @@
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@color/white"
         android:layout_below="@+id/tab_layout" />
 
 
