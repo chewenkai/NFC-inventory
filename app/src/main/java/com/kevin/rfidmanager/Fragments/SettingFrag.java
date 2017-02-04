@@ -132,7 +132,13 @@ public class SettingFrag extends android.support.v4.app.Fragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final View dialogView = inflater.inflate(R.layout.dialog_backup_layout, null);
         dialogBuilder.setView(dialogView);
-
+        dialogBuilder.setTitle(R.string.select_backup_position);
+        dialogBuilder.setNegativeButton(R.string.Cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        final AlertDialog b = dialogBuilder.create();
         final TextView textView = (TextView) dialogView.findViewById(R.id.backup_dialog_message);
         final CircleButton internal_backup = (CircleButton) dialogView.findViewById(R.id.store_internal_space);
         final CircleButton sd_backup = (CircleButton) dialogView.findViewById(R.id.store_sd_space);
@@ -152,13 +158,15 @@ public class SettingFrag extends android.support.v4.app.Fragment {
                         dst.transferFrom(src, 0, src.size());
                         src.close();
                         dst.close();
-                        textView.setText(R.string.backup_internal_successful);
+                        ((MyApplication)getActivity().getApplication()).toast(getActivity().getString(R.string.backup_internal_successful));
+                        b.dismiss();
                     } catch (Exception e) {
                         e.printStackTrace();
                         textView.setText(R.string.internal_memory_read_fail);
                     }
                 }else
                     textView.setText(R.string.internal_memory_read_fail);
+
 
             }
         });
@@ -179,7 +187,8 @@ public class SettingFrag extends android.support.v4.app.Fragment {
                         dst.transferFrom(src, 0, src.size());
                         src.close();
                         dst.close();
-                        textView.setText(R.string.backup_successful);
+                        ((MyApplication)getActivity().getApplication()).toast(getActivity().getString(R.string.backup_successful));
+                        b.dismiss();
                     } catch (Exception e) {
                         e.printStackTrace();
                         textView.setText(R.string.no_tf);
@@ -190,13 +199,7 @@ public class SettingFrag extends android.support.v4.app.Fragment {
             }
         });
 
-        dialogBuilder.setTitle(R.string.select_backup_position);
-        dialogBuilder.setNegativeButton(R.string.Cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-            }
-        });
-        final AlertDialog b = dialogBuilder.create();
+
         b.show();
 
     }
@@ -209,7 +212,14 @@ public class SettingFrag extends android.support.v4.app.Fragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final View dialogView = inflater.inflate(R.layout.dialog_backup_layout, null);
         dialogBuilder.setView(dialogView);
-
+        dialogBuilder.setTitle(R.string.select_restore_position);
+        dialogBuilder.setMessage(R.string.restore_warning);
+        dialogBuilder.setNegativeButton(R.string.Cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        final AlertDialog b = dialogBuilder.create();
         final TextView textView = (TextView) dialogView.findViewById(R.id.backup_dialog_message);
         final CircleButton internal_restore = (CircleButton) dialogView.findViewById(R.id.store_internal_space);
         final CircleButton sd_restore = (CircleButton) dialogView.findViewById(R.id.store_sd_space);
@@ -230,7 +240,8 @@ public class SettingFrag extends android.support.v4.app.Fragment {
                         dst.transferFrom(src, 0, src.size());
                         src.close();
                         dst.close();
-                        textView.setText(R.string.restore_successful);
+                        ((MyApplication)getActivity().getApplication()).toast(getActivity().getString(R.string.restore_successful));
+                        b.dismiss();
                     } catch (Exception e) {
                         e.printStackTrace();
                         textView.setText(R.string.internal_memory_read_fail);
@@ -261,7 +272,8 @@ public class SettingFrag extends android.support.v4.app.Fragment {
                         dst.transferFrom(src, 0, src.size());
                         src.close();
                         dst.close();
-                        textView.setText(R.string.restore_successful);
+                        ((MyApplication)getActivity().getApplication()).toast(getActivity().getString(R.string.restore_successful));
+                        b.dismiss();
                     } catch (Exception e) {
                         e.printStackTrace();
                         textView.setText(R.string.no_tf);
@@ -272,14 +284,6 @@ public class SettingFrag extends android.support.v4.app.Fragment {
             }
         });
 
-        dialogBuilder.setTitle(R.string.select_restore_position);
-        dialogBuilder.setMessage(R.string.restore_warning);
-        dialogBuilder.setNegativeButton(R.string.Cancel, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-            }
-        });
-        final AlertDialog b = dialogBuilder.create();
         b.show();
 
     }
