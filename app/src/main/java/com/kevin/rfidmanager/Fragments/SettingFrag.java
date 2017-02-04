@@ -174,8 +174,9 @@ public class SettingFrag extends android.support.v4.app.Fragment {
         sd_backup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                File sd = Environment.getExternalStorageDirectory();
-                if (sd.canWrite()) {
+                String state = Environment.getExternalStorageState();
+                if (Environment.MEDIA_MOUNTED.equals(state)) {
+                    File sd = Environment.getExternalStorageDirectory();
                     try {
 
                         File currentDB = getActivity().getDatabasePath(getActivity().getString(R.string.database_name));
@@ -255,10 +256,10 @@ public class SettingFrag extends android.support.v4.app.Fragment {
         sd_restore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                File sd = Environment.getExternalStorageDirectory();
-                if (sd.canWrite()) {
+                String state = Environment.getExternalStorageState();
+                if (Environment.MEDIA_MOUNTED.equals(state)) {
                     try {
-
+                        File sd = Environment.getExternalStorageDirectory();
                         String backupDBPath = String.format("%s.bak", getActivity().getString(R.string.database_name));
                         File backupDB = getActivity().getDatabasePath(getActivity().getString(R.string.database_name));
                         File currentDB = new File(sd, backupDBPath);
