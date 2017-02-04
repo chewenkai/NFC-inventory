@@ -40,10 +40,10 @@ public class ItemsListFrag extends android.support.v4.app.Fragment {
     private void initUI(View v) {
         recyclerView = (RecyclerView) v.findViewById(R.id.recycle_item_list);
         List<Items> items = DatabaseUtil.queryItems(getActivity());
-        if (items.size() != 0)
+
+        if(((MyApplication) getActivity().getApplication()).getCurrentItemID() == ConstantManager.DEFAULT_RFID && items.size() != 0)
             ((MyApplication) getActivity().getApplication()).setCurrentItemID(items.get(0).getRfid());
-        else
-            ((MyApplication) getActivity().getApplication()).setCurrentItemID(ConstantManager.DEFAULT_RFID);
+
         itemListAdapter = new ItemListAdaper(getActivity(), items);
         recyclerView.setAdapter(itemListAdapter);
         StaggeredGridLayoutManager gridLayoutManager =

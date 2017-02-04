@@ -56,9 +56,6 @@ import com.squareup.picasso.Picasso;
 
 import java.io.File;
 
-import static com.kevin.rfidmanager.Utils.ConstantManager.DEFAULT_IMAGE_HEIGHT_DP;
-import static com.kevin.rfidmanager.Utils.ConstantManager.DEFAULT_IMAGE_WIDTH_DP;
-import static com.kevin.rfidmanager.Utils.ConstantManager.PERMISSION_REQUEST_CODE;
 
 public class ItemDetailFrag extends android.support.v4.app.Fragment {
     private TextView textViewItemName, addKeyDes, detailDescriptionTitle;
@@ -113,15 +110,12 @@ public class ItemDetailFrag extends android.support.v4.app.Fragment {
         if (mainImagePath != null){
             if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
                     == PackageManager.PERMISSION_GRANTED) {
-                Picasso.with(getActivity()).load(new File(mainImagePath)).resize(ScreenUtil.dpToPx(getActivity(), DEFAULT_IMAGE_WIDTH_DP),
-                        ScreenUtil.dpToPx(getActivity(), DEFAULT_IMAGE_HEIGHT_DP)).centerCrop().into(mainImage);
+                Picasso.with(getActivity()).load(new File(mainImagePath)).into(mainImage);
             } else {
-                Picasso.with(getActivity()).load(R.drawable.image_read_fail).resize(ScreenUtil.dpToPx(getActivity(), DEFAULT_IMAGE_WIDTH_DP),
-                        ScreenUtil.dpToPx(getActivity(), DEFAULT_IMAGE_HEIGHT_DP)).centerCrop().into(mainImage);
+                Picasso.with(getActivity()).load(R.drawable.image_read_fail).into(mainImage);
             }
         }else {
-            Picasso.with(getActivity()).load(R.drawable.image_read_fail).resize(ScreenUtil.dpToPx(getActivity(), DEFAULT_IMAGE_WIDTH_DP),
-                    ScreenUtil.dpToPx(getActivity(), DEFAULT_IMAGE_HEIGHT_DP)).centerCrop().into(mainImage);
+            Picasso.with(getActivity()).load(R.drawable.image_read_fail).into(mainImage);
         }
         mainImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,10 +128,6 @@ public class ItemDetailFrag extends android.support.v4.app.Fragment {
                 intent.setDataAndType(FileProvider.getUriForFile(getActivity(),
                         getActivity().getApplicationContext().getPackageName() + ".provider", new File(mainImagePath)), "image/*");
                 startActivity(intent);
-//                Intent intent = new Intent();
-//                intent.putExtra(ConstantManager.INTENT_STRING_EXTRA_FILE_PATH, mainImagePath);
-//                intent.setClass(getActivity(), PhotoActivity.class);
-//                getActivity().startActivity(intent);
             }
         });
 
@@ -171,7 +161,44 @@ public class ItemDetailFrag extends android.support.v4.app.Fragment {
     }
 
     public void refreshUI(){
-        if (view!=null)
+        if (getActivity() == null)
+            return;
+
+        if (((MyApplication) getActivity().getApplication()).getCurrentItemID() ==
+                ConstantManager.DEFAULT_RFID)
+            return;
+
+        if (view!=null){
             initUI(view);
+            return;
+        }
+        textViewItemName.setText(DatabaseUtil.getCurrentItem(getActivity()).getItemName());
+        desListAdapter.updateKeyDescriptionList();
+
+        final String mainImagePath = DatabaseUtil.getCurrentItem(getActivity()).getMainImagePath();
+        if (mainImagePath != null){
+            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED) {
+                Picasso.with(getActivity()).load(new File(mainImagePath)).into(mainImage);
+            } else {
+                Picasso.with(getActivity()).load(R.drawable.image_read_fail).into(mainImage);
+            }
+        }else {
+            Picasso.with(getActivity()).load(R.drawable.image_read_fail).into(mainImage);
+        }
+        mainImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Open picture
+                Intent intent = new Intent();
+                intent.setAction(Intent.ACTION_VIEW);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                intent.setDataAndType(FileProvider.getUriForFile(getActivity(),
+                        getActivity().getApplicationContext().getPackageName() + ".provider", new File(mainImagePath)), "image/*");
+                startActivity(intent);
+            }
+        });
+        gallaryAdaper.updateUI();
     }
 }

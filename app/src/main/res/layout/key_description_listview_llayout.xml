@@ -17,10 +17,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="feature 1"
+        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
         android:textSize="16sp"
         android:textStyle="bold"
         android:layout_gravity="center"
-        android:layout_weight="1" />
+        android:layout_weight="1"/>
 
     <LinearLayout
         android:id="@+id/layout_edit_key_des"

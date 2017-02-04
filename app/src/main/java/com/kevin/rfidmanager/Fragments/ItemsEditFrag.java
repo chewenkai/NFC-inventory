@@ -129,11 +129,9 @@ public class ItemsEditFrag extends android.support.v4.app.Fragment {
 
                                                                   if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
                                                                           == PackageManager.PERMISSION_GRANTED) {
-                                                                      Picasso.with(getActivity()).load(new File(item.getMainImagePath())).resize(ScreenUtil.dpToPx(getActivity(), DEFAULT_IMAGE_WIDTH_DP),
-                                                                              ScreenUtil.dpToPx(getActivity(), DEFAULT_IMAGE_HEIGHT_DP)).centerCrop().into(mainImage);
+                                                                      Picasso.with(getActivity()).load(new File(item.getMainImagePath())).into(mainImage);
                                                                   } else {
-                                                                      Picasso.with(getActivity()).load(R.drawable.image_read_fail).resize(ScreenUtil.dpToPx(getActivity(), DEFAULT_IMAGE_WIDTH_DP),
-                                                                              ScreenUtil.dpToPx(getActivity(), DEFAULT_IMAGE_HEIGHT_DP)).centerCrop().into(mainImage);
+                                                                      Picasso.with(getActivity()).load(R.drawable.image_read_fail).into(mainImage);
                                                                   }
                                                               }
                                                           }
@@ -163,11 +161,9 @@ public class ItemsEditFrag extends android.support.v4.app.Fragment {
         if (mainImagePath != null) {
             if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
                     == PackageManager.PERMISSION_GRANTED) {
-                Picasso.with(getActivity()).load(new File(mainImagePath)).resize(ScreenUtil.dpToPx(getActivity(), DEFAULT_IMAGE_WIDTH_DP),
-                        ScreenUtil.dpToPx(getActivity(), DEFAULT_IMAGE_HEIGHT_DP)).centerCrop().into(mainImage);
+                Picasso.with(getActivity()).load(new File(mainImagePath)).into(mainImage);
             } else {
-                Picasso.with(getActivity()).load(R.drawable.image_read_fail).resize(ScreenUtil.dpToPx(getActivity(), DEFAULT_IMAGE_WIDTH_DP),
-                        ScreenUtil.dpToPx(getActivity(), DEFAULT_IMAGE_HEIGHT_DP)).centerCrop().into(mainImage);
+                Picasso.with(getActivity()).load(R.drawable.image_read_fail).into(mainImage);
             }
         }
         mainImage.setOnClickListener(new View.OnClickListener() {

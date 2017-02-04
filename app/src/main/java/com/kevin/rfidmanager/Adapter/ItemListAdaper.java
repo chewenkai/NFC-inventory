@@ -99,8 +99,8 @@ public class ItemListAdaper extends RecyclerView.Adapter<ItemListAdaper.ViewHold
             @Override
             public void onClick(View v) {
                 ((MyApplication)activity.getApplication()).setCurrentItemID(item.getRfid());
-                ((MainActivity)activity).adapter.tab2.refreshUI();
                 ((MainActivity)activity).viewPager.setCurrentItem(ConstantManager.DETAIL, false);
+                ((MainActivity)activity).adapter.tab2.refreshUI();
             }
         });
 
