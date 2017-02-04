@@ -72,15 +72,15 @@ public class ItemListAdaper extends RecyclerView.Adapter<ItemListAdaper.ViewHold
         ImageView image = holder.image;
         if (item.getMainImagePath() == null){
             Picasso.with(activity).load(R.drawable.image_read_fail).resize(ScreenUtil.dpToPx(activity, DEFAULT_IMAGE_WIDTH_DP),
-                    ScreenUtil.dpToPx(activity, DEFAULT_IMAGE_HEIGHT_DP)).centerCrop().into(image);
+                    ScreenUtil.dpToPx(activity, DEFAULT_IMAGE_HEIGHT_DP)).centerInside().into(image);
         }else{
             if (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE)
                     == PackageManager.PERMISSION_GRANTED) {
                 Picasso.with(activity).load(new File(item.getMainImagePath())).resize(ScreenUtil.dpToPx(activity, DEFAULT_IMAGE_WIDTH_DP),
-                        ScreenUtil.dpToPx(activity, DEFAULT_IMAGE_HEIGHT_DP)).centerCrop().into(image);
+                        ScreenUtil.dpToPx(activity, DEFAULT_IMAGE_HEIGHT_DP)).centerInside().into(image);
             } else {
                 Picasso.with(activity).load(R.drawable.image_read_fail).resize(ScreenUtil.dpToPx(activity, DEFAULT_IMAGE_WIDTH_DP),
-                        ScreenUtil.dpToPx(activity, DEFAULT_IMAGE_HEIGHT_DP)).centerCrop().into(image);
+                        ScreenUtil.dpToPx(activity, DEFAULT_IMAGE_HEIGHT_DP)).centerInside().into(image);
             }
         }
 
