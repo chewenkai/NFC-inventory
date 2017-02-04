@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.daimajia.slider.library.Indicators.PagerIndicator;
 import com.daimajia.slider.library.SliderLayout;
+import com.daimajia.slider.library.SliderTypes.BaseSliderView;
 import com.daimajia.slider.library.SliderTypes.TextSliderView;
 import com.kevin.rfidmanager.R;
 import com.kevin.rfidmanager.Utils.ConstantManager;
@@ -24,12 +25,12 @@ public class GalleryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
         ExitApplication.getInstance().addActivity(this);
-        imageView = (SliderLayout ) findViewById(R.id.show_photo_view);
+        imageView = (SliderLayout) findViewById(R.id.show_photo_view);
         default_position = getIntent().getIntExtra(ConstantManager.GALLERY_CLICK_POSITION, 0);
         List<ImagesPath> imagesPaths = DatabaseUtil.queryImagesPaths(this);
         for (ImagesPath imagePath:imagesPaths) {
             TextSliderView textSliderView = new TextSliderView(this);
-            textSliderView.image(new File(imagePath.getImagePath()));
+            textSliderView.image(new File(imagePath.getImagePath())).setScaleType(BaseSliderView.ScaleType.CenterInside);
             imageView.addSlider(textSliderView);
         }
         imageView.stopAutoCycle();
