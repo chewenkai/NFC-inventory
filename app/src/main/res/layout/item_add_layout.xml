@@ -31,8 +31,9 @@
 
                 <LinearLayout
                     android:id="@+id/layout_linear_item_name_des"
-                    android:layout_width="200dp"
+                    android:layout_width="150dp"
                     android:layout_height="wrap_content"
+                    android:minHeight="300dp"
                     android:orientation="vertical">
 
                     <EditText
@@ -60,6 +61,7 @@
                         android:paddingRight="2dp"
                         android:text="@string/items_name"
                         android:textStyle="italic|bold"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Title"
                         android:visibility="gone" />
 
                     <ListView
@@ -87,6 +89,7 @@
                 <ImageView
                     android:id="@+id/iamgeview_main_image"
                     android:layout_width="wrap_content"
+                    android:minWidth="300dp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentEnd="true"
@@ -94,6 +97,7 @@
                     android:layout_toEndOf="@+id/layout_linear_item_name_des"
                     android:layout_gravity="center_vertical"
                     android:scaleType="centerInside"
+                    android:layout_margin="5dp"
                     android:src="@drawable/add_image" />
 
             </RelativeLayout>

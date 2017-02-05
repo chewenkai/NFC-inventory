@@ -16,6 +16,7 @@
             android:layout_height="wrap_content"
             android:scaleType="centerInside"
             android:layout_gravity="center"
+            android:layout_weight="1"
             android:src="@drawable/add_image"/>
 
         <TextView

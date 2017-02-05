@@ -72,6 +72,8 @@
     <string name="default_username">Default User</string>
     <string name="username_exist">The username is exist.</string>
     <string name="user_not_exist">User name not exist.</string>
+    <string name="illegal_user">Illegal user, please sign up again.</string>
+    <string name="no_select_item">No item be selected.</string>
 
     <!--Others-->
 

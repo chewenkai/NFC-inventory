@@ -2,9 +2,11 @@ package com.kevin.rfidmanager.Adapter;
 
 import android.Manifest;
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +18,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.kevin.rfidmanager.Activity.MainActivity;
+import com.kevin.rfidmanager.Fragments.ItemDetailFrag;
 import com.kevin.rfidmanager.MyApplication;
 import com.kevin.rfidmanager.R;
 import com.kevin.rfidmanager.Utils.ConstantManager;

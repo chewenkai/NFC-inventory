@@ -72,7 +72,7 @@ public class ItemDetailFrag extends android.support.v4.app.Fragment {
 
     private CircleButton saveButton;
 
-    private View view;
+    public View view;
 
     private boolean hideEditButtons = true;
 
@@ -112,8 +112,7 @@ public class ItemDetailFrag extends android.support.v4.app.Fragment {
         if (mainImagePath != null){
             if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
                     == PackageManager.PERMISSION_GRANTED) {
-                Picasso.with(getActivity()).load(new File(mainImagePath)).resize(
-                        ScreenUtil.dpToPx(getActivity(),ConstantManager.MAIN_IMAGE_WIDTH_DP),0).into(mainImage);
+                Picasso.with(getActivity()).load(new File(mainImagePath)).into(mainImage);
                 mainImage.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -177,8 +176,9 @@ public class ItemDetailFrag extends android.support.v4.app.Fragment {
     }
 
     public void refreshUI(){
-        if (getActivity() == null)
+        if (getActivity() == null){
             return;
+        }
 
         if (((MyApplication) getActivity().getApplication()).getCurrentItemID() ==
                 ConstantManager.DEFAULT_RFID)
@@ -217,4 +217,5 @@ public class ItemDetailFrag extends android.support.v4.app.Fragment {
         });
         gallaryAdaper.updateUI();
     }
+
 }

@@ -73,7 +73,7 @@ public class ItemsEditFrag extends android.support.v4.app.Fragment {
 
     private CircleButton saveButton;
     private ImagePicker imageGalleryPicker = null;
-    private View view;
+    public View view;
 
     private boolean hideButtons = false;
 

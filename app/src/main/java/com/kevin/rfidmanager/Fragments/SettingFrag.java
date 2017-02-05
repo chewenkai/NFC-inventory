@@ -22,13 +22,18 @@ import com.kevin.rfidmanager.Activity.LoginActivity;
 import com.kevin.rfidmanager.Activity.MainActivity;
 import com.kevin.rfidmanager.MyApplication;
 import com.kevin.rfidmanager.R;
+import com.kevin.rfidmanager.Utils.ConstantManager;
 import com.kevin.rfidmanager.Utils.DatabaseUtil;
 import com.kevin.rfidmanager.Utils.SPUtil;
+import com.kevin.rfidmanager.database.DaoSession;
+import com.kevin.rfidmanager.database.Users;
+import com.kevin.rfidmanager.database.UsersDao;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.channels.FileChannel;
+import java.util.List;
 
 import at.markushi.ui.CircleButton;
 
@@ -92,23 +97,37 @@ public class SettingFrag extends android.support.v4.app.Fragment {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // check current password
-                if (!SPUtil.getInstence(getActivity().getApplicationContext()).getPassWord().
-                        equals(oldPasswordEdt.getText().toString())) {
-                    message.setText(R.string.wrong_old_password);
-                    message.setTextColor(getResources().getColor(R.color.warning_color));
+                DaoSession daoSession = ((MyApplication) getActivity().getApplication()).getDaoSession();
+                UsersDao usersDao = daoSession.getUsersDao();
+
+
+                List<Users> users = DatabaseUtil.queryUsers(getActivity(), ((MyApplication) getActivity().getApplication()).getUserName());
+                if (users.size() > 1){
+                    ((MyApplication) getActivity().getApplication()).toast(getString(R.string.illegal_user));
+                    usersDao.deleteInTx(users);
                     return;
+                }else {
+                    Users user = users.get(0);
+                    // check current password
+                    if (!user.getPassWord().
+                            equals(oldPasswordEdt.getText().toString())) {
+                        message.setText(R.string.wrong_old_password);
+                        message.setTextColor(getResources().getColor(R.color.warning_color));
+                        return;
+                    }
+                    // check password of two text editors
+                    if (!newPasswordEdt.getText().toString().
+                            equals(confirmNewPasswordEdt.getText().toString())) {
+                        message.setText(R.string.diff_passwd);
+                        message.setTextColor(getResources().getColor(R.color.warning_color));
+                        return;
+                    }
+                    //save password with edt.getText().toString();
+
+                    user.setPassWord(newPasswordEdt.getText().toString());
+                    usersDao.insertOrReplace(user);
                 }
-                // check password of two text editors
-                if (!newPasswordEdt.getText().toString().
-                        equals(confirmNewPasswordEdt.getText().toString())) {
-                    message.setText(R.string.diff_passwd);
-                    message.setTextColor(getResources().getColor(R.color.warning_color));
-                    return;
-                }
-                //save password with edt.getText().toString();
-                SPUtil us = SPUtil.getInstence(getActivity().getApplicationContext());
-                us.savePassWord(newPasswordEdt.getText().toString());
+
                 Toast.makeText(getActivity().getApplicationContext(), R.string.password_updated, Toast.LENGTH_LONG).
                         show();
                 b.dismiss();
@@ -123,6 +142,7 @@ public class SettingFrag extends android.support.v4.app.Fragment {
             }
         });
     }
+
 
     /*
     This is a dialog used for backup database
@@ -241,6 +261,7 @@ public class SettingFrag extends android.support.v4.app.Fragment {
                         dst.transferFrom(src, 0, src.size());
                         src.close();
                         dst.close();
+                        ((MyApplication)getActivity().getApplication()).setCurrentItemID(ConstantManager.DEFAULT_RFID);
                         ((MyApplication)getActivity().getApplication()).toast(getActivity().getString(R.string.restore_successful));
                         b.dismiss();
                     } catch (Exception e) {
@@ -273,6 +294,7 @@ public class SettingFrag extends android.support.v4.app.Fragment {
                         dst.transferFrom(src, 0, src.size());
                         src.close();
                         dst.close();
+                        ((MyApplication)getActivity().getApplication()).setCurrentItemID(ConstantManager.DEFAULT_RFID);
                         ((MyApplication)getActivity().getApplication()).toast(getActivity().getString(R.string.restore_successful));
                         b.dismiss();
                     } catch (Exception e) {

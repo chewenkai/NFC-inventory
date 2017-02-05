@@ -79,6 +79,7 @@ public class LoginActivity extends AppCompatActivity {
                 // The button is clicked.
                 if (IS_DEBUGING) {
                     startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    finish();
                 }
                 mUserNameStr = mPersonEdit.getText().toString();
                 if (StringUtil.isEmpty(mUserNameStr)) {
@@ -100,6 +101,7 @@ public class LoginActivity extends AppCompatActivity {
                     if (mPwdStr.equals(user.getPassWord())){
                         ((MyApplication) getApplication()).setUserName(user.getUserName());
                         startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                        finish();
                     }else{
                         Snackbar.make(v, R.string.login_fail, Snackbar.LENGTH_LONG).show();
                     }
