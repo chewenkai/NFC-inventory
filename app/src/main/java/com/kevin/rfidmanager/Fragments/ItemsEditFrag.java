@@ -131,9 +131,9 @@ public class ItemsEditFrag extends android.support.v4.app.Fragment {
 
                                                                   if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
                                                                           == PackageManager.PERMISSION_GRANTED) {
-                                                                      Picasso.with(getActivity()).load(new File(item.getMainImagePath())).into(mainImage);
+                                                                      Picasso.with(getActivity()).load(new File(item.getMainImagePath())).resize(ScreenUtil.getScreenWidth(getActivity())/2,0).into(mainImage);
                                                                   } else {
-                                                                      Picasso.with(getActivity()).load(R.drawable.image_read_fail).into(mainImage);
+                                                                      Picasso.with(getActivity()).load(R.drawable.image_read_fail).resize(ScreenUtil.getScreenWidth(getActivity())/2,0).into(mainImage);
                                                                   }
                                                               }
                                                           }
@@ -163,9 +163,9 @@ public class ItemsEditFrag extends android.support.v4.app.Fragment {
         if (mainImagePath != null) {
             if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
                     == PackageManager.PERMISSION_GRANTED) {
-                Picasso.with(getActivity()).load(new File(mainImagePath)).into(mainImage);
+                Picasso.with(getActivity()).load(new File(mainImagePath)).resize(ScreenUtil.getScreenWidth(getActivity())/2,0).into(mainImage);
             } else {
-                Picasso.with(getActivity()).load(R.drawable.image_read_fail).into(mainImage);
+                Picasso.with(getActivity()).load(R.drawable.image_read_fail).resize(ScreenUtil.getScreenWidth(getActivity())/2,0).into(mainImage);
             }
         }
         mainImage.setOnClickListener(new View.OnClickListener() {
