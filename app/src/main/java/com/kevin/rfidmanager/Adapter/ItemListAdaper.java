@@ -79,8 +79,7 @@ public class ItemListAdaper extends RecyclerView.Adapter<ItemListAdaper.ViewHold
         }else{
             if (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE)
                     == PackageManager.PERMISSION_GRANTED) {
-                Picasso.with(activity).load(new File(item.getMainImagePath())).resize(ScreenUtil.dpToPx(activity, DEFAULT_IMAGE_WIDTH_DP),
-                        ScreenUtil.dpToPx(activity, DEFAULT_IMAGE_HEIGHT_DP)).centerInside().into(image);
+                Picasso.with(activity).load(new File(item.getMainImagePath())).into(image);
             } else {
                 Picasso.with(activity).load(R.drawable.image_read_fail).resize(ScreenUtil.dpToPx(activity, DEFAULT_IMAGE_WIDTH_DP),
                         ScreenUtil.dpToPx(activity, DEFAULT_IMAGE_HEIGHT_DP)).centerInside().into(image);

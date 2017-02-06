@@ -24,6 +24,7 @@ import com.kevin.rfidmanager.MyApplication;
 import com.kevin.rfidmanager.R;
 import com.kevin.rfidmanager.Utils.ConstantManager;
 import com.kevin.rfidmanager.Utils.DatabaseUtil;
+import com.kevin.rfidmanager.Utils.SPUtil;
 import com.kevin.rfidmanager.database.DaoSession;
 import com.kevin.rfidmanager.database.Items;
 import com.kevin.rfidmanager.database.ItemsDao;
@@ -51,10 +52,6 @@ public class ItemsListFrag extends android.support.v4.app.Fragment {
 
         itemListAdapter = new ItemListAdaper(getActivity(), items);
         recyclerView.setAdapter(itemListAdapter);
-//        StaggeredGridLayoutManager gridLayoutManager =
-//                new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);// First param is number of columns and second param is orientation i.e Vertical or Horizontal
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 3, GridLayoutManager.VERTICAL, false);
-        recyclerView.setLayoutManager(gridLayoutManager);// Attach the layout manager to the recycler view
         recyclerView.setHasFixedSize(true);
 
         addButton = (FloatingActionButton) v.findViewById(R.id.floatingAddButton);
@@ -66,9 +63,29 @@ public class ItemsListFrag extends android.support.v4.app.Fragment {
         });
     }
 
+    @Override
+    public void onResume() {
+        switch (SPUtil.getInstence(getContext()).getApperance()){
+            case 8:  // ConstantManager.LINEAR_LAYOUT
+                GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 3, GridLayoutManager.VERTICAL, false);
+                recyclerView.setLayoutManager(gridLayoutManager);// Attach the layout manager to the recycler view
+                break;
+            case 9:  // ConstantManager.STAGGER_LAYOUT
+                StaggeredGridLayoutManager staggeredGridLayoutManager =
+                new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);// First param is number of columns and second param is orientation i.e Vertical or Horizontal
+                recyclerView.setLayoutManager(staggeredGridLayoutManager);
+                break;
+            case 10:  // ConstantManager.ONE_ROW_LAYOUT
+                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false);
+                recyclerView.setLayoutManager(linearLayoutManager);
+                break;
+        }
+        super.onResume();
+    }
+
     /*
-       This is a dialog used for add new key description
-        */
+           This is a dialog used for add new key description
+            */
     public void addNewItem() {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();

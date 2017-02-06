@@ -32,4 +32,10 @@ public class ConstantManager {
     // Extra name in PhotoActivity
     public static String INTENT_STRING_EXTRA_FILE_PATH = "image_view_file_path_extra";
     public static String GALLERY_CLICK_POSITION = "click_position";
+
+    // Apperance
+    public static int LINEAR_LAYOUT = 8;
+    public static int STAGGER_LAYOUT = 9;
+    public static int ONE_ROW_LAYOUT = 10;
+
 }

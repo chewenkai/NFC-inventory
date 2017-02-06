@@ -15,6 +15,15 @@
             android:layout_alignParentTop="true">
 
             <Button
+                android:id="@+id/change_theme"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/change_apperance"
+                android:textAllCaps="false"
+                android:layout_margin="10dp"
+                style="@style/Widget.AppCompat.Button.Colored" />
+
+            <Button
                 android:id="@+id/backup_database_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

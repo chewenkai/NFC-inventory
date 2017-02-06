@@ -13,7 +13,9 @@
         <ImageView
             android:id="@+id/item_thumb"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
+            android:adjustViewBounds="true"
+            android:baselineAlignBottom="true"
             android:scaleType="centerInside"
             android:layout_gravity="center"
             android:layout_weight="1"

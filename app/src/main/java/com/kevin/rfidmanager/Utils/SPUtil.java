@@ -14,6 +14,7 @@ public class SPUtil {
     private static final String PERSON_NAME = "person_name";  // user name
     private static final String PERSON_PWD = "person_pwd";  // password
     private static final String NEED_PASSWD = "need_passwd";  // is user need password to protect info?
+    private static final String APPERANCE = "apperance";  // set apperance
 
     private static SPUtil instence;
     private SharedPreferences sharedPreferences;
@@ -84,6 +85,16 @@ public class SPUtil {
     public Boolean getNeedPassword() {
         boolean isFirstUse = sharedPreferences.getBoolean(NEED_PASSWD, true);
         return isFirstUse;
+    }
+
+    public void setApperance(int apperance){
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(APPERANCE, apperance);
+        editor.commit();
+    }
+
+    public int getApperance(){
+        return sharedPreferences.getInt(APPERANCE, ConstantManager.LINEAR_LAYOUT);
     }
 
 }

@@ -74,6 +74,8 @@
     <string name="user_not_exist">User name not exist.</string>
     <string name="illegal_user">Illegal user, please sign up again.</string>
     <string name="no_select_item">No item be selected.</string>
+    <string name="change_apperance">Change Apperance</string>
+    <string name="apperance_updated">Apperance updated!</string>
 
     <!--Others-->
 
