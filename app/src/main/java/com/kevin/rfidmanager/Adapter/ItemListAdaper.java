@@ -62,8 +62,7 @@ public class ItemListAdaper extends RecyclerView.Adapter<ItemListAdaper.ViewHold
         View contactView = inflater.inflate(R.layout.item_adapter_layout, parent, false);
 
         // Return a new holder instance
-        ViewHolder viewHolder = new ViewHolder(contactView);
-        return viewHolder;
+        return new ViewHolder(contactView);
     }
 
     @Override
