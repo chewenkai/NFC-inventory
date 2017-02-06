@@ -21,9 +21,10 @@
             android:layout_weight="1"
             android:orientation="vertical">
 
-            <RelativeLayout
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="horizontal"
                 android:paddingEnd="5dp"
                 android:paddingLeft="5dp"
                 android:paddingRight="5dp"
@@ -31,8 +32,9 @@
 
                 <LinearLayout
                     android:id="@+id/layout_linear_item_name_des"
-                    android:layout_width="150dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:minHeight="300dp"
                     android:orientation="vertical">
 
@@ -91,16 +93,13 @@
                     android:layout_width="wrap_content"
                     android:minWidth="300dp"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true"
-                    android:layout_toRightOf="@+id/layout_linear_item_name_des"
-                    android:layout_toEndOf="@+id/layout_linear_item_name_des"
+                    android:layout_weight="1"
                     android:layout_gravity="center_vertical"
                     android:scaleType="centerInside"
                     android:layout_margin="5dp"
                     android:src="@drawable/add_image" />
 
-            </RelativeLayout>
+            </LinearLayout>
         </RelativeLayout>
 
         <ScrollView
