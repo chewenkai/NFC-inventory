@@ -78,12 +78,13 @@ public class ItemDetailFrag extends android.support.v4.app.Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
+        setRetainInstance(true);
         View v = inflater.inflate(R.layout.item_add_layout, container, false);
         this.view = v;
         initUI(v);
         return v;
     }
+
 
     private void initUI(View v) {
         if (getActivity() == null)
@@ -158,6 +159,8 @@ public class ItemDetailFrag extends android.support.v4.app.Fragment {
         detailDescription = (EditText) v.findViewById(R.id.detail_description);
         detailDescription.setText(DatabaseUtil.getCurrentItem(getActivity()).getDetailDescription());
         detailDescription.setEnabled(false);
+        detailDescription.setBackgroundColor(getActivity().getResources().getColor(R.color.white));
+        detailDescription.setTextColor(getActivity().getResources().getColor(R.color.black));
 
         saveButton = (CircleButton) v.findViewById(R.id.save_des);
         saveButton.setVisibility(View.GONE);
@@ -186,36 +189,8 @@ public class ItemDetailFrag extends android.support.v4.app.Fragment {
 
         if (view!=null){
             initUI(view);
-            return;
         }
-        textViewItemName.setText(DatabaseUtil.getCurrentItem(getActivity()).getItemName());
-        desListAdapter.updateKeyDescriptionList();
 
-        final String mainImagePath = DatabaseUtil.getCurrentItem(getActivity()).getMainImagePath();
-        if (mainImagePath != null){
-            if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE)
-                    == PackageManager.PERMISSION_GRANTED) {
-                Picasso.with(getActivity()).load(new File(mainImagePath)).into(mainImage);
-            } else {
-                Picasso.with(getActivity()).load(R.drawable.image_read_fail).into(mainImage);
-            }
-        }else {
-            Picasso.with(getActivity()).load(R.drawable.image_read_fail).into(mainImage);
-        }
-        mainImage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Open picture
-                Intent intent = new Intent();
-                intent.setAction(Intent.ACTION_VIEW);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                intent.setDataAndType(FileProvider.getUriForFile(getActivity(),
-                        getActivity().getApplicationContext().getPackageName() + ".provider", new File(mainImagePath)), "image/*");
-                startActivity(intent);
-            }
-        });
-        gallaryAdaper.updateUI();
     }
 
 }

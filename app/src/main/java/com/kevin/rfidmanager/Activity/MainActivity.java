@@ -22,7 +22,7 @@ The main page of RFID system.
  */
 public class MainActivity extends AppCompatActivity {
     public NonSwipeableViewPager viewPager;
-    public PagerAdapter adapter;
+    public PagerAdapter adapter = null;
     public TabLayout tabLayout;
 
     @Override
@@ -39,8 +39,8 @@ public class MainActivity extends AppCompatActivity {
         tabLayout.setTabGravity(TabLayout.GRAVITY_CENTER);
 
         viewPager = (NonSwipeableViewPager) findViewById(R.id.pager);
-        adapter = new PagerAdapter
-                (getSupportFragmentManager(), tabLayout.getTabCount());
+        if (adapter == null)
+            adapter = new PagerAdapter(getSupportFragmentManager(), tabLayout.getTabCount());
         viewPager.setAdapter(adapter);
 //        viewPager.setOnTouchListener(new View.OnTouchListener() {
 //

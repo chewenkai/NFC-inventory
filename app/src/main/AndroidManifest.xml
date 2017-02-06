@@ -20,7 +20,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activity.MainActivity" />
+        <activity android:name=".Activity.MainActivity"
+            android:screenOrientation="portrait"/>
         <activity android:name=".Activity.PhotoActivity"></activity>
         <activity android:name=".Activity.GalleryActivity"/>
         <provider
