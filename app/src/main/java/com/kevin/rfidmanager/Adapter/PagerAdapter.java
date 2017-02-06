@@ -35,13 +35,17 @@ public class PagerAdapter extends FragmentStatePagerAdapter {
                 else
                     return tab1;
             case 1:  // Detail
-                if (tab2 == null || tab2.view ==null)
-                    return new ItemDetailFrag();
+                if (tab2 == null || tab2.view ==null) {
+                    tab2 = new ItemDetailFrag();
+                    return tab2;
+                }
                 else
                     return tab2;
             case 2:  // Edit
-                if (tab3 == null || tab3.view ==null)
-                    return new ItemsEditFrag();
+                if (tab3 == null || tab3.view ==null) {
+                    tab3 =  new ItemsEditFrag();
+                    return tab3;
+                }
                 else
                     return tab3;
             case 3:  // Setting

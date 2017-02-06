@@ -52,6 +52,7 @@ public class ItemsListFrag extends android.support.v4.app.Fragment {
 
         itemListAdapter = new ItemListAdaper(getActivity(), items);
         recyclerView.setAdapter(itemListAdapter);
+        setRecyclerViewLayout();
         recyclerView.setHasFixedSize(true);
 
         addButton = (FloatingActionButton) v.findViewById(R.id.floatingAddButton);
@@ -65,6 +66,11 @@ public class ItemsListFrag extends android.support.v4.app.Fragment {
 
     @Override
     public void onResume() {
+        setRecyclerViewLayout();
+        super.onResume();
+    }
+
+    private void setRecyclerViewLayout() {
         switch (SPUtil.getInstence(getContext()).getApperance()){
             case 8:  // ConstantManager.LINEAR_LAYOUT
                 GridLayoutManager gridLayoutManager = new GridLayoutManager(getContext(), 3, GridLayoutManager.VERTICAL, false);
@@ -72,7 +78,7 @@ public class ItemsListFrag extends android.support.v4.app.Fragment {
                 break;
             case 9:  // ConstantManager.STAGGER_LAYOUT
                 StaggeredGridLayoutManager staggeredGridLayoutManager =
-                new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);// First param is number of columns and second param is orientation i.e Vertical or Horizontal
+                        new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);// First param is number of columns and second param is orientation i.e Vertical or Horizontal
                 recyclerView.setLayoutManager(staggeredGridLayoutManager);
                 break;
             case 10:  // ConstantManager.ONE_ROW_LAYOUT
@@ -80,7 +86,6 @@ public class ItemsListFrag extends android.support.v4.app.Fragment {
                 recyclerView.setLayoutManager(linearLayoutManager);
                 break;
         }
-        super.onResume();
     }
 
     /*
