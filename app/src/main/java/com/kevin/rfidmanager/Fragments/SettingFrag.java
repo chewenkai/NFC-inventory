@@ -87,7 +87,7 @@ public class SettingFrag extends android.support.v4.app.Fragment {
         LayoutInflater inflater = getActivity().getLayoutInflater();
         final View dialogView = inflater.inflate(R.layout.dialog_change_apperance_layout, null);
         dialogBuilder.setView(dialogView);
-        dialogBuilder.setTitle(R.string.select_backup_position);
+        dialogBuilder.setTitle(R.string.select_an_appearance);
         dialogBuilder.setNegativeButton(R.string.Cancel, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
@@ -98,6 +98,18 @@ public class SettingFrag extends android.support.v4.app.Fragment {
         final CircleButton linear_layout = (CircleButton) dialogView.findViewById(R.id.linear_layout);
         final CircleButton staggered_layout = (CircleButton) dialogView.findViewById(R.id.staggered_layout);
         final CircleButton one_row_layout = (CircleButton) dialogView.findViewById(R.id.one_row_layout);
+
+        switch (SPUtil.getInstence(getContext()).getApperance()){
+            case 8:  // ConstantManager.LINEAR_LAYOUT
+                textView.setText("Current selection: Linear Layout");
+                break;
+            case 9:  // ConstantManager.STAGGER_LAYOUT
+                textView.setText("Current selection: Staggered Layout");
+                break;
+            case 10:  // ConstantManager.ONE_ROW_LAYOUT
+                textView.setText("Current selection: One Row Layout");
+                break;
+        }
 
         linear_layout.setOnClickListener(new View.OnClickListener() {
             @Override

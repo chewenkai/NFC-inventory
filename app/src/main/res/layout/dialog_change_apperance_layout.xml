@@ -16,17 +16,17 @@
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:layout_gravity="center">
 
         <RelativeLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center">
             <at.markushi.ui.CircleButton
                 android:id="@+id/linear_layout"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:layout_centerInParent="true"
                 app:cb_color="#61c9d9"
                 app:cb_pressedRingWidth="10dip" />
@@ -36,8 +36,8 @@
                 android:layout_centerInParent="true"
                 android:gravity="center"
                 android:textStyle="bold"
-                android:textSize="11sp"
-                android:text="Linear\nLayout"
+                android:textSize="13sp"
+                android:text="@string/linear_nlayout"
                 android:textColor="@color/white"/>
         </RelativeLayout>
 
@@ -47,8 +47,8 @@
             android:layout_gravity="center">
             <at.markushi.ui.CircleButton
                 android:id="@+id/staggered_layout"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:layout_centerInParent="true"
                 app:cb_color="#c761d9"
                 app:cb_pressedRingWidth="10dip" />
@@ -58,8 +58,8 @@
                 android:layout_centerInParent="true"
                 android:gravity="center"
                 android:textStyle="bold"
-                android:textSize="11sp"
-                android:text="Staggered\nLayout"
+                android:textSize="13sp"
+                android:text="@string/staggered_nlayout"
                 android:textColor="@color/white"/>
         </RelativeLayout>
 
@@ -69,8 +69,8 @@
             android:layout_gravity="center">
             <at.markushi.ui.CircleButton
                 android:id="@+id/one_row_layout"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
                 android:layout_centerInParent="true"
                 app:cb_color="#3b45d1"
                 app:cb_pressedRingWidth="10dip" />
@@ -80,8 +80,8 @@
                 android:layout_centerInParent="true"
                 android:gravity="center"
                 android:textStyle="bold"
-                android:textSize="11sp"
-                android:text="OneRow\nLayout"
+                android:textSize="13sp"
+                android:text="@string/one_row_nlayout"
                 android:textColor="@color/white"/>
         </RelativeLayout>
     </LinearLayout>
