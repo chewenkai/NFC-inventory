@@ -87,6 +87,7 @@
     <string name="change_rfid_range">Change RFID Range</string>
     <string name="detail_page">Detail Page</string>
     <string name="edit_page">Edit Page</string>
+    <string name="add_new_item_explain">Add new item</string>
 
     <!--Others-->
 

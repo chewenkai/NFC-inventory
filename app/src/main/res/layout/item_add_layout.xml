@@ -50,7 +50,7 @@
                     android:paddingRight="2dp"
                     android:paddingStart="2dp"
                     android:text="@string/items_name"
-                    android:textStyle="italic|bold" />
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/textview_item_name"
@@ -62,7 +62,7 @@
                     android:paddingRight="2dp"
                     android:text="@string/items_name"
                     android:textAppearance="@style/TextAppearance.AppCompat.Title"
-                    android:textStyle="italic|bold"
+                    android:textStyle="bold"
                     android:visibility="gone" />
 
                 <ListView

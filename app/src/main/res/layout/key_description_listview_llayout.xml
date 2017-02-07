@@ -32,7 +32,8 @@
         android:paddingBottom="8dp"
         android:paddingTop="8dp"
         android:textSize="18sp"
-        android:textStyle="bold" />
+        android:textColor="@color/black"
+        android:textStyle="normal" />
 
 
     <at.markushi.ui.CircleButton

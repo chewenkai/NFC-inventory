@@ -14,6 +14,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.Toolbar;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -53,7 +54,6 @@ import at.markushi.ui.CircleButton;
 public class ItemListActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ItemListAdaper itemListAdapter;
-    FloatingActionButton addButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,8 +92,9 @@ public class ItemListActivity extends AppCompatActivity {
                         changeApperanceDialog();
                     }
                 })
-                .normalImageRes(R.drawable.ic_clear_white_48dp)
-                .normalTextRes(R.string.change_apperance);
+                .normalImageRes(R.drawable.ic_color_lens_white_48dp)
+                .normalTextRes(R.string.change_apperance)
+                .containsSubText(false);
         leftBmb.addBuilder(changeAppearance);
 
         HamButton.Builder backup = new HamButton.Builder()
@@ -103,8 +104,9 @@ public class ItemListActivity extends AppCompatActivity {
                         backupDialog();
                     }
                 })
-                .normalImageRes(R.drawable.ic_clear_white_48dp)
-                .normalTextRes(R.string.backup_database);
+                .normalImageRes(R.drawable.ic_settings_backup_restore_white_48dp)
+                .normalTextRes(R.string.backup_database)
+                .containsSubText(false);
         leftBmb.addBuilder(backup);
 
         HamButton.Builder restore = new HamButton.Builder()
@@ -114,8 +116,9 @@ public class ItemListActivity extends AppCompatActivity {
                         restoreDialog();
                     }
                 })
-                .normalImageRes(R.drawable.ic_clear_white_48dp)
-                .normalTextRes(R.string.restore_database);
+                .normalImageRes(R.drawable.ic_restore_white_48dp)
+                .normalTextRes(R.string.restore_database)
+                .containsSubText(false);
         leftBmb.addBuilder(restore);
 
         HamButton.Builder changePassword = new HamButton.Builder()
@@ -125,8 +128,9 @@ public class ItemListActivity extends AppCompatActivity {
                         showPasswordChangeDialog();
                     }
                 })
-                .normalImageRes(R.drawable.ic_clear_white_48dp)
-                .normalTextRes(R.string.change_password);
+                .normalImageRes(R.drawable.key)
+                .normalTextRes(R.string.change_password)
+                .containsSubText(false);
         leftBmb.addBuilder(changePassword);
 
         HamButton.Builder change_rfid_range = new HamButton.Builder()
@@ -136,7 +140,7 @@ public class ItemListActivity extends AppCompatActivity {
                         //showPasswordChangeDialog();
                     }
                 })
-                .normalImageRes(R.drawable.ic_clear_white_48dp)
+                .normalImageRes(R.drawable.range)
                 .normalTextRes(R.string.change_rfid_range);
         leftBmb.addBuilder(change_rfid_range);
 
@@ -157,14 +161,6 @@ public class ItemListActivity extends AppCompatActivity {
         recyclerView.setAdapter(itemListAdapter);
         setRecyclerViewLayout();
         recyclerView.setHasFixedSize(true);
-
-        addButton = (FloatingActionButton) findViewById(R.id.floatingAddButton);
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addNewItem();
-            }
-        });
     }
 
     @Override
@@ -542,6 +538,49 @@ public class ItemListActivity extends AppCompatActivity {
 
         b.show();
 
+    }
+
+    private void exit() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(ItemListActivity.this);
+        builder.setMessage(R.string.exit_warning);
+        builder.setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
+        builder.setNegativeButton(R.string.Cancel, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+            }
+        });
+        builder.create().show();
+    }
+
+    @Override
+    public boolean onKeyUp(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            exit();
+            return true;
+        }
+        return super.onKeyUp(keyCode, event);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.itemlist_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_bar_add:
+                addNewItem();
+                break;
+        }
+        return true;
     }
 
 }
