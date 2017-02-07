@@ -1,184 +1,175 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_alignParentLeft="true"
+    android:layout_alignParentStart="true"
+    android:layout_alignParentTop="true"
     android:background="@color/white"
+    android:descendantFocusability="beforeDescendants"
+    android:focusableInTouchMode="true"
     android:orientation="vertical">
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentTop="true"
-        android:background="@color/white"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:orientation="vertical">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:orientation="horizontal"
+            android:paddingEnd="5dp"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:paddingStart="5dp">
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:id="@+id/layout_linear_item_name_des"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:paddingEnd="5dp"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:paddingStart="5dp"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true">
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-                <LinearLayout
-                    android:id="@+id/layout_linear_item_name_des"
-                    android:layout_width="0dp"
+                <EditText
+                    android:id="@+id/item_name"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:layout_margin="10dp"
+                    android:gravity="start"
+                    android:inputType="text"
+                    android:nextFocusLeft="@id/item_name"
+                    android:nextFocusUp="@id/item_name"
+                    android:paddingEnd="2dp"
+                    android:paddingLeft="2dp"
+                    android:paddingRight="2dp"
+                    android:paddingStart="2dp"
+                    android:text="@string/items_name"
+                    android:textStyle="italic|bold" />
 
-                    <EditText
-                        android:id="@+id/item_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:gravity="start"
-                        android:nextFocusLeft="@id/item_name"
-                        android:nextFocusUp="@id/item_name"
-                        android:paddingEnd="2dp"
-                        android:paddingLeft="2dp"
-                        android:paddingRight="2dp"
-                        android:paddingStart="2dp"
-                        android:text="@string/items_name"
-                        android:textStyle="italic|bold" />
-
-                    <TextView
-                        android:id="@+id/textview_item_name"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="10dp"
-                        android:gravity="start"
-                        android:paddingLeft="2dp"
-                        android:paddingRight="2dp"
-                        android:text="@string/items_name"
-                        android:textStyle="italic|bold"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Title"
-                        android:visibility="gone" />
-
-                    <ListView
-                        android:id="@+id/listview_item_key_des"
-                        android:layout_width="wrap_content"
-                        android:layout_height="0dp"
-                        android:minHeight="100dp"
-                        android:layout_weight="1"
-                        android:background="@color/white"
-                        android:divider="@null"
-                        android:dividerHeight="0dp" />
-
-                    <Button
-                        android:id="@+id/button_add_item_key_des"
-                        style="@style/Base.Widget.AppCompat.Button.Colored"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:padding="10dp"
-                        android:text="@string/add_key_description"
-                        android:textColor="@color/white"
-                        android:textSize="13sp" />
-                </LinearLayout>
-
-                <ImageView
-                    android:id="@+id/iamgeview_main_image"
-                    android:layout_width="0dp"
+                <TextView
+                    android:id="@+id/textview_item_name"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_gravity="center_vertical"
-                    android:scaleType="centerInside"
-                    android:layout_margin="5dp"
-                    android:src="@drawable/add_image" />
+                    android:layout_margin="10dp"
+                    android:gravity="start"
+                    android:paddingLeft="2dp"
+                    android:paddingRight="2dp"
+                    android:text="@string/items_name"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Title"
+                    android:textStyle="italic|bold"
+                    android:visibility="gone" />
 
+                <ListView
+                    android:id="@+id/listview_item_key_des"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:background="@color/white"
+                    android:divider="@null"
+                    android:dividerHeight="0dp" />
+
+                <Button
+                    android:id="@+id/button_add_item_key_des"
+                    style="@style/Base.Widget.AppCompat.Button.Colored"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:padding="10dp"
+                    android:text="@string/add_key_description"
+                    android:textColor="@color/white"
+                    android:textSize="13sp" />
             </LinearLayout>
-        </RelativeLayout>
 
-        <ScrollView
+            <ImageView
+                android:id="@+id/iamgeview_main_image"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:layout_margin="5dp"
+                android:layout_weight="1"
+                android:scaleType="centerInside"
+                android:src="@drawable/add_image" />
+
+        </LinearLayout>
+    </RelativeLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1">
+            android:orientation="vertical">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <LinearLayout
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/recycle_gallery"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                </android.support.v7.widget.RecyclerView>
+
+                <android.support.v7.widget.AppCompatButton
+                    android:id="@+id/add_gallery_image"
+                    style="@style/Widget.AppCompat.Button.Colored"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
-
-                    <android.support.v7.widget.RecyclerView
-                        android:id="@+id/recycle_gallery"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content">
-
-                    </android.support.v7.widget.RecyclerView>
-
-                    <android.support.v7.widget.AppCompatButton
-                        android:id="@+id/add_gallery_image"
-                        style="@style/Widget.AppCompat.Button.Colored"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center"
-                        android:gravity="center"
-                        android:text="@string/add_more_images"
-                        android:textSize="13sp" />
-
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/detail_description_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="10dp"
-                    android:gravity="top"
-                    android:text="@string/detail_description"
-                    android:textStyle="bold" />
-
-                <EditText
-                    android:id="@+id/detail_description"
-                    style="@style/FullWidthEditText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginStart="10dp"
-                    android:background="@color/paper_color"
-                    android:gravity="top|start"
-                    android:hint="@string/description"
-                    android:inputType="textMultiLine"
-                    android:minHeight="250dp" />
-
-                <at.markushi.ui.CircleButton
-                    android:id="@+id/save_des"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_gravity="end"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginLeft="20dp"
-                    android:layout_marginRight="20dp"
-                    android:src="@drawable/save"
-                    app:cb_color="@color/colorAccent"
-                    app:cb_pressedRingWidth="8dip" />
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="@string/add_more_images"
+                    android:textSize="13sp" />
 
             </LinearLayout>
 
-        </ScrollView>
+            <TextView
+                android:id="@+id/detail_description_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:gravity="top"
+                android:text="@string/detail_description"
+                android:textStyle="bold" />
 
+            <EditText
+                android:id="@+id/detail_description"
+                style="@style/FullWidthEditText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
+                android:background="@color/paper_color"
+                android:gravity="top|start"
+                android:inputType="textMultiLine"
+                android:minHeight="250dp" />
 
-    </LinearLayout>
+            <at.markushi.ui.CircleButton
+                android:id="@+id/save_des"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_gravity="end"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:src="@drawable/save"
+                app:cb_color="@color/colorAccent"
+                app:cb_pressedRingWidth="8dip" />
 
+        </LinearLayout>
 
-</RelativeLayout>
+    </ScrollView>
+
+</LinearLayout>

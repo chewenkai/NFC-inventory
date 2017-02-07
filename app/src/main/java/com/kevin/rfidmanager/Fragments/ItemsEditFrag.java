@@ -156,6 +156,8 @@ public class ItemsEditFrag extends android.support.v4.app.Fragment {
                 DatabaseUtil.queryItemsKeyDes(getActivity(),
                         ((MyApplication) getActivity().getApplication()).getCurrentItemID()), hideButtons);
         key_des_list.setAdapter(desListAdapter);
+        if (desListAdapter.getCount()>0)
+            key_des_list.setMinimumHeight(ScreenUtil.dpToPx(getActivity(), 50));
         desListAdapter.setCurrentActivity(getActivity());
 
         mainImage = (ImageView) v.findViewById(R.id.iamgeview_main_image);
@@ -184,6 +186,7 @@ public class ItemsEditFrag extends android.support.v4.app.Fragment {
         addKeyDes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                packUpImm();
                 addNewKeyDesDialog();
             }
         });
@@ -290,6 +293,7 @@ public class ItemsEditFrag extends android.support.v4.app.Fragment {
                 desListAdapter.updateKeyDescriptionList();
                 b.dismiss();
                 packUpImm();
+                itemName.clearFocus();
 
             }
         });
