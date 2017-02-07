@@ -1,25 +1,17 @@
-package com.kevin.rfidmanager.Fragments;
-
-/**
- * Created by Kevin on 2017/1/26.
- */
+package com.kevin.rfidmanager.Activity;
 
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.os.Bundle;
 import android.os.Environment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.kevin.rfidmanager.Activity.LoginActivity;
-import com.kevin.rfidmanager.Activity.MainActivity;
 import com.kevin.rfidmanager.MyApplication;
 import com.kevin.rfidmanager.R;
 import com.kevin.rfidmanager.Utils.ConstantManager;
@@ -32,45 +24,43 @@ import com.kevin.rfidmanager.database.UsersDao;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.nio.BufferUnderflowException;
 import java.nio.channels.FileChannel;
 import java.util.List;
 
 import at.markushi.ui.CircleButton;
 
-public class SettingFrag extends android.support.v4.app.Fragment {
+public class SettingActivity extends AppCompatActivity {
     Button changeApperance, backupDatabaseButton, restoreDatabaseButton, changePasswordButton, changeRFIDRangeButton;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.setting_layout, container, false);
-        initUI(v);
-        return v;
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.setting_layout);
+        initUI();
     }
-
-    private void initUI(View v) {
-        changeApperance = (Button) v.findViewById(R.id.change_theme);
+    private void initUI() {
+        changeApperance = (Button) findViewById(R.id.change_theme);
         changeApperance.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 changeApperanceDialog();
             }
         });
-        backupDatabaseButton = (Button) v.findViewById(R.id.backup_database_button);
+        backupDatabaseButton = (Button) findViewById(R.id.backup_database_button);
         backupDatabaseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 backupDialog();
             }
         });
-        restoreDatabaseButton = (Button) v.findViewById(R.id.restore_database_button);
+        restoreDatabaseButton = (Button) findViewById(R.id.restore_database_button);
         restoreDatabaseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 restoreDialog();
             }
         });
-        changePasswordButton = (Button) v.findViewById(R.id.change_password);
+        changePasswordButton = (Button) findViewById(R.id.change_password);
         changePasswordButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -78,13 +68,13 @@ public class SettingFrag extends android.support.v4.app.Fragment {
             }
         });
 
-        changeRFIDRangeButton = (Button) v.findViewById(R.id.change_rfid_range);
+        changeRFIDRangeButton = (Button) findViewById(R.id.change_rfid_range);
 
     }
 
     private void changeApperanceDialog() {
-        final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
-        LayoutInflater inflater = getActivity().getLayoutInflater();
+        final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(SettingActivity.this);
+        LayoutInflater inflater = getLayoutInflater();
         final View dialogView = inflater.inflate(R.layout.dialog_change_apperance_layout, null);
         dialogBuilder.setView(dialogView);
         dialogBuilder.setTitle(R.string.select_an_appearance);
@@ -99,7 +89,7 @@ public class SettingFrag extends android.support.v4.app.Fragment {
         final CircleButton staggered_layout = (CircleButton) dialogView.findViewById(R.id.staggered_layout);
         final CircleButton one_row_layout = (CircleButton) dialogView.findViewById(R.id.one_row_layout);
 
-        switch (SPUtil.getInstence(getContext()).getApperance()){
+        switch (SPUtil.getInstence(SettingActivity.this).getApperance()){
             case 8:  // ConstantManager.LINEAR_LAYOUT
                 textView.setText("Current selection: Linear Layout");
                 break;
@@ -114,8 +104,8 @@ public class SettingFrag extends android.support.v4.app.Fragment {
         linear_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SPUtil.getInstence(getActivity()).setApperance(ConstantManager.LINEAR_LAYOUT);
-                ((MyApplication) getActivity().getApplication()).toast(getActivity().getString(R.string.apperance_updated));
+                SPUtil.getInstence(SettingActivity.this).setApperance(ConstantManager.LINEAR_LAYOUT);
+                ((MyApplication) getApplication()).toast(getString(R.string.apperance_updated));
                 b.dismiss();
 
             }
@@ -124,8 +114,8 @@ public class SettingFrag extends android.support.v4.app.Fragment {
         staggered_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SPUtil.getInstence(getActivity()).setApperance(ConstantManager.STAGGER_LAYOUT);
-                ((MyApplication) getActivity().getApplication()).toast(getActivity().getString(R.string.apperance_updated));
+                SPUtil.getInstence(SettingActivity.this).setApperance(ConstantManager.STAGGER_LAYOUT);
+                ((MyApplication) getApplication()).toast(getString(R.string.apperance_updated));
                 b.dismiss();
             }
         });
@@ -133,8 +123,8 @@ public class SettingFrag extends android.support.v4.app.Fragment {
         one_row_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SPUtil.getInstence(getActivity()).setApperance(ConstantManager.ONE_ROW_LAYOUT);
-                ((MyApplication) getActivity().getApplication()).toast(getActivity().getString(R.string.apperance_updated));
+                SPUtil.getInstence(SettingActivity.this).setApperance(ConstantManager.ONE_ROW_LAYOUT);
+                ((MyApplication) getApplication()).toast(getString(R.string.apperance_updated));
                 b.dismiss();
             }
         });
@@ -145,8 +135,8 @@ public class SettingFrag extends android.support.v4.app.Fragment {
     This is a dialog used for changing password.
      */
     public void showPasswordChangeDialog() {
-        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
-        LayoutInflater inflater = getActivity().getLayoutInflater();
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(SettingActivity.this);
+        LayoutInflater inflater = getLayoutInflater();
         final View dialogView = inflater.inflate(R.layout.password_change_dialog_layout, null);
         dialogBuilder.setView(dialogView);
 
@@ -164,13 +154,13 @@ public class SettingFrag extends android.support.v4.app.Fragment {
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DaoSession daoSession = ((MyApplication) getActivity().getApplication()).getDaoSession();
+                DaoSession daoSession = ((MyApplication) getApplication()).getDaoSession();
                 UsersDao usersDao = daoSession.getUsersDao();
 
 
-                List<Users> users = DatabaseUtil.queryUsers(getActivity(), ((MyApplication) getActivity().getApplication()).getUserName());
+                List<Users> users = DatabaseUtil.queryUsers(SettingActivity.this, ((MyApplication) getApplication()).getUserName());
                 if (users.size() > 1) {
-                    ((MyApplication) getActivity().getApplication()).toast(getString(R.string.illegal_user));
+                    ((MyApplication) getApplication()).toast(getString(R.string.illegal_user));
                     usersDao.deleteInTx(users);
                     return;
                 } else {
@@ -195,7 +185,7 @@ public class SettingFrag extends android.support.v4.app.Fragment {
                     usersDao.insertOrReplace(user);
                 }
 
-                Toast.makeText(getActivity().getApplicationContext(), R.string.password_updated, Toast.LENGTH_LONG).
+                Toast.makeText(getApplicationContext(), R.string.password_updated, Toast.LENGTH_LONG).
                         show();
                 b.dismiss();
             }
@@ -215,8 +205,8 @@ public class SettingFrag extends android.support.v4.app.Fragment {
     This is a dialog used for backup database
      */
     public void backupDialog() {
-        final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
-        LayoutInflater inflater = getActivity().getLayoutInflater();
+        final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(SettingActivity.this);
+        LayoutInflater inflater = getLayoutInflater();
         final View dialogView = inflater.inflate(R.layout.dialog_backup_layout, null);
         dialogBuilder.setView(dialogView);
         dialogBuilder.setTitle(R.string.select_backup_position);
@@ -233,19 +223,19 @@ public class SettingFrag extends android.support.v4.app.Fragment {
         internal_backup.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (getActivity().getFilesDir().canWrite()) {
+                if (getFilesDir().canWrite()) {
                     try {
-                        File currentDB = getActivity().getDatabasePath(getActivity().getString(R.string.database_name));
+                        File currentDB = getDatabasePath(getString(R.string.database_name));
 
-                        String backupDBPath = String.format("%s.bak", getActivity().getString(R.string.database_name));
-                        File backupDB = new File(getActivity().getFilesDir(), backupDBPath);
+                        String backupDBPath = String.format("%s.bak", getString(R.string.database_name));
+                        File backupDB = new File(getFilesDir(), backupDBPath);
                         backupDB.createNewFile();
                         FileChannel src = new FileInputStream(currentDB).getChannel();
                         FileChannel dst = new FileOutputStream(backupDB).getChannel();
                         dst.transferFrom(src, 0, src.size());
                         src.close();
                         dst.close();
-                        ((MyApplication) getActivity().getApplication()).toast(getActivity().getString(R.string.backup_internal_successful));
+                        ((MyApplication) getApplication()).toast(getString(R.string.backup_internal_successful));
                         b.dismiss();
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -266,8 +256,8 @@ public class SettingFrag extends android.support.v4.app.Fragment {
                     File sd = Environment.getExternalStorageDirectory();
                     try {
 
-                        File currentDB = getActivity().getDatabasePath(getActivity().getString(R.string.database_name));
-                        String backupDBPath = String.format("%s.bak", getActivity().getString(R.string.database_name));
+                        File currentDB = getDatabasePath(getString(R.string.database_name));
+                        String backupDBPath = String.format("%s.bak", getString(R.string.database_name));
                         File backupDB = new File(sd, backupDBPath);
 
                         FileChannel src = new FileInputStream(currentDB).getChannel();
@@ -275,7 +265,7 @@ public class SettingFrag extends android.support.v4.app.Fragment {
                         dst.transferFrom(src, 0, src.size());
                         src.close();
                         dst.close();
-                        ((MyApplication) getActivity().getApplication()).toast(getActivity().getString(R.string.backup_successful));
+                        ((MyApplication) getApplication()).toast(getString(R.string.backup_successful));
                         b.dismiss();
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -296,8 +286,8 @@ public class SettingFrag extends android.support.v4.app.Fragment {
     This is a dialog used for backup database
      */
     public void restoreDialog() {
-        final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(getActivity());
-        LayoutInflater inflater = getActivity().getLayoutInflater();
+        final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(SettingActivity.this);
+        LayoutInflater inflater = getLayoutInflater();
         final View dialogView = inflater.inflate(R.layout.dialog_backup_layout, null);
         dialogBuilder.setView(dialogView);
         dialogBuilder.setTitle(R.string.select_restore_position);
@@ -315,11 +305,11 @@ public class SettingFrag extends android.support.v4.app.Fragment {
         internal_restore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (getActivity().getFilesDir().canWrite()) {
+                if (getFilesDir().canWrite()) {
                     try {
-                        String backupDBPath = String.format("%s.bak", getActivity().getString(R.string.database_name));
-                        File backupDB = getActivity().getDatabasePath(getActivity().getString(R.string.database_name));
-                        File currentDB = new File(getActivity().getFilesDir(), backupDBPath);
+                        String backupDBPath = String.format("%s.bak", getString(R.string.database_name));
+                        File backupDB = getDatabasePath(getString(R.string.database_name));
+                        File currentDB = new File(getFilesDir(), backupDBPath);
                         if (!backupDB.exists()) {
                             textView.setText(R.string.no_backup_File_data);
                         }
@@ -328,8 +318,8 @@ public class SettingFrag extends android.support.v4.app.Fragment {
                         dst.transferFrom(src, 0, src.size());
                         src.close();
                         dst.close();
-                        ((MyApplication) getActivity().getApplication()).setCurrentItemID(ConstantManager.DEFAULT_RFID);
-                        ((MyApplication) getActivity().getApplication()).toast(getActivity().getString(R.string.restore_successful));
+                        ((MyApplication) getApplication()).setCurrentItemID(ConstantManager.DEFAULT_RFID);
+                        ((MyApplication) getApplication()).toast(getString(R.string.restore_successful));
                         b.dismiss();
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -348,8 +338,8 @@ public class SettingFrag extends android.support.v4.app.Fragment {
                 if (Environment.MEDIA_MOUNTED.equals(state)) {
                     try {
                         File sd = Environment.getExternalStorageDirectory();
-                        String backupDBPath = String.format("%s.bak", getActivity().getString(R.string.database_name));
-                        File backupDB = getActivity().getDatabasePath(getActivity().getString(R.string.database_name));
+                        String backupDBPath = String.format("%s.bak", getString(R.string.database_name));
+                        File backupDB = getDatabasePath(getString(R.string.database_name));
                         File currentDB = new File(sd, backupDBPath);
 
                         if (!backupDB.exists()) {
@@ -361,8 +351,8 @@ public class SettingFrag extends android.support.v4.app.Fragment {
                         dst.transferFrom(src, 0, src.size());
                         src.close();
                         dst.close();
-                        ((MyApplication) getActivity().getApplication()).setCurrentItemID(ConstantManager.DEFAULT_RFID);
-                        ((MyApplication) getActivity().getApplication()).toast(getActivity().getString(R.string.restore_successful));
+                        ((MyApplication) getApplication()).setCurrentItemID(ConstantManager.DEFAULT_RFID);
+                        ((MyApplication) getApplication()).toast(getString(R.string.restore_successful));
                         b.dismiss();
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -377,6 +367,4 @@ public class SettingFrag extends android.support.v4.app.Fragment {
         b.show();
 
     }
-
-
 }

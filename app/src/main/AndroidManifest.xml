@@ -16,16 +16,16 @@
         <activity android:name=".Activity.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.HOME" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.MONKEY" />
             </intent-filter>
         </activity>
-        <activity android:name=".Activity.MainActivity"
-            android:screenOrientation="portrait"/>
-        <activity android:name=".Activity.PhotoActivity"></activity>
-        <activity android:name=".Activity.GalleryActivity"/>
+        <activity android:name=".Activity.PhotoActivity" />
+        <activity android:name=".Activity.GalleryActivity" />
+
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.provider"
@@ -33,8 +33,13 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths"/>
+                android:resource="@xml/provider_paths" />
         </provider>
+
+        <activity android:name=".Activity.ItemListActivity" />
+        <activity android:name=".Activity.ItemEditActivity" />
+        <activity android:name=".Activity.ItemDetailActivity" />
+        <activity android:name=".Activity.SettingActivity"></activity>
     </application>
 
 </manifest>

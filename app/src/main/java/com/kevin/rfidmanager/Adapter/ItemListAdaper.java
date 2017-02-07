@@ -2,11 +2,10 @@ package com.kevin.rfidmanager.Adapter;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
@@ -17,11 +16,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.kevin.rfidmanager.Activity.MainActivity;
-import com.kevin.rfidmanager.Fragments.ItemDetailFrag;
+import com.daimajia.swipe.SwipeLayout;
+import com.kevin.rfidmanager.Activity.ItemDetailActivity;
+import com.kevin.rfidmanager.Activity.ItemEditActivity;
 import com.kevin.rfidmanager.MyApplication;
 import com.kevin.rfidmanager.R;
-import com.kevin.rfidmanager.Utils.ConstantManager;
 import com.kevin.rfidmanager.Utils.DatabaseUtil;
 import com.kevin.rfidmanager.Utils.ScreenUtil;
 import com.kevin.rfidmanager.database.DaoSession;
@@ -33,8 +32,7 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.util.List;
 
-import static com.kevin.rfidmanager.Utils.ConstantManager.DEFAULT_IMAGE_HEIGHT_DP;
-import static com.kevin.rfidmanager.Utils.ConstantManager.DEFAULT_IMAGE_WIDTH_DP;
+import at.markushi.ui.CircleButton;
 
 /**
  * Created by Kevin on 2017/1/29.
@@ -67,6 +65,13 @@ public class ItemListAdaper extends RecyclerView.Adapter<ItemListAdaper.ViewHold
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
+        SwipeLayout swipeLayout = holder.swipeLayout;
+        //set show mode.
+        swipeLayout.setShowMode(SwipeLayout.ShowMode.LayDown);
+
+        //add drag edge.(If the BottomView has 'layout_gravity' attribute, this line is unnecessary)
+        swipeLayout.addDrag(SwipeLayout.DragEdge.Left, holder.itemView.findViewById(R.id.bottom_wrapper));
+
         // Get the data model based on position
         final Items item = itemes.get(position);
 
@@ -87,19 +92,35 @@ public class ItemListAdaper extends RecyclerView.Adapter<ItemListAdaper.ViewHold
             @Override
             public void onClick(View v) {
                 ((MyApplication)activity.getApplication()).setCurrentItemID(item.getRfid());
-                ((MainActivity)activity).viewPager.setCurrentItem(ConstantManager.DETAIL, false);
-                ((MainActivity)activity).adapter.tab2.refreshUI();
+//                ((MainActivity)activity).viewPager.setCurrentItem(ConstantManager.DETAIL, false);
+//                ((MainActivity)activity).adapter.tab2.refreshUI();
+                activity.startActivity(new Intent(activity, ItemDetailActivity.class));
             }
         });
 
-        image.setOnLongClickListener(new View.OnLongClickListener() {
+        holder.editItem.setOnClickListener(new View.OnClickListener() {
             @Override
-            public boolean onLongClick(View v) {
-
-                deleteItemDialog(item);
-                return true;
+            public void onClick(View v) {
+                ((MyApplication)activity.getApplication()).setCurrentItemID(item.getRfid());
+//                ((MainActivity)activity).viewPager.setCurrentItem(ConstantManager.EDIT, false);
+//                ((MainActivity)activity).adapter.tab3.refreshUI();
+                activity.startActivity(new Intent(activity, ItemEditActivity.class));
             }
         });
+        holder.deleteItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                deleteItemDialog(item);
+            }
+        });
+//        image.setOnLongClickListener(new View.OnLongClickListener() {
+//            @Override
+//            public boolean onLongClick(View v) {
+//
+//                deleteItemDialog(item);
+//                return true;
+//            }
+//        });
 
         TextView itemName = holder.itemName;
         itemName.setText(item.getItemName());
@@ -121,8 +142,11 @@ public class ItemListAdaper extends RecyclerView.Adapter<ItemListAdaper.ViewHold
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
+        public SwipeLayout swipeLayout;
         public ImageView image;
         public TextView itemName;
+        public CircleButton editItem, deleteItem;
+        public View itemView;
 
         // We also create a constructor that accepts the entire item row
         // and does the view lookups to find each subview
@@ -130,9 +154,12 @@ public class ItemListAdaper extends RecyclerView.Adapter<ItemListAdaper.ViewHold
             // Stores the itemView in a public final member variable that can be used
             // to access the context from any ViewHolder instance.
             super(itemView);
-
+            this.itemView = itemView;
+            swipeLayout = (SwipeLayout) itemView.findViewById(R.id.swipe_layout);
             image = (ImageView) itemView.findViewById(R.id.item_thumb);
             itemName = (TextView) itemView.findViewById(R.id.list_item_name);
+            editItem = (CircleButton) itemView.findViewById(R.id.edit_item);
+            deleteItem = (CircleButton) itemView.findViewById(R.id.remove_item);
         }
     }
 

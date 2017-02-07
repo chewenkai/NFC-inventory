@@ -78,7 +78,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // The button is clicked.
                 if (IS_DEBUGING) {
-                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    startActivity(new Intent(LoginActivity.this, ItemListActivity.class));
                     finish();
                 }
                 mUserNameStr = mPersonEdit.getText().toString();
@@ -100,7 +100,7 @@ public class LoginActivity extends AppCompatActivity {
                     Users user = users.get(0);
                     if (mPwdStr.equals(user.getPassWord())){
                         ((MyApplication) getApplication()).setUserName(user.getUserName());
-                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                        startActivity(new Intent(LoginActivity.this, ItemListActivity.class));
                         finish();
                     }else{
                         Snackbar.make(v, R.string.login_fail, Snackbar.LENGTH_LONG).show();
@@ -168,7 +168,7 @@ public class LoginActivity extends AppCompatActivity {
                             show();
                     DatabaseUtil.addNewUser(LoginActivity.this, getString(R.string.default_username), "");
                     ((MyApplication) getApplication()).setUserName(getString(R.string.default_username));
-                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    startActivity(new Intent(LoginActivity.this, ItemListActivity.class));
                     b.dismiss();
                     finish();
                     return;
@@ -196,7 +196,7 @@ public class LoginActivity extends AppCompatActivity {
                     ((MyApplication) getApplication()).setUserName(usernameEdt.getText().toString());
                     Toast.makeText(getApplicationContext(), R.string.password_saved, Toast.LENGTH_LONG).
                             show();
-                    startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    startActivity(new Intent(LoginActivity.this, ItemListActivity.class));
                     finish();
                 }else {
                     message.setText(R.string.username_exist);
@@ -222,7 +222,7 @@ public class LoginActivity extends AppCompatActivity {
      */
     private void checkIsNeedPassword() {
         if (!SPUtil.getInstence(getApplicationContext()).getNeedPassword()) {
-            startActivity(new Intent(LoginActivity.this, MainActivity.class));
+            startActivity(new Intent(LoginActivity.this, ItemListActivity.class));
             ((MyApplication) getApplication()).setUserName(getString(R.string.default_username));
             finish();
         }

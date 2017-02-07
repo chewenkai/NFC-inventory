@@ -27,7 +27,7 @@
                 android:id="@+id/backup_database_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Backup Database"
+                android:text="@string/backup_database"
                 android:textAllCaps="false"
                 android:layout_margin="10dp"
                 style="@style/Widget.AppCompat.Button.Colored" />
@@ -36,7 +36,7 @@
                 android:id="@+id/restore_database_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Restore Database"
+                android:text="@string/restore_database"
                 android:textAllCaps="false"
                 android:layout_margin="10dp"
                 style="@style/Widget.AppCompat.Button.Colored" />
@@ -45,7 +45,7 @@
                 android:id="@+id/change_password"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Change Password"
+                android:text="@string/change_password"
                 android:textAllCaps="false"
                 android:layout_margin="10dp"
                 style="@style/Widget.AppCompat.Button.Colored" />
@@ -54,7 +54,7 @@
                 android:id="@+id/change_rfid_range"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Change RFID Range"
+                android:text="@string/change_rfid_range"
                 android:textAllCaps="false"
                 android:layout_margin="10dp"
                 style="@style/Widget.AppCompat.Button.Colored" />

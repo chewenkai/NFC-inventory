@@ -80,6 +80,13 @@
     <string name="staggered_nlayout">Staggered\nLayout</string>
     <string name="linear_nlayout">Linear\nLayout</string>
     <string name="select_an_appearance">Select an appearance to change:</string>
+    <string name="setting">Setting</string>
+    <string name="backup_database">Backup Database</string>
+    <string name="restore_database">Restore Database</string>
+    <string name="change_password">Change Password</string>
+    <string name="change_rfid_range">Change RFID Range</string>
+    <string name="detail_page">Detail Page</string>
+    <string name="edit_page">Edit Page</string>
 
     <!--Others-->
 

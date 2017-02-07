@@ -40,6 +40,7 @@ public class PhotoActivity extends AppCompatActivity {
             imageView = null;
             mAttacher = null;
             instance = null;
+            onDestroy();
             finish();
         }
         return super.onKeyUp(keyCode, event);

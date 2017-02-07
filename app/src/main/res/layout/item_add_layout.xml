@@ -156,18 +156,6 @@
                 android:inputType="textMultiLine"
                 android:minHeight="250dp" />
 
-            <at.markushi.ui.CircleButton
-                android:id="@+id/save_des"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_gravity="end"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:src="@drawable/save"
-                app:cb_color="@color/colorAccent"
-                app:cb_pressedRingWidth="8dip" />
-
         </LinearLayout>
 
     </ScrollView>

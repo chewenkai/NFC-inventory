@@ -35,4 +35,10 @@ public class GalleryActivity extends AppCompatActivity {
         imageView.setCurrentPosition(default_position, true);
         imageView.setIndicatorVisibility(PagerIndicator.IndicatorVisibility.Visible);
     }
+
+    @Override
+    protected void onPause() {
+        finish();
+        super.onPause();
+    }
 }
