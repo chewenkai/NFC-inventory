@@ -3,6 +3,7 @@ package com.kevin.rfidmanager.Activity;
 import android.app.PendingIntent;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TextInputEditText;
@@ -34,6 +35,7 @@ import com.kevin.rfidmanager.R;
 import com.kevin.rfidmanager.Utils.ConstantManager;
 import com.kevin.rfidmanager.Utils.DatabaseUtil;
 import com.kevin.rfidmanager.Utils.SPUtil;
+import com.kevin.rfidmanager.Utils.ScreenUtil;
 import com.kevin.rfidmanager.database.DaoSession;
 import com.kevin.rfidmanager.database.Items;
 import com.kevin.rfidmanager.database.ItemsDao;
@@ -81,12 +83,13 @@ public class ItemListActivity extends AppCompatActivity {
         mActionBar.setDisplayShowCustomEnabled(true);
         ((Toolbar) actionBar.getParent()).setContentInsetsAbsolute(0,0);
 
+        int paddingPixels = ScreenUtil.dpToPx(this, 5);
         BoomMenuButton leftBmb = (BoomMenuButton) actionBar.findViewById(R.id.action_bar_left_bmb);
 //        BoomMenuButton rightBmb = (BoomMenuButton) actionBar.findViewById(R.id.action_bar_right_bmb);
 
         leftBmb.setButtonEnum(ButtonEnum.Ham);
-        leftBmb.setPiecePlaceEnum(PiecePlaceEnum.HAM_5);
-        leftBmb.setButtonPlaceEnum(ButtonPlaceEnum.HAM_5);
+        leftBmb.setPiecePlaceEnum(PiecePlaceEnum.HAM_6);
+        leftBmb.setButtonPlaceEnum(ButtonPlaceEnum.HAM_6);
 
         HamButton.Builder changeAppearance = new HamButton.Builder()
                 .listener(new OnBMClickListener() {
@@ -96,6 +99,7 @@ public class ItemListActivity extends AppCompatActivity {
                     }
                 })
                 .normalImageRes(R.drawable.ic_color_lens_white_48dp)
+                .imagePadding(new Rect(paddingPixels, paddingPixels, paddingPixels, paddingPixels))
                 .normalTextRes(R.string.change_apperance)
                 .containsSubText(false);
         leftBmb.addBuilder(changeAppearance);
@@ -108,6 +112,7 @@ public class ItemListActivity extends AppCompatActivity {
                     }
                 })
                 .normalImageRes(R.drawable.ic_settings_backup_restore_white_48dp)
+                .imagePadding(new Rect(paddingPixels, paddingPixels, paddingPixels, paddingPixels))
                 .normalTextRes(R.string.backup_database)
                 .containsSubText(false);
         leftBmb.addBuilder(backup);
@@ -120,6 +125,7 @@ public class ItemListActivity extends AppCompatActivity {
                     }
                 })
                 .normalImageRes(R.drawable.ic_restore_white_48dp)
+                .imagePadding(new Rect(paddingPixels, paddingPixels, paddingPixels, paddingPixels))
                 .normalTextRes(R.string.restore_database)
                 .containsSubText(false);
         leftBmb.addBuilder(restore);
@@ -132,6 +138,7 @@ public class ItemListActivity extends AppCompatActivity {
                     }
                 })
                 .normalImageRes(R.drawable.key)
+                .imagePadding(new Rect(paddingPixels, paddingPixels, paddingPixels, paddingPixels))
                 .normalTextRes(R.string.change_password)
                 .containsSubText(false);
         leftBmb.addBuilder(changePassword);
@@ -144,8 +151,25 @@ public class ItemListActivity extends AppCompatActivity {
                     }
                 })
                 .normalImageRes(R.drawable.range)
+                .imagePadding(new Rect(paddingPixels, paddingPixels, paddingPixels, paddingPixels))
                 .normalTextRes(R.string.change_rfid_range);
         leftBmb.addBuilder(change_rfid_range);
+
+
+        HamButton.Builder log_out = new HamButton.Builder()
+                .listener(new OnBMClickListener() {
+                    @Override
+                    public void onBoomButtonClick(int index) {
+                        SPUtil.getInstence(getApplicationContext()).saveNeedPassword(true);
+                        startActivity(new Intent(ItemListActivity.this, LoginActivity.class));
+                        ((MyApplication) getApplication()).setCurrentItemID(ConstantManager.DEFAULT_RFID);
+                        finish();
+                    }
+                })
+                .normalImageRes(R.drawable.logout)
+                .imagePadding(new Rect(paddingPixels, paddingPixels, paddingPixels, paddingPixels))
+                .normalTextRes(R.string.log_out);
+        leftBmb.addBuilder(log_out);
 
 //        rightBmb.setButtonEnum(ButtonEnum.Ham);
 //        rightBmb.setPiecePlaceEnum(PiecePlaceEnum.HAM_4);
@@ -168,8 +192,8 @@ public class ItemListActivity extends AppCompatActivity {
 
     @Override
     public void onResume() {
-        setRecyclerViewLayout();
         super.onResume();
+        initUI();
     }
 
     private void setRecyclerViewLayout() {
