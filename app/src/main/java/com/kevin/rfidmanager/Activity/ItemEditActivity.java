@@ -16,6 +16,7 @@ import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -194,6 +195,8 @@ public class ItemEditActivity extends AppCompatActivity {
         detailDescriptionTitle = (TextView) findViewById(R.id.detail_description_title);
 
         detailDescription = (EditText) findViewById(R.id.detail_description);
+        detailDescription.setInputType(InputType.TYPE_CLASS_TEXT|
+                InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
         detailDescription.setText(DatabaseUtil.getCurrentItem(ItemEditActivity.this).getDetailDescription());
 
         recyclerView = (RecyclerView) findViewById(R.id.recycle_gallery);
