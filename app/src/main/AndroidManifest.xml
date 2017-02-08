@@ -24,7 +24,13 @@
             </intent-filter>
         </activity>
         <activity android:name=".Activity.PhotoActivity" />
-        <activity android:name=".Activity.GalleryActivity" />
+        <activity android:name=".Activity.GalleryActivity" >
+            android:parentActivityName=".Activity.GalleryActivity">
+            <!-- The meta-data element is needed for versions lower than 4.1 -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.kevin.rfidmanager.Activity.GalleryActivity" />
+        </activity>
 
         <provider
             android:name="android.support.v4.content.FileProvider"
@@ -37,8 +43,20 @@
         </provider>
 
         <activity android:name=".Activity.ItemListActivity" />
-        <activity android:name=".Activity.ItemEditActivity" />
-        <activity android:name=".Activity.ItemDetailActivity" />
+        <activity android:name=".Activity.ItemEditActivity"
+            android:parentActivityName=".Activity.ItemDetailActivity">
+            <!-- The meta-data element is needed for versions lower than 4.1 -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.kevin.rfidmanager.Activity.ItemDetailActivity" />
+        </activity>
+        <activity android:name=".Activity.ItemDetailActivity" >
+            android:parentActivityName=".Activity.ItemListActivity">
+            <!-- The meta-data element is needed for versions lower than 4.1 -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.kevin.rfidmanager.Activity.ItemListActivity" />
+        </activity>
         <activity android:name=".Activity.SettingActivity"></activity>
     </application>
 

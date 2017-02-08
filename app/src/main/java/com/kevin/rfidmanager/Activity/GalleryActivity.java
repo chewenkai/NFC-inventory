@@ -1,7 +1,10 @@
 package com.kevin.rfidmanager.Activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.daimajia.slider.library.Indicators.PagerIndicator;
 import com.daimajia.slider.library.SliderLayout;
@@ -38,7 +41,16 @@ public class GalleryActivity extends AppCompatActivity {
 
     @Override
     protected void onPause() {
-        finish();
         super.onPause();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                finish();
+                break;
+        }
+        return true;
     }
 }

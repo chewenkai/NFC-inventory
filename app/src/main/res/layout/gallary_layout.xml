@@ -18,18 +18,18 @@
         <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="2dp"
+            android:padding="0dp"
             android:layout_alignParentTop="true">
 
             <at.markushi.ui.CircleButton
                 android:id="@+id/remove_gallary_button"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
                 android:layout_margin="3dp"
-                android:padding="10dp"
+                android:padding="5dp"
                 android:src="@drawable/ic_clear_white_48dp"
                 app:cb_color="@color/remove_key_des_button_color"
-                app:cb_pressedRingWidth="8dip" />
+                app:cb_pressedRingWidth="5dip" />
         </RelativeLayout>
 
 </RelativeLayout>

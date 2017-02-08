@@ -53,6 +53,7 @@ public class ItemDetailActivity extends AppCompatActivity {
         ActionBar actionBar = getSupportActionBar();
         assert actionBar!=null;
         actionBar.setTitle(R.string.detail_page);
+        actionBar.setHomeButtonEnabled(true);
         initUI();
     }
 
@@ -173,6 +174,9 @@ public class ItemDetailActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_bar_edit:
                 startActivity(new Intent(this, ItemEditActivity.class));
+                finish();
+                break;
+            case android.R.id.home:
                 finish();
                 break;
         }

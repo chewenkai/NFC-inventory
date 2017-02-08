@@ -310,6 +310,10 @@ public class ItemEditActivity extends AppCompatActivity {
                 startActivity(new Intent(this, ItemDetailActivity.class));
                 finish();
                 break;
+            case android.R.id.home:
+                startActivity(new Intent(this, ItemDetailActivity.class));
+                finish();
+                break;
         }
         return true;
     }
