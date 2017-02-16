@@ -4,62 +4,24 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="20dp">
+    android:padding="10dp">
 
     <TextView
         android:id="@+id/backup_dialog_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="15sp"
         android:padding="0dp"
         />
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_gravity="center">
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center">
-            <at.markushi.ui.CircleButton
-                android:id="@+id/store_internal_space"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_centerInParent="true"
-                app:cb_color="#61d963"
-                app:cb_pressedRingWidth="10dip" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:gravity="center"
-                android:textStyle="bold"
-                android:text="@string/internal_nmemory"
-                android:textColor="@color/white"/>
-        </RelativeLayout>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycle_view_storage_devices_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp">
 
-        <RelativeLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center">
-            <at.markushi.ui.CircleButton
-                android:id="@+id/store_sd_space"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:layout_centerInParent="true"
-                app:cb_color="#c9d13b"
-                app:cb_pressedRingWidth="10dip" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:gravity="center"
-                android:textStyle="bold"
-                android:text="@string/tf_ncard"
-                android:textColor="@color/white"/>
-        </RelativeLayout>
-    </LinearLayout>
+    </android.support.v7.widget.RecyclerView>
 
 
 </LinearLayout>

@@ -38,4 +38,8 @@ public class ConstantManager {
     public static int STAGGER_LAYOUT = 9;
     public static int ONE_ROW_LAYOUT = 10;
 
+    // File
+    public final static int DEFAULT_FILE = 0;
+    public final static int USB_FILE = 1;
+
 }

@@ -59,11 +59,11 @@
     <!--Setting Page-->
     <string name="select_backup_position">Select a location to backup</string>
     <string name="select_restore_position">Select a backup position to restore</string>
-    <string name="no_tf">No TF card has been detected. Please, make sure the TF card is inside the device and try again.</string>
-    <string name="backup_successful">Your database has been successfully loaded into external storage.</string>
+    <string name="backup_successful">Your database has been successfully loaded into </string>
     <string name="backup_internal_successful">Your database has been successfully loaded into internal storage.</string>
     <string name="restore_successful">Your database has been successfully restored.</string>
-    <string name="internal_memory_read_fail">Can not read internal storage.</string>
+    <string name="restore_failed">Restore failed.</string>
+    <string name="backup_failed">Backup failed.</string>
     <string name="tf_ncard">External\nStorage</string>
     <string name="internal_nmemory">Internal\nStorage</string>
     <string name="restore_warning">The restore database will be loaded into your RFID system, the current data will be lost without backup. </string>

@@ -17,6 +17,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    packagingOptions {
+        exclude 'META-INF/ASL2.0'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/MANIFEST.MF'
+    }
 }
 
 dependencies {
@@ -43,8 +51,10 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:25.1.0'
     compile 'com.github.tajchert:nammu:1.1.1'  // file picker
     compile 'com.nbsp:library:1.2'
+    compile 'com.github.mjdev:libaums:0.5.0'
 }
 
 greendao {
     schemaVersion 2
 }
+
