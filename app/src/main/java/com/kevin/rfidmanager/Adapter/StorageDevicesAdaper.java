@@ -38,6 +38,7 @@ import static com.kevin.rfidmanager.Utils.ConstantManager.DEFAULT_IMAGE_HEIGHT_D
 
 /**
  * Created by Kevin on 2017/1/29.
+ * Mail: chewenkaich@gmail.com
  */
 
 public class StorageDevicesAdaper extends RecyclerView.Adapter<StorageDevicesAdaper.ViewHolder> {
@@ -61,7 +62,8 @@ public class StorageDevicesAdaper extends RecyclerView.Adapter<StorageDevicesAda
         LayoutInflater inflater = LayoutInflater.from(context);
 
         // Inflate the custom layout
-        View contactView = inflater.inflate(R.layout.recycle_adapter_storage_devices, parent, false);
+        View contactView = inflater.
+                inflate(R.layout.recycle_adapter_storage_devices, parent, false);
 
         // Return a new holder instance
         ViewHolder viewHolder = new ViewHolder(contactView);

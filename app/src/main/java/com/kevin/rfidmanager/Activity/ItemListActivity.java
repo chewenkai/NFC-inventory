@@ -11,6 +11,7 @@ import android.graphics.Rect;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.design.widget.TextInputEditText;
@@ -77,6 +78,9 @@ import java.util.Map;
 
 import at.markushi.ui.CircleButton;
 
+/**
+ * Main page of the app
+ */
 public class ItemListActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ItemListAdaper itemListAdapter;
@@ -108,7 +112,6 @@ public class ItemListActivity extends AppCompatActivity {
 
         int paddingPixels = ScreenUtil.dpToPx(this, 5);
         BoomMenuButton leftBmb = (BoomMenuButton) actionBar.findViewById(R.id.action_bar_left_bmb);
-//        BoomMenuButton rightBmb = (BoomMenuButton) actionBar.findViewById(R.id.action_bar_right_bmb);
 
         leftBmb.setButtonEnum(ButtonEnum.Ham);
         leftBmb.setPiecePlaceEnum(PiecePlaceEnum.HAM_6);
@@ -185,7 +188,8 @@ public class ItemListActivity extends AppCompatActivity {
                     public void onBoomButtonClick(int index) {
                         SPUtil.getInstence(getApplicationContext()).saveNeedPassword(true);
                         startActivity(new Intent(ItemListActivity.this, LoginActivity.class));
-                        ((MyApplication) getApplication()).setCurrentItemID(ConstantManager.DEFAULT_RFID);
+                        ((MyApplication) getApplication()).
+                                setCurrentItemID(ConstantManager.DEFAULT_RFID);
                         finish();
                     }
                 })
@@ -205,7 +209,8 @@ public class ItemListActivity extends AppCompatActivity {
         recyclerView = (RecyclerView) findViewById(R.id.recycle_item_list);
         List<Items> items = DatabaseUtil.queryItems(ItemListActivity.this);
 
-        if (((MyApplication) getApplication()).getCurrentItemID() == ConstantManager.DEFAULT_RFID && items.size() != 0)
+        if (((MyApplication) getApplication()).getCurrentItemID() == ConstantManager.DEFAULT_RFID &&
+                items.size() != 0)
             ((MyApplication) getApplication()).setCurrentItemID(items.get(0).getRfid());
 
         itemListAdapter = new ItemListAdaper(ItemListActivity.this, items);
@@ -237,16 +242,21 @@ public class ItemListActivity extends AppCompatActivity {
     private void setRecyclerViewLayout() {
         switch (SPUtil.getInstence(ItemListActivity.this).getApperance()) {
             case 8:  // ConstantManager.LINEAR_LAYOUT
-                GridLayoutManager gridLayoutManager = new GridLayoutManager(ItemListActivity.this, 3, GridLayoutManager.VERTICAL, false);
-                recyclerView.setLayoutManager(gridLayoutManager);// Attach the layout manager to the recycler view
+                GridLayoutManager gridLayoutManager = new GridLayoutManager(ItemListActivity.this,
+                        3, GridLayoutManager.VERTICAL, false);
+                recyclerView.setLayoutManager(gridLayoutManager);// Attach the layout manager to
+                                                                // the recycler view
                 break;
             case 9:  // ConstantManager.STAGGER_LAYOUT
+                // First param is number of columns and second param is orientation i.e
+                // Vertical or Horizontal
                 StaggeredGridLayoutManager staggeredGridLayoutManager =
-                        new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);// First param is number of columns and second param is orientation i.e Vertical or Horizontal
+                        new StaggeredGridLayoutManager(3, StaggeredGridLayoutManager.VERTICAL);
                 recyclerView.setLayoutManager(staggeredGridLayoutManager);
                 break;
             case 10:  // ConstantManager.ONE_ROW_LAYOUT
-                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(ItemListActivity.this, LinearLayoutManager.VERTICAL, false);
+                LinearLayoutManager linearLayoutManager = new LinearLayoutManager(
+                        ItemListActivity.this, LinearLayoutManager.VERTICAL, false);
                 recyclerView.setLayoutManager(linearLayoutManager);
                 break;
         }
@@ -261,8 +271,10 @@ public class ItemListActivity extends AppCompatActivity {
         final View dialogView = inflater.inflate(R.layout.dialog_layout_two_edit_text, null);
         dialogBuilder.setView(dialogView);
 
-        final TextInputEditText itemID = (TextInputEditText) dialogView.findViewById(R.id.edit_key_des_text_editor);
-        final TextInputEditText itemName = (TextInputEditText) dialogView.findViewById(R.id.item_name_edit);
+        final TextInputEditText itemID = (TextInputEditText) dialogView.
+                findViewById(R.id.edit_key_des_text_editor);
+        final TextInputEditText itemName = (TextInputEditText) dialogView.
+                findViewById(R.id.item_name_edit);
         final Button saveButton = (Button) dialogView.findViewById(R.id.dialog_change);
         final Button cancleButton = (Button) dialogView.findViewById(R.id.dialog_cancle);
 
@@ -277,18 +289,22 @@ public class ItemListActivity extends AppCompatActivity {
                 try {
                     new_id = Long.parseLong(itemID.getText().toString());
                 } catch (NumberFormatException e) {
-                    Toast.makeText(ItemListActivity.this, "please input number as ID", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ItemListActivity.this,
+                            "please input number as ID", Toast.LENGTH_LONG).show();
                     return;
                 }
                 // Are there any user info?
                 DaoSession daoSession = ((MyApplication) getApplication()).getDaoSession();
                 ItemsDao itemsDao = daoSession.getItemsDao();
-                List<Items> items = itemsDao.queryBuilder().where(ItemsDao.Properties.Rfid.eq(new_id)).build().list();
+                List<Items> items = itemsDao.queryBuilder().
+                        where(ItemsDao.Properties.Rfid.eq(new_id)).build().list();
                 if (items.size() > 0) {
-                    Toast.makeText(ItemListActivity.this, "The ID card is exist, please change a ID", Toast.LENGTH_LONG).show();
+                    Toast.makeText(ItemListActivity.this,
+                            "The ID card is exist, please change a ID", Toast.LENGTH_LONG).show();
                     return;
                 }
-                ((MyApplication) getApplication()).setCurrentItemID(Long.parseLong(itemID.getText().toString()));
+                ((MyApplication) getApplication()).
+                        setCurrentItemID(Long.parseLong(itemID.getText().toString()));
                 DatabaseUtil.insertNewItem(ItemListActivity.this,
                         Long.parseLong(itemID.getText().toString()),
                         itemName.getText().toString());
@@ -319,27 +335,32 @@ public class ItemListActivity extends AppCompatActivity {
             }
         });
         final AlertDialog b = dialogBuilder.create();
-        final TextView textView = (TextView) dialogView.findViewById(R.id.backup_dialog_message);
-        final CircleButton linear_layout = (CircleButton) dialogView.findViewById(R.id.linear_layout);
-        final CircleButton staggered_layout = (CircleButton) dialogView.findViewById(R.id.staggered_layout);
-        final CircleButton one_row_layout = (CircleButton) dialogView.findViewById(R.id.one_row_layout);
+        final TextView textView =
+                (TextView) dialogView.findViewById(R.id.backup_dialog_message);
+        final CircleButton linear_layout =
+                (CircleButton) dialogView.findViewById(R.id.linear_layout);
+        final CircleButton staggered_layout =
+                (CircleButton) dialogView.findViewById(R.id.staggered_layout);
+        final CircleButton one_row_layout =
+                (CircleButton) dialogView.findViewById(R.id.one_row_layout);
 
         switch (SPUtil.getInstence(ItemListActivity.this).getApperance()) {
             case 8:  // ConstantManager.LINEAR_LAYOUT
-                textView.setText("Current selection: Linear Layout");
+                textView.setText(R.string.current_selection_line);
                 break;
             case 9:  // ConstantManager.STAGGER_LAYOUT
-                textView.setText("Current selection: Staggered Layout");
+                textView.setText(R.string.current_selection_staggered);
                 break;
             case 10:  // ConstantManager.ONE_ROW_LAYOUT
-                textView.setText("Current selection: One Row Layout");
+                textView.setText(R.string.current_selection_one_row);
                 break;
         }
 
         linear_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SPUtil.getInstence(ItemListActivity.this).setApperance(ConstantManager.LINEAR_LAYOUT);
+                SPUtil.getInstence(ItemListActivity.this).
+                        setApperance(ConstantManager.LINEAR_LAYOUT);
                 ((MyApplication) getApplication()).toast(getString(R.string.apperance_updated));
                 initUI();
                 b.dismiss();
@@ -350,7 +371,8 @@ public class ItemListActivity extends AppCompatActivity {
         staggered_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SPUtil.getInstence(ItemListActivity.this).setApperance(ConstantManager.STAGGER_LAYOUT);
+                SPUtil.getInstence(ItemListActivity.this).
+                        setApperance(ConstantManager.STAGGER_LAYOUT);
                 ((MyApplication) getApplication()).toast(getString(R.string.apperance_updated));
                 initUI();
                 b.dismiss();
@@ -360,7 +382,8 @@ public class ItemListActivity extends AppCompatActivity {
         one_row_layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                SPUtil.getInstence(ItemListActivity.this).setApperance(ConstantManager.ONE_ROW_LAYOUT);
+                SPUtil.getInstence(ItemListActivity.this).
+                        setApperance(ConstantManager.ONE_ROW_LAYOUT);
                 ((MyApplication) getApplication()).toast(getString(R.string.apperance_updated));
                 initUI();
                 b.dismiss();
@@ -378,12 +401,18 @@ public class ItemListActivity extends AppCompatActivity {
         final View dialogView = inflater.inflate(R.layout.password_change_dialog_layout, null);
         dialogBuilder.setView(dialogView);
 
-        final EditText oldPasswordEdt = (EditText) dialogView.findViewById(R.id.old_password_editor);
-        final EditText newPasswordEdt = (EditText) dialogView.findViewById(R.id.new_password_editor);
-        final EditText confirmNewPasswordEdt = (EditText) dialogView.findViewById(R.id.confirm_new_password);
-        final TextView message = (TextView) dialogView.findViewById(R.id.message_text_login);
-        final Button saveButton = (Button) dialogView.findViewById(R.id.dialog_change);
-        final Button cancleButton = (Button) dialogView.findViewById(R.id.dialog_cancle);
+        final EditText oldPasswordEdt =
+                (EditText) dialogView.findViewById(R.id.old_password_editor);
+        final EditText newPasswordEdt =
+                (EditText) dialogView.findViewById(R.id.new_password_editor);
+        final EditText confirmNewPasswordEdt =
+                (EditText) dialogView.findViewById(R.id.confirm_new_password);
+        final TextView message =
+                (TextView) dialogView.findViewById(R.id.message_text_login);
+        final Button saveButton =
+                (Button) dialogView.findViewById(R.id.dialog_change);
+        final Button cancleButton =
+                (Button) dialogView.findViewById(R.id.dialog_cancle);
 
         dialogBuilder.setTitle(getResources().getString(R.string.change_passwd));
         final AlertDialog b = dialogBuilder.create();
@@ -396,7 +425,8 @@ public class ItemListActivity extends AppCompatActivity {
                 UsersDao usersDao = daoSession.getUsersDao();
 
 
-                List<Users> users = DatabaseUtil.queryUsers(ItemListActivity.this, ((MyApplication) getApplication()).getUserName());
+                List<Users> users = DatabaseUtil.queryUsers(ItemListActivity.this,
+                        ((MyApplication) getApplication()).getUserName());
                 if (users.size() > 1) {
                     ((MyApplication) getApplication()).toast(getString(R.string.illegal_user));
                     usersDao.deleteInTx(users);
@@ -423,7 +453,8 @@ public class ItemListActivity extends AppCompatActivity {
                     usersDao.insertOrReplace(user);
                 }
 
-                Toast.makeText(getApplicationContext(), R.string.password_updated, Toast.LENGTH_LONG).
+                Toast.makeText(getApplicationContext(),
+                        R.string.password_updated, Toast.LENGTH_LONG).
                         show();
                 b.dismiss();
             }
@@ -456,17 +487,23 @@ public class ItemListActivity extends AppCompatActivity {
         });
         AlertDialog b = null;
 
-        final TextView textView = (TextView) dialogView.findViewById(R.id.backup_dialog_message);
-        final RecyclerView recyclerView = (RecyclerView) dialogView.findViewById(R.id.recycle_view_storage_devices_list);
+        final TextView textView =
+                (TextView) dialogView.findViewById(R.id.backup_dialog_message);
+        final RecyclerView recyclerView =
+                (RecyclerView) dialogView.findViewById(R.id.recycle_view_storage_devices_list);
         List<DeviceFile> deviceFiles = getDevicePathSet(textView);
-        if (deviceFiles == null){
-            Toast.makeText(ItemListActivity.this, "Do not have access to read USB device, please grant permission.", Toast.LENGTH_LONG).show();
+        if (deviceFiles == null) {
+            Toast.makeText(ItemListActivity.this,
+                    "Do not have access to read USB device, please grant permission.", Toast.LENGTH_LONG).show();
             return;
         }
-        final StorageDevicesAdaper storageDevicesAdaper = new StorageDevicesAdaper(ItemListActivity.this, deviceFiles);
+        final StorageDevicesAdaper storageDevicesAdaper =
+                new StorageDevicesAdaper(ItemListActivity.this, deviceFiles);
         recyclerView.setAdapter(storageDevicesAdaper);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(ItemListActivity.this, LinearLayoutManager.VERTICAL, false);
-        layoutManager.scrollToPosition(0);// Optionally customize the position you want to default scroll to
+        LinearLayoutManager layoutManager = new LinearLayoutManager(ItemListActivity.this,
+                LinearLayoutManager.VERTICAL, false);
+        // Optionally customize the position you want to default scroll to
+        layoutManager.scrollToPosition(0);
         recyclerView.setLayoutManager(layoutManager);// Attach layout manager to the RecyclerView
         recyclerView.setHasFixedSize(true);
         dialogBuilder.setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
@@ -476,20 +513,23 @@ public class ItemListActivity extends AppCompatActivity {
                 if (storageDevicesAdaper.selectedDeviceRootPath != null) {
                     if (storageDevicesAdaper.selectedDeviceRootPath.type == ConstantManager.DEFAULT_FILE) {
                         if (copyDBtoStorage(storageDevicesAdaper.selectedDeviceRootPath.defaultFile)) {
-                            ((MyApplication) getApplication()).toast(getString(R.string.backup_successful) + storageDevicesAdaper.selectedDeviceRootPath);
+                            ((MyApplication) getApplication()).toast(getString(R.string.backup_successful) +
+                                    " " + storageDevicesAdaper.selectedDeviceRootPath.deviceName);
                         } else {
                             ((MyApplication) getApplication()).toast(getString(R.string.backup_failed));
                         }
                     } else {
                         if (copyDBtoStorage(storageDevicesAdaper.selectedDeviceRootPath.usbFile)) {
-                            ((MyApplication) getApplication()).toast(getString(R.string.backup_successful) + storageDevicesAdaper.selectedDeviceRootPath);
+                            ((MyApplication) getApplication()).toast(getString(R.string.backup_successful) +
+                                    " " + storageDevicesAdaper.selectedDeviceRootPath.deviceName);
                         } else {
                             ((MyApplication) getApplication()).toast(getString(R.string.backup_failed));
                         }
                     }
 
                 } else {
-                    ((MyApplication) getApplication()).toast("Please select at least one storage.");
+                    ((MyApplication) getApplication()).
+                            toast(getString(R.string.select_at_least_one_item));
                 }
             }
         });
@@ -514,18 +554,24 @@ public class ItemListActivity extends AppCompatActivity {
             }
         });
         final AlertDialog b;
-        final TextView textView = (TextView) dialogView.findViewById(R.id.backup_dialog_message);
-        final RecyclerView recyclerView = (RecyclerView) dialogView.findViewById(R.id.recycle_view_storage_devices_list);
+        final TextView textView =
+                (TextView) dialogView.findViewById(R.id.backup_dialog_message);
+        final RecyclerView recyclerView =
+                (RecyclerView) dialogView.findViewById(R.id.recycle_view_storage_devices_list);
         List<DeviceFile> deviceFiles = getDevicePathSet(textView);
-        if (deviceFiles == null){
-            Toast.makeText(ItemListActivity.this, "Do not have access to read USB device, please grant permission.", Toast.LENGTH_LONG).show();
+        if (deviceFiles == null) {
+            Toast.makeText(ItemListActivity.this,
+                    R.string.grant_permission_warning, Toast.LENGTH_LONG).show();
             return;
         }
-        final StorageDevicesAdaper storageDevicesAdaper = new StorageDevicesAdaper(ItemListActivity.this, deviceFiles);
+        final StorageDevicesAdaper storageDevicesAdaper =
+                new StorageDevicesAdaper(ItemListActivity.this, deviceFiles);
         recyclerView.setAdapter(storageDevicesAdaper);
         recyclerView.setAdapter(storageDevicesAdaper);
-        LinearLayoutManager layoutManager = new LinearLayoutManager(ItemListActivity.this, LinearLayoutManager.VERTICAL, false);
-        layoutManager.scrollToPosition(0);// Optionally customize the position you want to default scroll to
+        LinearLayoutManager layoutManager =
+                new LinearLayoutManager(ItemListActivity.this, LinearLayoutManager.VERTICAL, false);
+        // Optionally customize the position you want to default scroll to
+        layoutManager.scrollToPosition(0);
         recyclerView.setLayoutManager(layoutManager);// Attach layout manager to the RecyclerView
         recyclerView.setHasFixedSize(true);
         dialogBuilder.setPositiveButton(R.string.OK, new DialogInterface.OnClickListener() {
@@ -552,51 +598,14 @@ public class ItemListActivity extends AppCompatActivity {
                     }
 
                 } else {
-                    ((MyApplication) getApplication()).toast("Please select at least one storage.");
+                    ((MyApplication) getApplication()).
+                            toast(getString(R.string.select_at_least_one_item));
                 }
             }
         });
         b = dialogBuilder.create();
         b.show();
 
-    }
-
-    private List<String> getDeviceNameSet(TextView textView) {
-        List<String> nameList = new ArrayList<>();
-        Map<String, File> externalLocations = ExternalStorage.getAllStorageLocations();
-        File sdCard = externalLocations.get(ExternalStorage.SD_CARD);
-        File externalSdCard = externalLocations.get(ExternalStorage.EXTERNAL_SD_CARD);
-        if (sdCard != null)
-            nameList.add("Internal SD Card");
-        else if (externalSdCard != null)
-            nameList.add("External SD Card");
-
-        final String ACTION_USB_PERMISSION =
-                "com.kevin.rfidmanager.USB_PERMISSION";
-        UsbManager mUsbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
-        UsbMassStorageDevice[] devices = UsbMassStorageDevice.getMassStorageDevices(ItemListActivity.this);
-//        try {
-//            Thread.sleep(20000);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-        int counter = 1;
-        for (UsbMassStorageDevice device : devices) {
-
-            // before interacting with a device you need to call init()!
-            try {
-                PendingIntent permissionIntent = PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), 0);
-                mUsbManager.requestPermission(device.getUsbDevice(), permissionIntent);
-                device.init();
-                // Only uses the first partition on the device
-                FileSystem currentFs = device.getPartitions().get(0).getFileSystem();
-                nameList.add("USB:" + counter++);
-            } catch (Exception e) {
-                e.printStackTrace();
-                textView.setText(e.getMessage());
-            }
-        }
-        return nameList;
     }
 
     private List<DeviceFile> getDevicePathSet(TextView textView) {
@@ -609,25 +618,27 @@ public class ItemListActivity extends AppCompatActivity {
             DeviceFile deviceFile = new DeviceFile();
             deviceFile.defaultFile = sdCard.getPath();
             deviceFile.type = ConstantManager.DEFAULT_FILE;
-            deviceFile.deviceName = "Internal SD Card";
+            deviceFile.deviceName = getString(R.string.internal_sd_card);
             pathList.add(deviceFile);
         } else if (externalSdCard != null) {
             DeviceFile deviceFile = new DeviceFile();
             deviceFile.defaultFile = externalSdCard.getPath();
             deviceFile.type = ConstantManager.DEFAULT_FILE;
-            deviceFile.deviceName = "External SD Card";
+            deviceFile.deviceName = getString(R.string.external_sd_card);
             pathList.add(deviceFile);
         }
 
         // Detect USB devices
         int counter = 1;
         UsbManager mUsbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
-        UsbMassStorageDevice[] devices = UsbMassStorageDevice.getMassStorageDevices(ItemListActivity.this);
+        UsbMassStorageDevice[] devices = UsbMassStorageDevice.
+                getMassStorageDevices(ItemListActivity.this);
         for (UsbMassStorageDevice device : devices) {
 
             // before interacting with a device you need to call init()!
             try {
-                PendingIntent permissionIntent = PendingIntent.getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), 0);
+                PendingIntent permissionIntent = PendingIntent.
+                        getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), 0);
                 mUsbManager.requestPermission(device.getUsbDevice(), permissionIntent);
                 device.init();
                 // Only uses the first partition on the device
@@ -636,7 +647,10 @@ public class ItemListActivity extends AppCompatActivity {
                 deviceFile.usbFile = currentFs.getRootDirectory();
                 deviceFile.type = ConstantManager.USB_FILE;
                 deviceFile.device = device;
-                deviceFile.deviceName = "USB:" + counter++;
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+                    deviceFile.deviceName = "USB:" + device.getUsbDevice().getProductName();
+                else
+                    deviceFile.deviceName = "USB:" + counter++;
                 pathList.add(deviceFile);
             } catch (Exception e) {
                 e.printStackTrace();
@@ -701,7 +715,8 @@ public class ItemListActivity extends AppCompatActivity {
 
             OutputStream out = new BufferedOutputStream(new FileOutputStream(param.to));
             InputStream inputStream =
-                    UsbFileStreamFactory.createBufferedInputStream(param.from, device.getPartitions().get(0).getFileSystem());
+                    UsbFileStreamFactory.createBufferedInputStream(
+                            param.from, device.getPartitions().get(0).getFileSystem());
             byte[] bytes = new byte[4096];
             int count;
             int total = 0;
@@ -902,7 +917,7 @@ public class ItemListActivity extends AppCompatActivity {
             String action = intent.getAction();
             if (ACTION_USB_PERMISSION.equals(action)) {
 
-                UsbDevice device = (UsbDevice) intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
+                UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
                 if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
 
                     if (device != null) {
@@ -910,19 +925,20 @@ public class ItemListActivity extends AppCompatActivity {
                     }
                 } else {
                     UsbManager usbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
-                    PendingIntent permissionIntent = PendingIntent.getBroadcast(ItemListActivity.this, 0, new Intent(
-                            ACTION_USB_PERMISSION), 0);
+                    PendingIntent permissionIntent =
+                            PendingIntent.getBroadcast(ItemListActivity.this, 0, new Intent(
+                                    ACTION_USB_PERMISSION), 0);
                     usbManager.requestPermission(device, permissionIntent);
                 }
 
             } else if (UsbManager.ACTION_USB_DEVICE_ATTACHED.equals(action)) {
-                UsbDevice device = (UsbDevice) intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
+                UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
                 // determine if connected device is a mass storage devuce
                 if (device != null) {
                     discoverDevice();
                 }
             } else if (UsbManager.ACTION_USB_DEVICE_DETACHED.equals(action)) {
-                UsbDevice device = (UsbDevice) intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
+                UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
 
 
                 // determine if connected device is a mass storage devuce
@@ -946,7 +962,8 @@ public class ItemListActivity extends AppCompatActivity {
 
         for (UsbMassStorageDevice device :
                 devices) {
-            UsbDevice usbDevice = (UsbDevice) getIntent().getParcelableExtra(UsbManager.EXTRA_DEVICE);
+            UsbDevice usbDevice = getIntent().
+                    getParcelableExtra(UsbManager.EXTRA_DEVICE);
 
             if (usbDevice != null && usbManager.hasPermission(usbDevice)) {
                 try {

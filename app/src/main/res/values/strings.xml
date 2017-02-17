@@ -59,7 +59,7 @@
     <!--Setting Page-->
     <string name="select_backup_position">Select a location to backup</string>
     <string name="select_restore_position">Select a backup position to restore</string>
-    <string name="backup_successful">Your database has been successfully loaded into </string>
+    <string name="backup_successful">Your database has been successfully loaded into</string>
     <string name="backup_internal_successful">Your database has been successfully loaded into internal storage.</string>
     <string name="restore_successful">Your database has been successfully restored.</string>
     <string name="restore_failed">Restore failed.</string>
@@ -89,6 +89,13 @@
     <string name="edit_page">Edit Page</string>
     <string name="add_new_item_explain">Add new item</string>
     <string name="log_out">Log out</string>
+    <string name="grant_permission_warning">Do not have access to read USB device, please grant permission.</string>
+    <string name="current_selection_line">Current selection: Linear Layout</string>
+    <string name="current_selection_staggered">Current selection: Staggered Layout</string>
+    <string name="current_selection_one_row">Current selection: One Row Layout</string>
+    <string name="select_at_least_one_item">Please select at least one storage.</string>
+    <string name="internal_sd_card">Internal SD Card</string>
+    <string name="external_sd_card">External SD Card</string>
 
     <!--Others-->
 
