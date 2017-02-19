@@ -5,13 +5,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -51,8 +51,6 @@ import com.squareup.picasso.Picasso;
 import java.io.File;
 import java.util.List;
 
-import at.markushi.ui.CircleButton;
-
 import static com.kevin.rfidmanager.Utils.ConstantManager.PERMISSION_REQUEST_CODE;
 
 public class ItemEditActivity extends AppCompatActivity {
@@ -68,6 +66,8 @@ public class ItemEditActivity extends AppCompatActivity {
 
     private ImagePicker imageGalleryPicker = null;
 
+    public String currentID = ConstantManager.DEFAULT_RFID;
+
     private boolean hideButtons = false;
 
     @Override
@@ -81,8 +81,9 @@ public class ItemEditActivity extends AppCompatActivity {
     }
 
     private void initUI() {
+        currentID = getIntent().getStringExtra(ConstantManager.CURRENT_ITEM_ID);
 
-        if (((MyApplication) getApplication()).getCurrentItemID() ==
+        if (currentID ==
                 ConstantManager.DEFAULT_RFID)
             return;
 
@@ -94,8 +95,7 @@ public class ItemEditActivity extends AppCompatActivity {
                                                           for (ChosenImage image :
                                                                   images) {
                                                               if (image.getRequestId() == ConstantManager.REQUEST_GALLERY_IMAGE_FILE) {
-                                                                  ImagesPath imagePath = new ImagesPath(null,
-                                                                          ((MyApplication) getApplication()).getCurrentItemID(),
+                                                                  ImagesPath imagePath = new ImagesPath(null, currentID,
                                                                           image.getOriginalPath());
                                                                   // Add file path to database
                                                                   DaoSession daoSession = ((MyApplication) getApplication()).getDaoSession();
@@ -105,7 +105,7 @@ public class ItemEditActivity extends AppCompatActivity {
                                                               else if (image.getRequestId() == ConstantManager.REQUEST_MAIN_IMAGE_FILE){
                                                                   // Add file path to database
                                                                   DaoSession daoSession = ((MyApplication) getApplication()).getDaoSession();
-                                                                  Items item = DatabaseUtil.getCurrentItem(ItemEditActivity.this);
+                                                                  Items item = DatabaseUtil.getCurrentItem(ItemEditActivity.this, currentID);
                                                                   item.setMainImagePath(image.getOriginalPath());
                                                                   daoSession.insertOrReplace(item);
 
@@ -129,19 +129,19 @@ public class ItemEditActivity extends AppCompatActivity {
         imageGalleryPicker.shouldGenerateThumbnails(false); // Default is true
 
         itemName = (EditText) findViewById(R.id.item_name);
-        itemName.setText(DatabaseUtil.getCurrentItem(ItemEditActivity.this).getItemName());
+        itemName.setText(DatabaseUtil.getCurrentItem(ItemEditActivity.this, currentID).getItemName());
 
         key_des_list = (ListView) findViewById(R.id.listview_item_key_des);
         desListAdapter = new KeyDesListAdapter(ItemEditActivity.this,
-                DatabaseUtil.queryItemsKeyDes(ItemEditActivity.this,
-                        ((MyApplication) getApplication()).getCurrentItemID()), hideButtons);
+                DatabaseUtil.queryItemsKeyDes(ItemEditActivity.this, currentID), hideButtons,
+                currentID);
         key_des_list.setAdapter(desListAdapter);
         if (desListAdapter.getCount()>0)
             key_des_list.setMinimumHeight(ScreenUtil.dpToPx(ItemEditActivity.this, 50));
         desListAdapter.setCurrentActivity(ItemEditActivity.this);
 
         mainImage = (ImageView) findViewById(R.id.iamgeview_main_image);
-        String mainImagePath = DatabaseUtil.getCurrentItem(ItemEditActivity.this).getMainImagePath();
+        String mainImagePath = DatabaseUtil.getCurrentItem(ItemEditActivity.this, currentID).getMainImagePath();
         if (mainImagePath != null) {
             if (ContextCompat.checkSelfPermission(ItemEditActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)
                     == PackageManager.PERMISSION_GRANTED) {
@@ -197,10 +197,10 @@ public class ItemEditActivity extends AppCompatActivity {
         detailDescription = (EditText) findViewById(R.id.detail_description);
         detailDescription.setInputType(InputType.TYPE_CLASS_TEXT|
                 InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
-        detailDescription.setText(DatabaseUtil.getCurrentItem(ItemEditActivity.this).getDetailDescription());
+        detailDescription.setText(DatabaseUtil.getCurrentItem(ItemEditActivity.this, currentID).getDetailDescription());
 
         recyclerView = (RecyclerView) findViewById(R.id.recycle_gallery);
-        gallaryAdaper = new GallaryAdaper(ItemEditActivity.this, DatabaseUtil.queryImagesPaths(ItemEditActivity.this), hideButtons);
+        gallaryAdaper = new GallaryAdaper(ItemEditActivity.this, DatabaseUtil.queryImagesPaths(ItemEditActivity.this, currentID), hideButtons, currentID);
         recyclerView.setAdapter(gallaryAdaper);
         LinearLayoutManager layoutManager = new LinearLayoutManager(ItemEditActivity.this, LinearLayoutManager.HORIZONTAL, false);
         layoutManager.scrollToPosition(0);// Optionally customize the position you want to default scroll to
@@ -265,8 +265,7 @@ public class ItemEditActivity extends AppCompatActivity {
      * @param newDes
      */
     public void insertNewItemKeyDes(String newDes) {
-        KeyDescription keyDescription = new KeyDescription(null,
-                ((MyApplication) getApplication()).getCurrentItemID(), newDes);
+        KeyDescription keyDescription = new KeyDescription(null, currentID, newDes);
         // get the key description DAO
         DaoSession daoSession = ((MyApplication) getApplication()).getDaoSession();
         KeyDescriptionDao keyDescriptionDao = daoSession.getKeyDescriptionDao();
@@ -307,14 +306,18 @@ public class ItemEditActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_bar_save:
                 packUpImm();
-                DatabaseUtil.updateItemName(ItemEditActivity.this, itemName.getText().toString());
-                DatabaseUtil.updateDetailDescription(ItemEditActivity.this, detailDescription.getText().toString());
+                DatabaseUtil.updateItemName(ItemEditActivity.this, itemName.getText().toString(), currentID);
+                DatabaseUtil.updateDetailDescription(ItemEditActivity.this, detailDescription.getText().toString(), currentID);
                 Toast.makeText(ItemEditActivity.this, R.string.saved_item, Toast.LENGTH_LONG).show();
-                startActivity(new Intent(this, ItemDetailActivity.class));
+                Intent intent = new Intent(this, ItemDetailActivity.class);
+                intent.putExtra(ConstantManager.CURRENT_ITEM_ID, currentID);
+                startActivity(intent);
                 finish();
                 break;
             case android.R.id.home:
-                startActivity(new Intent(this, ItemDetailActivity.class));
+                Intent intent1 = new Intent(this, ItemDetailActivity.class);
+                intent1.putExtra(ConstantManager.CURRENT_ITEM_ID, currentID);
+                startActivity(intent1);
                 finish();
                 break;
         }

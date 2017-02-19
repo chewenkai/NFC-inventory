@@ -41,7 +41,8 @@ public class DatabaseUtil {
         DaoSession daoSession = ((MyApplication) activity.getApplication()).getDaoSession();
         UsersDao usersDao = daoSession.getUsersDao();
 
-        if (usersDao.queryBuilder().where(UsersDao.Properties.UserName.eq(username)).build().list().size() > 0)
+        if (usersDao.queryBuilder().where(UsersDao.Properties.UserName.eq(username))
+                .build().list().size() > 0)
             return false;
 
         Users user = new Users(null, username, password);
@@ -58,7 +59,8 @@ public class DatabaseUtil {
     public static List<Users> queryUsers(Activity activity, String username){
         DaoSession daoSession = ((MyApplication) activity.getApplication()).getDaoSession();
         UsersDao usersDao = daoSession.getUsersDao();
-        return usersDao.queryBuilder().where(UsersDao.Properties.UserName.eq(username)).build().list();
+        return usersDao.queryBuilder().where(UsersDao.Properties.UserName.eq(username)).build().
+                list();
     }
 
     /**
@@ -66,13 +68,13 @@ public class DatabaseUtil {
      *
      * @return Items list
      */
-    public static List<Items> queryItems(Activity activity) {
+    public static List<Items> queryItems(Activity activity, String user) {
         // get the items DAO
         DaoSession daoSession = ((MyApplication) activity.getApplication()).getDaoSession();
         ItemsDao itemsDao = daoSession.getItemsDao();
 
-        String userName = ((MyApplication) activity.getApplication()).getUserName();
-        Query<Items> query = itemsDao.queryBuilder().where(ItemsDao.Properties.UserName.eq(userName)).build();
+        Query<Items> query = itemsDao.queryBuilder().where(ItemsDao.Properties.UserName.eq(user)).
+                build();
         List<Items> allItems = query.list();
 
         return allItems;
@@ -86,11 +88,11 @@ public class DatabaseUtil {
      * @param itemName
      */
 
-    public static void insertNewItem(Activity activity, String id, String itemName) {
+    public static void insertNewItem(Activity activity, String id, String itemName, String user) {
         DaoSession daoSession = ((MyApplication) activity.getApplication()).getDaoSession();
         ItemsDao itemsDao = daoSession.getItemsDao();
 
-        Items item = new Items(null, ((MyApplication) activity.getApplication()).getUserName(), id, itemName, 0, null, null);
+        Items item = new Items(null, user, id, itemName, 0, null, null);
         itemsDao.insert(item);
     }
 
@@ -98,19 +100,19 @@ public class DatabaseUtil {
      * Get the current item which is on focus.
      *
      * @param activity
+     * @param ID
      * @return
      */
-    public static Items getCurrentItem(Activity activity) {
+    public static Items getCurrentItem(Activity activity, String ID) {
 
         DaoSession daoSession = ((MyApplication) activity.getApplication()).getDaoSession();
         ItemsDao itemsDao = daoSession.getItemsDao();
         List<Items> items = itemsDao.queryBuilder().where(ItemsDao.Properties.Rfid.
-                eq(((MyApplication) activity.getApplication()).getCurrentItemID())).build().list();
+                eq(ID)).build().list();
         if (items.size() == 1) {
             return items.get(0);
         } else if (items.size() == 0) {
-            return new Items(null, ((MyApplication) activity.getApplication()).getUserName(),
-                    ConstantManager.DEFAULT_RFID, "None", 0, null, null);
+            return null;
         } else {
             boolean first = true;
             for (Items item :
@@ -148,11 +150,11 @@ public class DatabaseUtil {
      * @param activity
      * @return
      */
-    public static List<ImagesPath> queryImagesPaths(Activity activity) {
+    public static List<ImagesPath> queryImagesPaths(Activity activity, String ID) {
         // get the items DAO
         DaoSession daoSession = ((MyApplication) activity.getApplication()).getDaoSession();
         return daoSession.getImagesPathDao().queryBuilder().where(ImagesPathDao.Properties.Rfid.
-                eq(((MyApplication) activity.getApplication()).getCurrentItemID())).build().list();
+                eq(ID)).build().list();
     }
 
     /**
@@ -161,9 +163,9 @@ public class DatabaseUtil {
      * @param activity
      * @param detailDes
      */
-    public static void updateDetailDescription(Activity activity, String detailDes) {
+    public static void updateDetailDescription(Activity activity, String detailDes, String ID) {
         DaoSession daoSession = ((MyApplication) activity.getApplication()).getDaoSession();
-        Items item = getCurrentItem(activity);
+        Items item = getCurrentItem(activity, ID);
         item.setDetailDescription(detailDes);
         daoSession.getItemsDao().insertOrReplace(item);
     }
@@ -174,9 +176,9 @@ public class DatabaseUtil {
      * @param activity
      * @param newItemName
      */
-    public static void updateItemName(Activity activity, String newItemName) {
+    public static void updateItemName(Activity activity, String newItemName, String ID) {
         DaoSession daoSession = ((MyApplication) activity.getApplication()).getDaoSession();
-        Items item = getCurrentItem(activity);
+        Items item = getCurrentItem(activity, ID);
         item.setItemName(newItemName);
         daoSession.getItemsDao().insertOrReplace(item);
     }

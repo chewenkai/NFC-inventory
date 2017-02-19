@@ -1,10 +1,8 @@
 package com.kevin.rfidmanager.Activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.daimajia.slider.library.Indicators.PagerIndicator;
 import com.daimajia.slider.library.SliderLayout;
@@ -21,6 +19,7 @@ import java.util.List;
 public class GalleryActivity extends AppCompatActivity {
     int default_position = 0;
     SliderLayout imageView;
+    private String currentID = ConstantManager.DEFAULT_RFID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +27,8 @@ public class GalleryActivity extends AppCompatActivity {
         setContentView(R.layout.activity_gallery);
         imageView = (SliderLayout) findViewById(R.id.show_photo_view);
         default_position = getIntent().getIntExtra(ConstantManager.GALLERY_CLICK_POSITION, 0);
-        List<ImagesPath> imagesPaths = DatabaseUtil.queryImagesPaths(this);
+        currentID = getIntent().getStringExtra(ConstantManager.CURRENT_ITEM_ID);
+        List<ImagesPath> imagesPaths = DatabaseUtil.queryImagesPaths(this, currentID);
         for (ImagesPath imagePath:imagesPaths) {
             TextSliderView textSliderView = new TextSliderView(this);
             textSliderView.image(new File(imagePath.getImagePath())).setScaleType(BaseSliderView.ScaleType.CenterInside);

@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.kevin.rfidmanager.MyApplication;
 import com.kevin.rfidmanager.R;
+import com.kevin.rfidmanager.Utils.ConstantManager;
 import com.kevin.rfidmanager.Utils.DatabaseUtil;
 import com.kevin.rfidmanager.Utils.SPUtil;
 import com.kevin.rfidmanager.Utils.StringUtil;
@@ -99,8 +100,9 @@ public class LoginActivity extends AppCompatActivity {
                 else {
                     Users user = users.get(0);
                     if (mPwdStr.equals(user.getPassWord())){
-                        ((MyApplication) getApplication()).setUserName(user.getUserName());
-                        startActivity(new Intent(LoginActivity.this, ItemListActivity.class));
+                        Intent intent = new Intent(LoginActivity.this, ItemListActivity.class);
+                        intent.putExtra(ConstantManager.CURRENT_USER_NAME, user.getUserName());
+                        startActivity(intent);
                         finish();
                     }else{
                         Snackbar.make(v, R.string.login_fail, Snackbar.LENGTH_LONG).show();
@@ -166,9 +168,11 @@ public class LoginActivity extends AppCompatActivity {
                     SPUtil.getInstence(getApplicationContext()).saveNeedPassword(false);
                     Toast.makeText(getApplicationContext(), R.string.password_omitted, Toast.LENGTH_LONG).
                             show();
-                    DatabaseUtil.addNewUser(LoginActivity.this, getString(R.string.default_username), "");
-                    ((MyApplication) getApplication()).setUserName(getString(R.string.default_username));
-                    startActivity(new Intent(LoginActivity.this, ItemListActivity.class));
+                    DatabaseUtil.addNewUser(LoginActivity.this, ConstantManager.DEFAULT_USER, "");
+                    Intent intent = new Intent(LoginActivity.this, ItemListActivity.class);
+                    intent.putExtra(ConstantManager.CURRENT_USER_NAME,
+                            ConstantManager.DEFAULT_USER);
+                    startActivity(intent);
                     b.dismiss();
                     finish();
                     return;
@@ -193,10 +197,11 @@ public class LoginActivity extends AppCompatActivity {
                 }
                 //save password with edt.getText().toString();
                 if (DatabaseUtil.addNewUser(LoginActivity.this, usernameEdt.getText().toString(), firstPasswordEdt.getText().toString())){
-                    ((MyApplication) getApplication()).setUserName(usernameEdt.getText().toString());
                     Toast.makeText(getApplicationContext(), R.string.password_saved, Toast.LENGTH_LONG).
                             show();
-                    startActivity(new Intent(LoginActivity.this, ItemListActivity.class));
+                    Intent intent = new Intent(LoginActivity.this, ItemListActivity.class);
+                    intent.putExtra(ConstantManager.CURRENT_USER_NAME, usernameEdt.getText().toString());
+                    startActivity(intent);
                     finish();
                 }else {
                     message.setText(R.string.username_exist);
@@ -222,8 +227,9 @@ public class LoginActivity extends AppCompatActivity {
      */
     private void checkIsNeedPassword() {
         if (!SPUtil.getInstence(getApplicationContext()).getNeedPassword()) {
-            startActivity(new Intent(LoginActivity.this, ItemListActivity.class));
-            ((MyApplication) getApplication()).setUserName(getString(R.string.default_username));
+            Intent intent = new Intent(LoginActivity.this, ItemListActivity.class);
+            intent.putExtra(ConstantManager.CURRENT_USER_NAME, ConstantManager.DEFAULT_USER);
+            startActivity(intent);
             finish();
         }
     }

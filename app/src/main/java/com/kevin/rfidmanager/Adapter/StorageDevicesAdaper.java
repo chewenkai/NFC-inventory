@@ -3,7 +3,6 @@ package com.kevin.rfidmanager.Adapter;
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -12,29 +11,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.kevin.rfidmanager.Activity.GalleryActivity;
 import com.kevin.rfidmanager.Entity.DeviceFile;
-import com.kevin.rfidmanager.MyApplication;
 import com.kevin.rfidmanager.R;
-import com.kevin.rfidmanager.Utils.ConstantManager;
-import com.kevin.rfidmanager.Utils.DatabaseUtil;
-import com.kevin.rfidmanager.Utils.ScreenUtil;
-import com.kevin.rfidmanager.database.DaoSession;
-import com.kevin.rfidmanager.database.ImagesPath;
-import com.squareup.picasso.Picasso;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-
-import at.markushi.ui.CircleButton;
-
-import static com.kevin.rfidmanager.Utils.ConstantManager.DEFAULT_IMAGE_HEIGHT_DP;
 
 /**
  * Created by Kevin on 2017/1/29.

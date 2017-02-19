@@ -3,11 +3,11 @@ package com.kevin.rfidmanager.Activity;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -22,7 +22,6 @@ import android.widget.TextView;
 
 import com.kevin.rfidmanager.Adapter.GallaryAdaper;
 import com.kevin.rfidmanager.Adapter.KeyDesListAdapter;
-import com.kevin.rfidmanager.MyApplication;
 import com.kevin.rfidmanager.R;
 import com.kevin.rfidmanager.Utils.ConstantManager;
 import com.kevin.rfidmanager.Utils.DatabaseUtil;
@@ -30,8 +29,6 @@ import com.kevin.rfidmanager.Utils.ScreenUtil;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
-
-import at.markushi.ui.CircleButton;
 
 public class ItemDetailActivity extends AppCompatActivity {
     private TextView textViewItemName, addKeyDes, detailDescriptionTitle;
@@ -43,6 +40,7 @@ public class ItemDetailActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private GallaryAdaper gallaryAdaper;
     private KeyDesListAdapter desListAdapter;
+    public String currentID = ConstantManager.DEFAULT_RFID;
 
     private boolean hideEditButtons = true;
 
@@ -64,27 +62,28 @@ public class ItemDetailActivity extends AppCompatActivity {
     }
 
     private void initUI() {
+        currentID = getIntent().getStringExtra(ConstantManager.CURRENT_ITEM_ID);
 
-        if (((MyApplication) getApplication()).getCurrentItemID() ==
-                ConstantManager.DEFAULT_RFID)
+        if (currentID == ConstantManager.DEFAULT_RFID)
             return;
 
         itemName = (EditText) findViewById(R.id.item_name);
         itemName.setVisibility(View.GONE);
 
         textViewItemName = (TextView) findViewById(R.id.textview_item_name);
-        textViewItemName.setText(DatabaseUtil.getCurrentItem(ItemDetailActivity.this).getItemName());
+        textViewItemName.setText(DatabaseUtil.getCurrentItem(ItemDetailActivity.this, currentID).
+                getItemName());
         textViewItemName.setVisibility(View.VISIBLE);
 
         key_des_list = (ListView) findViewById(R.id.listview_item_key_des);
         desListAdapter = new KeyDesListAdapter(ItemDetailActivity.this,
-                DatabaseUtil.queryItemsKeyDes(ItemDetailActivity.this,
-                        ((MyApplication) getApplication()).getCurrentItemID()), hideEditButtons);
+                DatabaseUtil.queryItemsKeyDes(ItemDetailActivity.this, currentID), hideEditButtons,
+                currentID);
         key_des_list.setAdapter(desListAdapter);
         desListAdapter.setCurrentActivity(ItemDetailActivity.this);
 
         mainImage = (ImageView) findViewById(R.id.iamgeview_main_image);
-        final String mainImagePath = DatabaseUtil.getCurrentItem(ItemDetailActivity.this).getMainImagePath();
+        final String mainImagePath = DatabaseUtil.getCurrentItem(ItemDetailActivity.this, currentID).getMainImagePath();
         if (mainImagePath != null){
             if (ContextCompat.checkSelfPermission(ItemDetailActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)
                     == PackageManager.PERMISSION_GRANTED) {
@@ -132,13 +131,13 @@ public class ItemDetailActivity extends AppCompatActivity {
         addGalleryButton.setVisibility(View.GONE);
 
         detailDescription = (EditText) findViewById(R.id.detail_description);
-        detailDescription.setText(DatabaseUtil.getCurrentItem(ItemDetailActivity.this).getDetailDescription());
+        detailDescription.setText(DatabaseUtil.getCurrentItem(ItemDetailActivity.this, currentID).getDetailDescription());
         detailDescription.setEnabled(false);
         detailDescription.setBackgroundColor(getResources().getColor(R.color.white));
         detailDescription.setTextColor(getResources().getColor(R.color.black));
 
         recyclerView = (RecyclerView) findViewById(R.id.recycle_gallery);
-        gallaryAdaper = new GallaryAdaper(ItemDetailActivity.this, DatabaseUtil.queryImagesPaths(ItemDetailActivity.this), hideEditButtons);
+        gallaryAdaper = new GallaryAdaper(ItemDetailActivity.this, DatabaseUtil.queryImagesPaths(ItemDetailActivity.this, currentID), hideEditButtons, currentID);
         recyclerView.setAdapter(gallaryAdaper);
         LinearLayoutManager layoutManager = new LinearLayoutManager(ItemDetailActivity.this, LinearLayoutManager.HORIZONTAL, false);
         layoutManager.scrollToPosition(0);// Optionally customize the position you want to default scroll to
@@ -149,18 +148,6 @@ public class ItemDetailActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
 
     }
-
-    public void refreshUI(){
-
-        if (((MyApplication) getApplication()).getCurrentItemID() ==
-                ConstantManager.DEFAULT_RFID)
-            return;
-
-        initUI();
-
-
-    }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -173,7 +160,9 @@ public class ItemDetailActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_bar_edit:
-                startActivity(new Intent(this, ItemEditActivity.class));
+                Intent intent = new Intent(this, ItemEditActivity.class);
+                intent.putExtra(ConstantManager.CURRENT_ITEM_ID, currentID);
+                startActivity(intent);
                 finish();
                 break;
             case android.R.id.home:

@@ -19,8 +19,10 @@ import android.widget.Toast;
 import com.daimajia.swipe.SwipeLayout;
 import com.kevin.rfidmanager.Activity.ItemDetailActivity;
 import com.kevin.rfidmanager.Activity.ItemEditActivity;
+import com.kevin.rfidmanager.Activity.ItemListActivity;
 import com.kevin.rfidmanager.MyApplication;
 import com.kevin.rfidmanager.R;
+import com.kevin.rfidmanager.Utils.ConstantManager;
 import com.kevin.rfidmanager.Utils.DatabaseUtil;
 import com.kevin.rfidmanager.Utils.ScreenUtil;
 import com.kevin.rfidmanager.database.DaoSession;
@@ -92,20 +94,24 @@ public class ItemListAdaper extends RecyclerView.Adapter<ItemListAdaper.ViewHold
         image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MyApplication)activity.getApplication()).setCurrentItemID(item.getRfid());
+                ((ItemListActivity) activity).currentID = item.getRfid();
 //                ((MainActivity)activity).viewPager.setCurrentItem(ConstantManager.DETAIL, false);
 //                ((MainActivity)activity).adapter.tab2.refreshUI();
-                activity.startActivity(new Intent(activity, ItemDetailActivity.class));
+                Intent intent = new Intent(activity, ItemDetailActivity.class);
+                intent.putExtra(ConstantManager.CURRENT_ITEM_ID, item.getRfid());
+                activity.startActivity(intent);
             }
         });
 
         holder.editItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((MyApplication)activity.getApplication()).setCurrentItemID(item.getRfid());
+                ((ItemListActivity) activity).currentID = item.getRfid();
 //                ((MainActivity)activity).viewPager.setCurrentItem(ConstantManager.EDIT, false);
 //                ((MainActivity)activity).adapter.tab3.refreshUI();
-                activity.startActivity(new Intent(activity, ItemEditActivity.class));
+                Intent intent = new Intent(activity, ItemEditActivity.class);
+                intent.putExtra(ConstantManager.CURRENT_ITEM_ID, ((ItemListActivity) activity).currentID);
+                activity.startActivity(intent);
             }
         });
         holder.deleteItem.setOnClickListener(new View.OnClickListener() {
@@ -134,7 +140,7 @@ public class ItemListAdaper extends RecyclerView.Adapter<ItemListAdaper.ViewHold
 
     public void updateUI() {
         this.itemes.clear();
-        this.itemes.addAll(DatabaseUtil.queryItems(activity));
+        this.itemes.addAll(DatabaseUtil.queryItems(activity, ((ItemListActivity) activity).currentUser));
         this.notifyDataSetChanged();
     }
 

@@ -9,13 +9,11 @@ import android.content.IntentFilter;
 import android.graphics.Rect;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
-import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
@@ -86,6 +84,8 @@ public class ItemListActivity extends AppCompatActivity {
     private ItemListAdaper itemListAdapter;
     private NfcAdapter mAdapter;
     private PendingIntent pendingIntent;
+    public String currentUser = ConstantManager.DEFAULT_USER;
+    public String currentID = ConstantManager.DEFAULT_RFID;
     final String ACTION_USB_PERMISSION =
             "com.kevin.rfidmanager.USB_PERMISSION";
 
@@ -191,8 +191,7 @@ public class ItemListActivity extends AppCompatActivity {
                     public void onBoomButtonClick(int index) {
                         SPUtil.getInstence(getApplicationContext()).saveNeedPassword(true);
                         startActivity(new Intent(ItemListActivity.this, LoginActivity.class));
-                        ((MyApplication) getApplication()).
-                                setCurrentItemID(ConstantManager.DEFAULT_RFID);
+                        currentID = ConstantManager.DEFAULT_RFID;
                         finish();
                     }
                 })
@@ -209,12 +208,9 @@ public class ItemListActivity extends AppCompatActivity {
     }
 
     private void initUI() {
+        currentUser = getIntent().getStringExtra(ConstantManager.CURRENT_USER_NAME);
         recyclerView = (RecyclerView) findViewById(R.id.recycle_item_list);
-        List<Items> items = DatabaseUtil.queryItems(ItemListActivity.this);
-
-        if (((MyApplication) getApplication()).getCurrentItemID() == ConstantManager.DEFAULT_RFID &&
-                items.size() != 0)
-            ((MyApplication) getApplication()).setCurrentItemID(items.get(0).getRfid());
+        List<Items> items = DatabaseUtil.queryItems(ItemListActivity.this, currentUser);
 
         itemListAdapter = new ItemListAdaper(ItemListActivity.this, items);
         recyclerView.setAdapter(itemListAdapter);
@@ -261,16 +257,38 @@ public class ItemListActivity extends AppCompatActivity {
         if (intent != null && NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())) {
             Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
             String ID = HexConvertUtil.bytesToHexString(tag.getId());
-            Parcelable[] rawMessages =
-                    intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
-            if (rawMessages != null) {
-                NdefMessage[] messages = new NdefMessage[rawMessages.length];
-                for (int i = 0; i < rawMessages.length; i++) {
-                    messages[i] = (NdefMessage) rawMessages[i];
-                }
-                Toast.makeText(ItemListActivity.this, messages.toString(), Toast.LENGTH_LONG).show();
 
-            }
+            // Are there any user info?
+            DaoSession daoSession = ((MyApplication) getApplication()).getDaoSession();
+            ItemsDao itemsDao = daoSession.getItemsDao();
+            List<Items> items = itemsDao.queryBuilder().
+                    where(ItemsDao.Properties.Rfid.like(ID)).build().list();
+            if (items.size() > 1) {
+                Toast.makeText(ItemListActivity.this,
+                        R.string.one_ID_multi_items_warning, Toast.LENGTH_LONG).show();
+                return;
+            } else if (items.size() == 1) {  // Database have an item bind with this card
+                if (items.get(0).getUserName().equals(currentUser)) {
+                    Intent intentToDetail = new Intent(ItemListActivity.this, ItemDetailActivity.class);
+                    intentToDetail.putExtra(ConstantManager.CURRENT_ITEM_ID, ID);
+                    startActivity(intentToDetail);
+                } else {
+                    Toast.makeText(ItemListActivity.this,
+                            R.string.another_users_card, Toast.LENGTH_LONG).show();
+                    return;
+                }
+            } else
+                addNewItem(ID);
+//            Parcelable[] rawMessages =
+//                    intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
+//            if (rawMessages != null) {
+//                NdefMessage[] messages = new NdefMessage[rawMessages.length];
+//                for (int i = 0; i < rawMessages.length; i++) {
+//                    messages[i] = (NdefMessage) rawMessages[i];
+//                }
+//                Toast.makeText(ItemListActivity.this, messages.toString(), Toast.LENGTH_LONG).show();
+//
+//            }
         }
         super.onNewIntent(intent);
     }
@@ -320,6 +338,7 @@ public class ItemListActivity extends AppCompatActivity {
         final Button saveButton = (Button) dialogView.findViewById(R.id.dialog_change);
         final Button cancleButton = (Button) dialogView.findViewById(R.id.dialog_cancle);
 
+        itemID.setText(id);
         dialogBuilder.setTitle("Add new item: ");
         if (!id.isEmpty())
             dialogBuilder.setMessage("the ID below is read from your card.");
@@ -342,18 +361,17 @@ public class ItemListActivity extends AppCompatActivity {
                 DaoSession daoSession = ((MyApplication) getApplication()).getDaoSession();
                 ItemsDao itemsDao = daoSession.getItemsDao();
                 List<Items> items = itemsDao.queryBuilder().
-                        where(ItemsDao.Properties.Rfid.eq(new_id)).build().list();
+                        where(ItemsDao.Properties.Rfid.like(new_id)).build().list();
                 if (items.size() > 0) {
                     Toast.makeText(ItemListActivity.this,
                             "The ID card is exist, please change a ID", Toast.LENGTH_LONG).show();
                     return;
                 }
-                ((MyApplication) getApplication()).
-                        setCurrentItemID(itemID.getText().toString());
                 DatabaseUtil.insertNewItem(ItemListActivity.this,
                         itemID.getText().toString(),
-                        itemName.getText().toString());
+                        itemName.getText().toString(), currentUser);
                 Intent intent = new Intent(ItemListActivity.this, ItemEditActivity.class);
+                intent.putExtra(ConstantManager.CURRENT_ITEM_ID, itemID.getText().toString());
                 startActivity(intent);
                 b.dismiss();
 
@@ -471,7 +489,7 @@ public class ItemListActivity extends AppCompatActivity {
 
 
                 List<Users> users = DatabaseUtil.queryUsers(ItemListActivity.this,
-                        ((MyApplication) getApplication()).getUserName());
+                        currentUser);
                 if (users.size() > 1) {
                     ((MyApplication) getApplication()).toast(getString(R.string.illegal_user));
                     usersDao.deleteInTx(users);
@@ -625,7 +643,6 @@ public class ItemListActivity extends AppCompatActivity {
                 if (storageDevicesAdaper.selectedDeviceRootPath != null) {
                     if (storageDevicesAdaper.selectedDeviceRootPath.type == ConstantManager.DEFAULT_FILE) {
                         if (copyDBtoAPP(storageDevicesAdaper.selectedDeviceRootPath.defaultFile, textView)) {
-                            ((MyApplication) getApplication()).setCurrentItemID(ConstantManager.DEFAULT_RFID);
                             ((MyApplication) getApplication()).toast(getString(R.string.restore_successful));
                             initUI();
                         } else {
@@ -634,7 +651,6 @@ public class ItemListActivity extends AppCompatActivity {
                     } else {
                         if (copyDBtoAPP(storageDevicesAdaper.selectedDeviceRootPath.usbFile, textView,
                                 storageDevicesAdaper.selectedDeviceRootPath.device)) {
-                            ((MyApplication) getApplication()).setCurrentItemID(ConstantManager.DEFAULT_RFID);
                             ((MyApplication) getApplication()).toast(getString(R.string.restore_successful));
                             initUI();
                         } else {

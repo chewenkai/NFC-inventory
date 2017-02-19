@@ -40,11 +40,13 @@ public class GallaryAdaper extends RecyclerView.Adapter<GallaryAdaper.ViewHolder
     public Activity activity;
     List<ImagesPath> paths;
     private boolean hide;
+    private String currentID = ConstantManager.DEFAULT_RFID;
 
-    public GallaryAdaper(Activity activity, List<ImagesPath> paths, boolean hide) {
+    public GallaryAdaper(Activity activity, List<ImagesPath> paths, boolean hide, String currentID) {
         this.activity = activity;
         this.paths = paths;
         this.hide = hide;
+        this.currentID = currentID;
     }
 
     public Context getContext() {
@@ -94,6 +96,7 @@ public class GallaryAdaper extends RecyclerView.Adapter<GallaryAdaper.ViewHolder
             public void onClick(View v) {
                 Intent intent = new Intent();
                 intent.putExtra(ConstantManager.GALLERY_CLICK_POSITION, position);
+                intent.putExtra(ConstantManager.CURRENT_ITEM_ID, currentID);
                 intent.setClass(activity, GalleryActivity.class);
                 activity.startActivity(intent);
             }
@@ -119,7 +122,7 @@ public class GallaryAdaper extends RecyclerView.Adapter<GallaryAdaper.ViewHolder
 
     public void updateUI() {
         this.paths.clear();
-        this.paths.addAll(DatabaseUtil.queryImagesPaths(activity));
+        this.paths.addAll(DatabaseUtil.queryImagesPaths(activity, currentID));
         this.notifyDataSetChanged();
     }
 

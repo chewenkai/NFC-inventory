@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.kevin.rfidmanager.MyApplication;
 import com.kevin.rfidmanager.R;
+import com.kevin.rfidmanager.Utils.ConstantManager;
 import com.kevin.rfidmanager.Utils.DatabaseUtil;
 import com.kevin.rfidmanager.database.DaoSession;
 import com.kevin.rfidmanager.database.KeyDescription;
@@ -31,6 +32,7 @@ public class KeyDesListAdapter extends ArrayAdapter<KeyDescription> {
     private KeyDesListAdapter instance = this;
     private Activity currentActivity = null;
     private Boolean hideButton = false;
+    private String currentID = ConstantManager.DEFAULT_RFID;
 
     // View lookup cache
     private static class ViewHolder {
@@ -39,9 +41,10 @@ public class KeyDesListAdapter extends ArrayAdapter<KeyDescription> {
         CircleButton delete;
     }
 
-    public KeyDesListAdapter(Context context, List<KeyDescription> item_key_des, Boolean hideButton) {
+    public KeyDesListAdapter(Context context, List<KeyDescription> item_key_des, Boolean hideButton, String currentID) {
         super(context, R.layout.key_description_listview_llayout, item_key_des);
         this.hideButton = hideButton;
+        this.currentID = currentID;
     }
 
     public void setCurrentActivity(Activity activity) {
@@ -136,8 +139,7 @@ public class KeyDesListAdapter extends ArrayAdapter<KeyDescription> {
      */
     public void updateKeyDescriptionList() {
         this.clear();
-        this.addAll(DatabaseUtil.queryItemsKeyDes(currentActivity,
-                ((MyApplication) currentActivity.getApplication()).getCurrentItemID()));
+        this.addAll(DatabaseUtil.queryItemsKeyDes(currentActivity, currentID));
         this.notifyDataSetChanged();
     }
 

@@ -69,7 +69,6 @@
     <string name="restore_warning">The restore database will be loaded into your RFID system, the current data will be lost without backup. </string>
     <string name="no_backup_File_TF">There are no backup file on external card.</string>
     <string name="no_backup_File_data">There are no backup file on internal storage.</string>
-    <string name="default_username">Default User</string>
     <string name="username_exist">The username is exist.</string>
     <string name="user_not_exist">User name not exist.</string>
     <string name="illegal_user">Illegal user, please sign up again.</string>
@@ -94,9 +93,11 @@
     <string name="current_selection_staggered">Current selection: Staggered Layout</string>
     <string name="current_selection_one_row">Current selection: One Row Layout</string>
     <string name="select_at_least_one_item">Please select at least one storage.</string>
-    <string name="internal_sd_card">Internal SD Card</string>
-    <string name="external_sd_card">External SD Card</string>
+    <string name="internal_sd_card">Primary Storage</string>
+    <string name="external_sd_card">Secondary Storage</string>
     <string name="no_usb_permission">Do not have access to read USB device, please grant permission.</string>
+    <string name="one_ID_multi_items_warning">There are more than one items with one ID.</string>
+    <string name="another_users_card">This card already bind with another user.</string>
 
     <!--Others-->
 

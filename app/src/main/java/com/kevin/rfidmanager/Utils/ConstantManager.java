@@ -17,6 +17,7 @@ public class ConstantManager {
     public static int REQUEST_GALLERY_IMAGE_FILE = 6;
     public static int PERMISSION_REQUEST_CODE=7;
     public static String DEFAULT_RFID = "-1";
+    public static String DEFAULT_USER = "default user";
 
     // General
     public static int DEFAULT_IMAGE_WIDTH = 300;
@@ -38,5 +39,10 @@ public class ConstantManager {
     // File
     public final static int DEFAULT_FILE = 0;
     public final static int USB_FILE = 1;
+
+    // Extra
+    public final static String CURRENT_USER_NAME = "current_user_name";
+    public final static String CURRENT_ITEM_ID = "current_item_id";
+
 
 }

@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_alignParentLeft="true"
@@ -19,7 +18,7 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
@@ -32,7 +31,7 @@
             <LinearLayout
                 android:id="@+id/layout_linear_item_name_des"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight="1"
                 android:orientation="vertical">
 
@@ -42,6 +41,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="10dp"
                     android:gravity="start"
+                    android:layout_gravity="top"
                     android:inputType="text"
                     android:nextFocusLeft="@id/item_name"
                     android:nextFocusUp="@id/item_name"
@@ -70,6 +70,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:layout_weight="1"
+                    android:layout_gravity="center"
                     android:background="@color/white"
                     android:divider="@null"
                     android:dividerHeight="0dp" />
@@ -79,7 +80,7 @@
                     style="@style/Base.Widget.AppCompat.Button.Colored"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
+                    android:layout_gravity="bottom"
                     android:gravity="center"
                     android:padding="10dp"
                     android:text="@string/add_key_description"
