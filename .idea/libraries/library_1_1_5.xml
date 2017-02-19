@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="library-1.1.5">
+    <CLASSES>
+      <root url="file://$USER_HOME$/.android/build-cache/3c61b25ab44cfc6ea74b54e5c7e2158aaad73d95/output/res" />
+      <root url="jar://$USER_HOME$/.android/build-cache/3c61b25ab44cfc6ea74b54e5c7e2158aaad73d95/output/jars/classes.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.daimajia.slider/library/1.1.5/5040bee95115677508106e1a42cd685bdc570369/library-1.1.5-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

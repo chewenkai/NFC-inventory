@@ -36,6 +36,7 @@ import at.markushi.ui.CircleButton;
 
 /**
  * Created by Kevin on 2017/1/29.
+ * Mail: chewenkaich@gmail.com
  */
 
 public class ItemListAdaper extends RecyclerView.Adapter<ItemListAdaper.ViewHolder> {

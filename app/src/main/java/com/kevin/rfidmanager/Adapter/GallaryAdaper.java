@@ -12,9 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
 import com.kevin.rfidmanager.Activity.GalleryActivity;
 import com.kevin.rfidmanager.MyApplication;
@@ -32,10 +30,10 @@ import java.util.List;
 import at.markushi.ui.CircleButton;
 
 import static com.kevin.rfidmanager.Utils.ConstantManager.DEFAULT_IMAGE_HEIGHT_DP;
-import static com.kevin.rfidmanager.Utils.ConstantManager.DEFAULT_IMAGE_WIDTH_DP;
 
 /**
  * Created by Kevin on 2017/1/29.
+ * Mail: chewenkaich@gmail.com
  */
 
 public class GallaryAdaper extends RecyclerView.Adapter<GallaryAdaper.ViewHolder> {

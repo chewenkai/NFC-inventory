@@ -3,11 +3,11 @@ package com.kevin.rfidmanager.database;
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;
 import org.greenrobot.greendao.annotation.Id;
-import org.greenrobot.greendao.annotation.NotNull;
 import org.greenrobot.greendao.annotation.Unique;
 
 /**
  * Created by Kevin on 2017/1/25.
+ * Mail: chewenkaich@gmail.com
  */
 
 @Entity

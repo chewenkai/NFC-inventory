@@ -6,6 +6,7 @@ import com.kevin.rfidmanager.Utils.ConstantManager;
 
 /**
  * Created by kevin on 17-2-16.
+ * Mail: chewenkaich@gmail.com
  */
 
 public class DeviceFile {

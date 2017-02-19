@@ -7,6 +7,7 @@ import org.greenrobot.greendao.annotation.Unique;
 
 /**
  * Created by Kevin on 2017/1/25.
+ * Mail: chewenkaich@gmail.com
  */
 
 @Entity

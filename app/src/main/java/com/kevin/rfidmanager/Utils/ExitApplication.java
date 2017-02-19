@@ -1,10 +1,13 @@
 package com.kevin.rfidmanager.Utils;
-import java.util.LinkedList;
-import java.util.List;
+
 import android.app.Activity;
 import android.app.Application;
+
+import java.util.LinkedList;
+import java.util.List;
 /**
  * Created by Kevin on 2017/1/26.
+ * Mail: chewenkaich@gmail.com
  */
 
 

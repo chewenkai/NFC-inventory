@@ -1,7 +1,6 @@
 package com.kevin.rfidmanager.Activity;
 
 import android.app.PendingIntent;
-import android.app.ProgressDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -10,15 +9,17 @@ import android.content.IntentFilter;
 import android.graphics.Rect;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbManager;
+import android.nfc.NdefMessage;
+import android.nfc.NfcAdapter;
+import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Environment;
-import android.provider.MediaStore;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -38,7 +39,6 @@ import android.widget.Toast;
 import com.github.mjdev.libaums.UsbMassStorageDevice;
 import com.github.mjdev.libaums.fs.FileSystem;
 import com.github.mjdev.libaums.fs.UsbFile;
-import com.github.mjdev.libaums.fs.UsbFileInputStream;
 import com.github.mjdev.libaums.fs.UsbFileOutputStream;
 import com.github.mjdev.libaums.fs.UsbFileStreamFactory;
 import com.kevin.rfidmanager.Adapter.ItemListAdaper;
@@ -49,6 +49,7 @@ import com.kevin.rfidmanager.R;
 import com.kevin.rfidmanager.Utils.ConstantManager;
 import com.kevin.rfidmanager.Utils.DatabaseUtil;
 import com.kevin.rfidmanager.Utils.ExternalStorage;
+import com.kevin.rfidmanager.Utils.HexConvertUtil;
 import com.kevin.rfidmanager.Utils.SPUtil;
 import com.kevin.rfidmanager.Utils.ScreenUtil;
 import com.kevin.rfidmanager.database.DaoSession;
@@ -66,7 +67,6 @@ import com.nightonke.boommenu.Piece.PiecePlaceEnum;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -84,6 +84,8 @@ import at.markushi.ui.CircleButton;
 public class ItemListActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ItemListAdaper itemListAdapter;
+    private NfcAdapter mAdapter;
+    private PendingIntent pendingIntent;
     final String ACTION_USB_PERMISSION =
             "com.kevin.rfidmanager.USB_PERMISSION";
 
@@ -93,6 +95,7 @@ public class ItemListActivity extends AppCompatActivity {
         setContentView(R.layout.item_list_layout);
         initActionBar();
         initUI();
+        initNFC();
     }
 
     private void initActionBar() {
@@ -227,10 +230,48 @@ public class ItemListActivity extends AppCompatActivity {
         registerReceiver(usbReceiver, filter);
     }
 
+    private boolean initNFC() {
+        mAdapter = NfcAdapter.getDefaultAdapter(this);
+        if (mAdapter == null) {
+            //nfc not support your device.
+            return false;
+        }
+        pendingIntent = PendingIntent.getActivity(
+                this, 0, new Intent(this, getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP), 0);
+        return true;
+    }
     @Override
     public void onResume() {
         super.onResume();
         initUI();
+        mAdapter.enableForegroundDispatch(this, pendingIntent, null, null);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if (mAdapter != null) {
+            mAdapter.disableForegroundDispatch(this);
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        if (intent != null && NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())) {
+            Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+            String ID = HexConvertUtil.bytesToHexString(tag.getId());
+            Parcelable[] rawMessages =
+                    intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
+            if (rawMessages != null) {
+                NdefMessage[] messages = new NdefMessage[rawMessages.length];
+                for (int i = 0; i < rawMessages.length; i++) {
+                    messages[i] = (NdefMessage) rawMessages[i];
+                }
+                Toast.makeText(ItemListActivity.this, messages.toString(), Toast.LENGTH_LONG).show();
+
+            }
+        }
+        super.onNewIntent(intent);
     }
 
     @Override
@@ -494,7 +535,7 @@ public class ItemListActivity extends AppCompatActivity {
         List<DeviceFile> deviceFiles = getDevicePathSet(textView);
         if (deviceFiles == null) {
             Toast.makeText(ItemListActivity.this,
-                    "Do not have access to read USB device, please grant permission.", Toast.LENGTH_LONG).show();
+                    R.string.no_usb_permission, Toast.LENGTH_LONG).show();
             return;
         }
         final StorageDevicesAdaper storageDevicesAdaper =

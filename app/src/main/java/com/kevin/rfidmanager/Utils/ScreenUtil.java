@@ -1,12 +1,12 @@
 package com.kevin.rfidmanager.Utils;
 
-import android.app.Activity;
 import android.content.Context;
 import android.util.DisplayMetrics;
 import android.view.WindowManager;
 
 /**
  * Created by Kevin on 2017/2/2.
+ * Mail: chewenkaich@gmail.com
  */
 
 public class ScreenUtil {

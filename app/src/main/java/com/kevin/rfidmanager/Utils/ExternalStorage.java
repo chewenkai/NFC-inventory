@@ -11,6 +11,7 @@ import java.util.Scanner;
 
 /**
  * Created by kevin on 17-2-15.
+ * Mail: chewenkaich@gmail.com
  */
 
 public class ExternalStorage {

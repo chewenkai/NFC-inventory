@@ -1,7 +1,6 @@
 package com.kevin.rfidmanager;
 
 import android.app.Application;
-import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -13,6 +12,7 @@ import org.greenrobot.greendao.database.Database;
 
 /**
  * Created by Kevin on 2017/1/25.
+ * Mail: chewenkaich@gmail.com
  */
 
 public class MyApplication extends Application {

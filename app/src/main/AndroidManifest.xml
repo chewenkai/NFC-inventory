@@ -4,6 +4,8 @@
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.NFC" />
+    <!--<uses-feature android:name="android.hardware.nfc" android:required="true" />-->
 
     <application
         android:name=".MyApplication"
@@ -41,7 +43,15 @@
                 android:resource="@xml/provider_paths" />
         </provider>
 
-        <activity android:name=".Activity.ItemListActivity" />
+        <activity android:name=".Activity.ItemListActivity">
+            <intent-filter>
+                <action android:name="android.nfc.action.TAG_DISCOVERED" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.nfc.action.TECH_DISCOVERED"
+                android:resource="@xml/nfc_tech_filter" />
+        </activity>
         <activity android:name=".Activity.ItemEditActivity"
             android:parentActivityName=".Activity.ItemDetailActivity">
             <!-- The meta-data element is needed for versions lower than 4.1 -->

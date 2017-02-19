@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="anreaderlib">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/RFIDdemo/libs/anreaderlib.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

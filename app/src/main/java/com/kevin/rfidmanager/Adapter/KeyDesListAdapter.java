@@ -9,13 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.kevin.rfidmanager.MyApplication;
 import com.kevin.rfidmanager.R;
 import com.kevin.rfidmanager.Utils.DatabaseUtil;
-import com.kevin.rfidmanager.Utils.SysUtil;
 import com.kevin.rfidmanager.database.DaoSession;
 import com.kevin.rfidmanager.database.KeyDescription;
 import com.kevin.rfidmanager.database.KeyDescriptionDao;
@@ -26,6 +24,7 @@ import at.markushi.ui.CircleButton;
 
 /**
  * Created by Kevin on 2017/1/29.
+ * Mail: chewenkaich@gmail.com
  */
 
 public class KeyDesListAdapter extends ArrayAdapter<KeyDescription> {
