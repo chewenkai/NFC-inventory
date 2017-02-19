@@ -1,8 +1,5 @@
 package com.kevin.rfidmanager.Utils;
 
-import android.util.DisplayMetrics;
-
-
 /**
  * Define all constants we need in this project.
  * Created by Kevin on 2017/1/26
@@ -19,7 +16,7 @@ public class ConstantManager {
     public static int REQUEST_MAIN_IMAGE_FILE = 5;
     public static int REQUEST_GALLERY_IMAGE_FILE = 6;
     public static int PERMISSION_REQUEST_CODE=7;
-    public static int DEFAULT_RFID = -1;
+    public static String DEFAULT_RFID = "-1";
 
     // General
     public static int DEFAULT_IMAGE_WIDTH = 300;

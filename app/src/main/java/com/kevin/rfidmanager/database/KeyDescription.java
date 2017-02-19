@@ -16,12 +16,12 @@ public class KeyDescription {
     @Id(autoincrement = true)
     private Long id;
 
-    private Long rfid;  // id of card and items
+    private String rfid;  // id of card and items
 
     private String keyDescription;  // key description of the item
 
-    @Generated(hash = 790285072)
-    public KeyDescription(Long id, Long rfid, String keyDescription) {
+    @Generated(hash = 1670657695)
+    public KeyDescription(Long id, String rfid, String keyDescription) {
         this.id = id;
         this.rfid = rfid;
         this.keyDescription = keyDescription;
@@ -39,11 +39,11 @@ public class KeyDescription {
         this.id = id;
     }
 
-    public Long getRfid() {
+    public String getRfid() {
         return this.rfid;
     }
 
-    public void setRfid(Long rfid) {
+    public void setRfid(String rfid) {
         this.rfid = rfid;
     }
 
@@ -54,6 +54,5 @@ public class KeyDescription {
     public void setKeyDescription(String keyDescription) {
         this.keyDescription = keyDescription;
     }
-
 
 }

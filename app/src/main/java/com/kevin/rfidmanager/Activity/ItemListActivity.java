@@ -244,7 +244,8 @@ public class ItemListActivity extends AppCompatActivity {
     public void onResume() {
         super.onResume();
         initUI();
-        mAdapter.enableForegroundDispatch(this, pendingIntent, null, null);
+        if (mAdapter != null)
+            mAdapter.enableForegroundDispatch(this, pendingIntent, null, null);
     }
 
     @Override
@@ -306,7 +307,7 @@ public class ItemListActivity extends AppCompatActivity {
     /*
            This is a dialog used for add new key description
             */
-    public void addNewItem() {
+    public void addNewItem(String id) {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(ItemListActivity.this);
         LayoutInflater inflater = getLayoutInflater();
         final View dialogView = inflater.inflate(R.layout.dialog_layout_two_edit_text, null);
@@ -319,19 +320,22 @@ public class ItemListActivity extends AppCompatActivity {
         final Button saveButton = (Button) dialogView.findViewById(R.id.dialog_change);
         final Button cancleButton = (Button) dialogView.findViewById(R.id.dialog_cancle);
 
-        dialogBuilder.setTitle("Just input a number as a ID of RFID card and a name of item");
+        dialogBuilder.setTitle("Add new item: ");
+        if (!id.isEmpty())
+            dialogBuilder.setMessage("the ID below is read from your card.");
+        else
+            dialogBuilder.setMessage("you can input a ID manually.");
         final AlertDialog b = dialogBuilder.create();
         b.show();
 
         saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Long new_id = null;
-                try {
-                    new_id = Long.parseLong(itemID.getText().toString());
-                } catch (NumberFormatException e) {
+                String new_id = itemID.getText().toString();
+                if (new_id.isEmpty()) {
                     Toast.makeText(ItemListActivity.this,
-                            "please input number as ID", Toast.LENGTH_LONG).show();
+                            "please input an ID or close your card to reader.",
+                            Toast.LENGTH_LONG).show();
                     return;
                 }
                 // Are there any user info?
@@ -345,9 +349,9 @@ public class ItemListActivity extends AppCompatActivity {
                     return;
                 }
                 ((MyApplication) getApplication()).
-                        setCurrentItemID(Long.parseLong(itemID.getText().toString()));
+                        setCurrentItemID(itemID.getText().toString());
                 DatabaseUtil.insertNewItem(ItemListActivity.this,
-                        Long.parseLong(itemID.getText().toString()),
+                        itemID.getText().toString(),
                         itemName.getText().toString());
                 Intent intent = new Intent(ItemListActivity.this, ItemEditActivity.class);
                 startActivity(intent);
@@ -858,7 +862,7 @@ public class ItemListActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_bar_add:
-                addNewItem();
+                addNewItem("");
                 break;
         }
         return true;

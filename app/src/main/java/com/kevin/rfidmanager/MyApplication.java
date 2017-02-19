@@ -29,15 +29,16 @@ public class MyApplication extends Application {
 
     public DaoSession daoSession;  // database session
 
-    public long getCurrentItemID() {
+    public String getCurrentItemID() {
         return currentItemID;
     }
 
-    public void setCurrentItemID(long currentItemID) {
+    public void setCurrentItemID(String currentItemID) {
         this.currentItemID = currentItemID;
     }
 
-    private long currentItemID = ConstantManager.DEFAULT_RFID;
+    private String currentItemID = ConstantManager.DEFAULT_RFID;
+
     @Override
     public void onCreate() {
         super.onCreate();

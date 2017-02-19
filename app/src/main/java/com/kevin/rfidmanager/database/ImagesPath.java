@@ -16,12 +16,12 @@ public class ImagesPath {
     @Id(autoincrement = true)
     private Long id;
 
-    private Long rfid;  // id of card and items
+    private String rfid;  // id of card and items
 
     private String imagePath;  // image path of the item
 
-    @Generated(hash = 1713909050)
-    public ImagesPath(Long id, Long rfid, String imagePath) {
+    @Generated(hash = 1127292842)
+    public ImagesPath(Long id, String rfid, String imagePath) {
         this.id = id;
         this.rfid = rfid;
         this.imagePath = imagePath;
@@ -39,11 +39,11 @@ public class ImagesPath {
         this.id = id;
     }
 
-    public Long getRfid() {
+    public String getRfid() {
         return this.rfid;
     }
 
-    public void setRfid(Long rfid) {
+    public void setRfid(String rfid) {
         this.rfid = rfid;
     }
 
@@ -54,7 +54,5 @@ public class ImagesPath {
     public void setImagePath(String imagePath) {
         this.imagePath = imagePath;
     }
-
-
 
 }

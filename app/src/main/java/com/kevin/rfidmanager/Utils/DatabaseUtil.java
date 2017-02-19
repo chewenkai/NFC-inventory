@@ -86,11 +86,11 @@ public class DatabaseUtil {
      * @param itemName
      */
 
-    public static void insertNewItem(Activity activity, long id, String itemName) {
+    public static void insertNewItem(Activity activity, String id, String itemName) {
         DaoSession daoSession = ((MyApplication) activity.getApplication()).getDaoSession();
         ItemsDao itemsDao = daoSession.getItemsDao();
 
-        Items item = new Items(null, ((MyApplication) activity.getApplication()).getUserName(), id, itemName, null, null);
+        Items item = new Items(null, ((MyApplication) activity.getApplication()).getUserName(), id, itemName, 0, null, null);
         itemsDao.insert(item);
     }
 
@@ -109,7 +109,8 @@ public class DatabaseUtil {
         if (items.size() == 1) {
             return items.get(0);
         } else if (items.size() == 0) {
-            return new Items(null, ((MyApplication) activity.getApplication()).getUserName(), 0l, "None", null, null);
+            return new Items(null, ((MyApplication) activity.getApplication()).getUserName(),
+                    ConstantManager.DEFAULT_RFID, "None", 0, null, null);
         } else {
             boolean first = true;
             for (Items item :
@@ -129,7 +130,7 @@ public class DatabaseUtil {
      *
      * @return Items list
      */
-    public static List<KeyDescription> queryItemsKeyDes(Activity activity, long RFID) {
+    public static List<KeyDescription> queryItemsKeyDes(Activity activity, String RFID) {
         // get the items DAO
         DaoSession daoSession = ((MyApplication) activity.getApplication()).getDaoSession();
         KeyDescriptionDao keyDescriptionDao = daoSession.getKeyDescriptionDao();

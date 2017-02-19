@@ -18,21 +18,24 @@ public class Items {
 
     private String userName;  // user name
 
-    private Long rfid;  // id of card and items
+    private String rfid;  // id of card and items
 
     private String itemName;  // the name of item
+
+    private float price;  // item price
 
     private String mainImagePath;  // thumb of item
 
     private String detailDescription;  // description of item
 
-    @Generated(hash = 168323232)
-    public Items(Long id, String userName, Long rfid, String itemName,
-            String mainImagePath, String detailDescription) {
+    @Generated(hash = 371423760)
+    public Items(Long id, String userName, String rfid, String itemName,
+                 float price, String mainImagePath, String detailDescription) {
         this.id = id;
         this.userName = userName;
         this.rfid = rfid;
         this.itemName = itemName;
+        this.price = price;
         this.mainImagePath = mainImagePath;
         this.detailDescription = detailDescription;
     }
@@ -49,11 +52,19 @@ public class Items {
         this.id = id;
     }
 
-    public Long getRfid() {
+    public String getUserName() {
+        return this.userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getRfid() {
         return this.rfid;
     }
 
-    public void setRfid(Long rfid) {
+    public void setRfid(String rfid) {
         this.rfid = rfid;
     }
 
@@ -63,6 +74,14 @@ public class Items {
 
     public void setItemName(String itemName) {
         this.itemName = itemName;
+    }
+
+    public float getPrice() {
+        return this.price;
+    }
+
+    public void setPrice(float price) {
+        this.price = price;
     }
 
     public String getMainImagePath() {
@@ -79,14 +98,6 @@ public class Items {
 
     public void setDetailDescription(String detailDescription) {
         this.detailDescription = detailDescription;
-    }
-
-    public String getUserName() {
-        return this.userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
     }
 
 
