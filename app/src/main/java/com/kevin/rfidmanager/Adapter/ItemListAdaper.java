@@ -94,7 +94,7 @@ public class ItemListAdaper extends RecyclerView.Adapter<ItemListAdaper.ViewHold
         image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((ItemListActivity) activity).currentID = item.getRfid();
+                ((ItemListActivity) activity).setCurrentID(item.getRfid());
 //                ((MainActivity)activity).viewPager.setCurrentItem(ConstantManager.DETAIL, false);
 //                ((MainActivity)activity).adapter.tab2.refreshUI();
                 Intent intent = new Intent(activity, ItemDetailActivity.class);
@@ -106,11 +106,11 @@ public class ItemListAdaper extends RecyclerView.Adapter<ItemListAdaper.ViewHold
         holder.editItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((ItemListActivity) activity).currentID = item.getRfid();
+                ((ItemListActivity) activity).setCurrentID(item.getRfid());
 //                ((MainActivity)activity).viewPager.setCurrentItem(ConstantManager.EDIT, false);
 //                ((MainActivity)activity).adapter.tab3.refreshUI();
                 Intent intent = new Intent(activity, ItemEditActivity.class);
-                intent.putExtra(ConstantManager.CURRENT_ITEM_ID, ((ItemListActivity) activity).currentID);
+                intent.putExtra(ConstantManager.CURRENT_ITEM_ID, ((ItemListActivity) activity).getCurrentID());
                 activity.startActivity(intent);
             }
         });
@@ -140,7 +140,7 @@ public class ItemListAdaper extends RecyclerView.Adapter<ItemListAdaper.ViewHold
 
     public void updateUI() {
         this.itemes.clear();
-        this.itemes.addAll(DatabaseUtil.queryItems(activity, ((ItemListActivity) activity).currentUser));
+        this.itemes.addAll(DatabaseUtil.queryItems(activity, ((ItemListActivity) activity).getCurrentUser()));
         this.notifyDataSetChanged();
     }
 

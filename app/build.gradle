@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
 apply plugin: 'org.greenrobot.greendao'
 android {
     compileSdkVersion 25
@@ -16,6 +17,9 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    sourceSets {
+        main.java.srcDirs += 'src/main/kotlin'
     }
 }
 
@@ -44,9 +48,14 @@ dependencies {
     compile 'com.github.tajchert:nammu:1.1.1'  // file picker
     compile 'com.nbsp:library:1.2'
     compile 'com.github.mjdev:libaums:0.5.0'
+    compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
 }
 
 greendao {
     schemaVersion 2
+    targetGenDir 'src/main/java'  // set the green dao generate dir in source folder
+}
+repositories {
+    mavenCentral()
 }
 

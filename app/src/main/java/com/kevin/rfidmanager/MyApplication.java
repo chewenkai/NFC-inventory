@@ -4,7 +4,6 @@ import android.app.Application;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.kevin.rfidmanager.Utils.ConstantManager;
 import com.kevin.rfidmanager.database.DaoMaster;
 import com.kevin.rfidmanager.database.DaoSession;
 
@@ -17,27 +16,7 @@ import org.greenrobot.greendao.database.Database;
 
 public class MyApplication extends Application {
 
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    private String userName;
-
     public DaoSession daoSession;  // database session
-
-    public String getCurrentItemID() {
-        return currentItemID;
-    }
-
-    public void setCurrentItemID(String currentItemID) {
-        this.currentItemID = currentItemID;
-    }
-
-    private String currentItemID = ConstantManager.DEFAULT_RFID;
 
     @Override
     public void onCreate() {
