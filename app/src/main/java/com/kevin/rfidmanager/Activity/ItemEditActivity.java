@@ -83,8 +83,7 @@ public class ItemEditActivity extends AppCompatActivity {
     private void initUI() {
         currentID = getIntent().getStringExtra(ConstantManager.CURRENT_ITEM_ID);
 
-        if (currentID ==
-                ConstantManager.DEFAULT_RFID)
+        if (currentID.equals(ConstantManager.DEFAULT_RFID))
             return;
 
         imageGalleryPicker = new ImagePicker(this);
@@ -106,6 +105,10 @@ public class ItemEditActivity extends AppCompatActivity {
                                                                   // Add file path to database
                                                                   DaoSession daoSession = ((MyApplication) getApplication()).getDaoSession();
                                                                   Items item = DatabaseUtil.getCurrentItem(ItemEditActivity.this, currentID);
+                                                                  if (item == null) {
+                                                                      Toast.makeText(ItemEditActivity.this, R.string.item_not_exist, Toast.LENGTH_LONG).show();
+                                                                      return;
+                                                                  }
                                                                   item.setMainImagePath(image.getOriginalPath());
                                                                   daoSession.insertOrReplace(item);
 
@@ -125,11 +128,18 @@ public class ItemEditActivity extends AppCompatActivity {
                                                       }
                                                   }
         );
+
+        Items item = DatabaseUtil.getCurrentItem(ItemEditActivity.this, currentID);
+        if (item == null) {
+            Toast.makeText(ItemEditActivity.this, R.string.item_not_exist, Toast.LENGTH_LONG).show();
+            return;
+        }
+
         imageGalleryPicker.shouldGenerateMetadata(false); // Default is true
         imageGalleryPicker.shouldGenerateThumbnails(false); // Default is true
 
         itemName = (EditText) findViewById(R.id.item_name);
-        itemName.setText(DatabaseUtil.getCurrentItem(ItemEditActivity.this, currentID).getItemName());
+        itemName.setText(item.getItemName());
 
         key_des_list = (ListView) findViewById(R.id.listview_item_key_des);
         desListAdapter = new KeyDesListAdapter(ItemEditActivity.this,
@@ -141,7 +151,8 @@ public class ItemEditActivity extends AppCompatActivity {
         desListAdapter.setCurrentActivity(ItemEditActivity.this);
 
         mainImage = (ImageView) findViewById(R.id.iamgeview_main_image);
-        String mainImagePath = DatabaseUtil.getCurrentItem(ItemEditActivity.this, currentID).getMainImagePath();
+
+        String mainImagePath = item.getMainImagePath();
         if (mainImagePath != null) {
             if (ContextCompat.checkSelfPermission(ItemEditActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)
                     == PackageManager.PERMISSION_GRANTED) {
@@ -197,7 +208,8 @@ public class ItemEditActivity extends AppCompatActivity {
         detailDescription = (EditText) findViewById(R.id.detail_description);
         detailDescription.setInputType(InputType.TYPE_CLASS_TEXT|
                 InputType.TYPE_TEXT_FLAG_MULTI_LINE | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
-        detailDescription.setText(DatabaseUtil.getCurrentItem(ItemEditActivity.this, currentID).getDetailDescription());
+
+        detailDescription.setText(item.getDetailDescription());
 
         recyclerView = (RecyclerView) findViewById(R.id.recycle_gallery);
         gallaryAdaper = new GallaryAdaper(ItemEditActivity.this, DatabaseUtil.queryImagesPaths(ItemEditActivity.this, currentID), hideButtons, currentID);
@@ -262,7 +274,7 @@ public class ItemEditActivity extends AppCompatActivity {
 
     /**
      *  Insert the new Item Key Description into database.
-     * @param newDes
+     * @param newDes new description
      */
     public void insertNewItemKeyDes(String newDes) {
         KeyDescription keyDescription = new KeyDescription(null, currentID, newDes);
@@ -306,8 +318,14 @@ public class ItemEditActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.action_bar_save:
                 packUpImm();
-                DatabaseUtil.updateItemName(ItemEditActivity.this, itemName.getText().toString(), currentID);
-                DatabaseUtil.updateDetailDescription(ItemEditActivity.this, detailDescription.getText().toString(), currentID);
+                if (!DatabaseUtil.updateItemName(ItemEditActivity.this, itemName.getText().toString(), currentID)) {
+                    Toast.makeText(this, R.string.save_item_failed, Toast.LENGTH_LONG).show();
+                    return true;
+                }
+                if (!DatabaseUtil.updateDetailDescription(ItemEditActivity.this, detailDescription.getText().toString(), currentID)) {
+                    Toast.makeText(this, R.string.save_item_failed, Toast.LENGTH_LONG).show();
+                    return true;
+                }
                 Toast.makeText(ItemEditActivity.this, R.string.saved_item, Toast.LENGTH_LONG).show();
                 Intent intent = new Intent(this, ItemDetailActivity.class);
                 intent.putExtra(ConstantManager.CURRENT_ITEM_ID, currentID);

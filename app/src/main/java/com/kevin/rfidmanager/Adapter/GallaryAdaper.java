@@ -38,7 +38,7 @@ import static com.kevin.rfidmanager.Utils.ConstantManager.DEFAULT_IMAGE_HEIGHT_D
 
 public class GallaryAdaper extends RecyclerView.Adapter<GallaryAdaper.ViewHolder> {
     public Activity activity;
-    List<ImagesPath> paths;
+    private List<ImagesPath> paths;
     private boolean hide;
     private String currentID = ConstantManager.DEFAULT_RFID;
 
@@ -62,12 +62,11 @@ public class GallaryAdaper extends RecyclerView.Adapter<GallaryAdaper.ViewHolder
         View contactView = inflater.inflate(R.layout.gallary_layout, parent, false);
 
         // Return a new holder instance
-        ViewHolder viewHolder = new ViewHolder(contactView);
-        return viewHolder;
+        return new ViewHolder(contactView);
     }
 
     @Override
-    public void onBindViewHolder(ViewHolder holder, final int position) {
+    public void onBindViewHolder(final ViewHolder holder, int position) {
         // Get the data model based on position
         final ImagesPath path = paths.get(position);
 
@@ -95,7 +94,7 @@ public class GallaryAdaper extends RecyclerView.Adapter<GallaryAdaper.ViewHolder
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
-                intent.putExtra(ConstantManager.GALLERY_CLICK_POSITION, position);
+                intent.putExtra(ConstantManager.GALLERY_CLICK_POSITION, holder.getAdapterPosition());
                 intent.putExtra(ConstantManager.CURRENT_ITEM_ID, currentID);
                 intent.setClass(activity, GalleryActivity.class);
                 activity.startActivity(intent);
@@ -128,15 +127,15 @@ public class GallaryAdaper extends RecyclerView.Adapter<GallaryAdaper.ViewHolder
 
     // Provide a direct reference to each of the views within a data item
     // Used to cache the views within the item layout for fast access
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    static class ViewHolder extends RecyclerView.ViewHolder {
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
         public ImageView image;
-        public CircleButton removeButton;
+        CircleButton removeButton;
 
         // We also create a constructor that accepts the entire item row
         // and does the view lookups to find each subview
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             // Stores the itemView in a public final member variable that can be used
             // to access the context from any ViewHolder instance.
             super(itemView);

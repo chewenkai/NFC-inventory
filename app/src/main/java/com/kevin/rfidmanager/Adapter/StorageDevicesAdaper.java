@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.kevin.rfidmanager.Entity.DeviceFile;
 import com.kevin.rfidmanager.R;
+import com.kevin.rfidmanager.Utils.USBUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -83,7 +84,9 @@ public class StorageDevicesAdaper extends RecyclerView.Adapter<StorageDevicesAda
         return paths.size();
     }
 
-    public void updateUI() {
+
+    public void updateDataSet() {
+        this.paths = USBUtil.getDevicePathSet(activity);
         this.notifyDataSetChanged();
     }
 

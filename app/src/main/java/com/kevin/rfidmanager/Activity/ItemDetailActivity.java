@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.kevin.rfidmanager.Adapter.GallaryAdaper;
 import com.kevin.rfidmanager.Adapter.KeyDesListAdapter;
@@ -26,6 +27,7 @@ import com.kevin.rfidmanager.R;
 import com.kevin.rfidmanager.Utils.ConstantManager;
 import com.kevin.rfidmanager.Utils.DatabaseUtil;
 import com.kevin.rfidmanager.Utils.ScreenUtil;
+import com.kevin.rfidmanager.database.Items;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;
@@ -49,7 +51,7 @@ public class ItemDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.item_add_layout);
         ActionBar actionBar = getSupportActionBar();
-        assert actionBar!=null;
+        assert actionBar != null;
         actionBar.setTitle(R.string.detail_page);
         actionBar.setHomeButtonEnabled(true);
         initUI();
@@ -62,17 +64,22 @@ public class ItemDetailActivity extends AppCompatActivity {
     }
 
     private void initUI() {
+        Items item = DatabaseUtil.getCurrentItem(this, currentID);
+        if (item == null) {
+            Toast.makeText(this, R.string.item_not_exist, Toast.LENGTH_LONG).show();
+            return;
+        }
+
         currentID = getIntent().getStringExtra(ConstantManager.CURRENT_ITEM_ID);
 
-        if (currentID == ConstantManager.DEFAULT_RFID)
+        if (currentID.equals(ConstantManager.DEFAULT_RFID))
             return;
 
         itemName = (EditText) findViewById(R.id.item_name);
         itemName.setVisibility(View.GONE);
 
         textViewItemName = (TextView) findViewById(R.id.textview_item_name);
-        textViewItemName.setText(DatabaseUtil.getCurrentItem(ItemDetailActivity.this, currentID).
-                getItemName());
+        textViewItemName.setText(item.getItemName());
         textViewItemName.setVisibility(View.VISIBLE);
 
         key_des_list = (ListView) findViewById(R.id.listview_item_key_des);
@@ -83,11 +90,11 @@ public class ItemDetailActivity extends AppCompatActivity {
         desListAdapter.setCurrentActivity(ItemDetailActivity.this);
 
         mainImage = (ImageView) findViewById(R.id.iamgeview_main_image);
-        final String mainImagePath = DatabaseUtil.getCurrentItem(ItemDetailActivity.this, currentID).getMainImagePath();
-        if (mainImagePath != null){
+        final String mainImagePath = item.getMainImagePath();
+        if (mainImagePath != null) {
             if (ContextCompat.checkSelfPermission(ItemDetailActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE)
                     == PackageManager.PERMISSION_GRANTED) {
-                Picasso.with(ItemDetailActivity.this).load(new File(mainImagePath)).resize(ScreenUtil.getScreenWidth(ItemDetailActivity.this)/2,0).into(mainImage);
+                Picasso.with(ItemDetailActivity.this).load(new File(mainImagePath)).resize(ScreenUtil.getScreenWidth(ItemDetailActivity.this) / 2, 0).into(mainImage);
                 mainImage.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -102,7 +109,7 @@ public class ItemDetailActivity extends AppCompatActivity {
                     }
                 });
             } else {
-                Picasso.with(ItemDetailActivity.this).load(R.drawable.image_read_fail).resize(ScreenUtil.getScreenWidth(ItemDetailActivity.this)/2,0).into(mainImage);
+                Picasso.with(ItemDetailActivity.this).load(R.drawable.image_read_fail).resize(ScreenUtil.getScreenWidth(ItemDetailActivity.this) / 2, 0).into(mainImage);
                 mainImage.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -110,8 +117,8 @@ public class ItemDetailActivity extends AppCompatActivity {
                     }
                 });
             }
-        }else {
-            Picasso.with(ItemDetailActivity.this).load(R.drawable.image_read_fail).resize(ScreenUtil.getScreenWidth(ItemDetailActivity.this)/2,0).into(mainImage);
+        } else {
+            Picasso.with(ItemDetailActivity.this).load(R.drawable.image_read_fail).resize(ScreenUtil.getScreenWidth(ItemDetailActivity.this) / 2, 0).into(mainImage);
             mainImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -131,7 +138,7 @@ public class ItemDetailActivity extends AppCompatActivity {
         addGalleryButton.setVisibility(View.GONE);
 
         detailDescription = (EditText) findViewById(R.id.detail_description);
-        detailDescription.setText(DatabaseUtil.getCurrentItem(ItemDetailActivity.this, currentID).getDetailDescription());
+        detailDescription.setText(item.getDetailDescription());
         detailDescription.setEnabled(false);
         detailDescription.setBackgroundColor(getResources().getColor(R.color.white));
         detailDescription.setTextColor(getResources().getColor(R.color.black));

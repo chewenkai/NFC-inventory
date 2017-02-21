@@ -12,7 +12,6 @@ import android.hardware.usb.UsbManager;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.ActionBar;
@@ -46,10 +45,10 @@ import com.kevin.rfidmanager.MyApplication;
 import com.kevin.rfidmanager.R;
 import com.kevin.rfidmanager.Utils.ConstantManager;
 import com.kevin.rfidmanager.Utils.DatabaseUtil;
-import com.kevin.rfidmanager.Utils.ExternalStorage;
 import com.kevin.rfidmanager.Utils.HexConvertUtil;
 import com.kevin.rfidmanager.Utils.SPUtil;
 import com.kevin.rfidmanager.Utils.ScreenUtil;
+import com.kevin.rfidmanager.Utils.USBUtil;
 import com.kevin.rfidmanager.database.DaoSession;
 import com.kevin.rfidmanager.database.Items;
 import com.kevin.rfidmanager.database.ItemsDao;
@@ -70,9 +69,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.channels.FileChannel;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import at.markushi.ui.CircleButton;
 
@@ -82,12 +79,11 @@ import at.markushi.ui.CircleButton;
 public class ItemListActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private ItemListAdaper itemListAdapter;
+    private StorageDevicesAdaper storageDevicesAdaper;
     private NfcAdapter mAdapter;
     private PendingIntent pendingIntent;
     public String currentUser = ConstantManager.DEFAULT_USER;
     public String currentID = ConstantManager.DEFAULT_RFID;
-    final String ACTION_USB_PERMISSION =
-            "com.kevin.rfidmanager.USB_PERMISSION";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -220,7 +216,7 @@ public class ItemListActivity extends AppCompatActivity {
     }
 
     private void registUSBBroadCast() {
-        IntentFilter filter = new IntentFilter(ACTION_USB_PERMISSION);
+        IntentFilter filter = new IntentFilter(ConstantManager.ACTION_USB_PERMISSION);
         filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED);
         filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED);
         registerReceiver(usbReceiver, filter);
@@ -548,20 +544,20 @@ public class ItemListActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
             }
         });
-        AlertDialog b = null;
+        AlertDialog b;
 
         final TextView textView =
                 (TextView) dialogView.findViewById(R.id.backup_dialog_message);
         final RecyclerView recyclerView =
                 (RecyclerView) dialogView.findViewById(R.id.recycle_view_storage_devices_list);
-        List<DeviceFile> deviceFiles = getDevicePathSet(textView);
+        List<DeviceFile> deviceFiles = USBUtil.getDevicePathSet(ItemListActivity.this);
         if (deviceFiles == null) {
             Toast.makeText(ItemListActivity.this,
-                    R.string.no_usb_permission, Toast.LENGTH_LONG).show();
+                    R.string.no_usb_permission,
+                    Toast.LENGTH_LONG).show();
             return;
         }
-        final StorageDevicesAdaper storageDevicesAdaper =
-                new StorageDevicesAdaper(ItemListActivity.this, deviceFiles);
+        storageDevicesAdaper = new StorageDevicesAdaper(ItemListActivity.this, deviceFiles);
         recyclerView.setAdapter(storageDevicesAdaper);
         LinearLayoutManager layoutManager = new LinearLayoutManager(ItemListActivity.this,
                 LinearLayoutManager.VERTICAL, false);
@@ -574,16 +570,20 @@ public class ItemListActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
                 if (storageDevicesAdaper.selectedDeviceRootPath != null) {
-                    if (storageDevicesAdaper.selectedDeviceRootPath.type == ConstantManager.DEFAULT_FILE) {
-                        if (copyDBtoStorage(storageDevicesAdaper.selectedDeviceRootPath.defaultFile)) {
-                            ((MyApplication) getApplication()).toast(getString(R.string.backup_successful) +
+                    if (storageDevicesAdaper.selectedDeviceRootPath.type ==
+                            ConstantManager.DEFAULT_FILE) {
+                        if (copyDBtoStorage(storageDevicesAdaper.
+                                selectedDeviceRootPath.defaultFile)) {
+                            ((MyApplication) getApplication()).
+                                    toast(getString(R.string.backup_successful) +
                                     " " + storageDevicesAdaper.selectedDeviceRootPath.deviceName);
                         } else {
                             ((MyApplication) getApplication()).toast(getString(R.string.backup_failed));
                         }
                     } else {
                         if (copyDBtoStorage(storageDevicesAdaper.selectedDeviceRootPath.usbFile)) {
-                            ((MyApplication) getApplication()).toast(getString(R.string.backup_successful) +
+                            ((MyApplication) getApplication()).
+                                    toast(getString(R.string.backup_successful) +
                                     " " + storageDevicesAdaper.selectedDeviceRootPath.deviceName);
                         } else {
                             ((MyApplication) getApplication()).toast(getString(R.string.backup_failed));
@@ -621,14 +621,14 @@ public class ItemListActivity extends AppCompatActivity {
                 (TextView) dialogView.findViewById(R.id.backup_dialog_message);
         final RecyclerView recyclerView =
                 (RecyclerView) dialogView.findViewById(R.id.recycle_view_storage_devices_list);
-        List<DeviceFile> deviceFiles = getDevicePathSet(textView);
+        List<DeviceFile> deviceFiles = USBUtil.getDevicePathSet(ItemListActivity.this);
         if (deviceFiles == null) {
             Toast.makeText(ItemListActivity.this,
-                    R.string.grant_permission_warning, Toast.LENGTH_LONG).show();
+                    R.string.grant_permission_warning,
+                    Toast.LENGTH_LONG).show();
             return;
         }
-        final StorageDevicesAdaper storageDevicesAdaper =
-                new StorageDevicesAdaper(ItemListActivity.this, deviceFiles);
+        storageDevicesAdaper = new StorageDevicesAdaper(ItemListActivity.this, deviceFiles);
         recyclerView.setAdapter(storageDevicesAdaper);
         recyclerView.setAdapter(storageDevicesAdaper);
         LinearLayoutManager layoutManager =
@@ -641,17 +641,22 @@ public class ItemListActivity extends AppCompatActivity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 if (storageDevicesAdaper.selectedDeviceRootPath != null) {
-                    if (storageDevicesAdaper.selectedDeviceRootPath.type == ConstantManager.DEFAULT_FILE) {
-                        if (copyDBtoAPP(storageDevicesAdaper.selectedDeviceRootPath.defaultFile, textView)) {
-                            ((MyApplication) getApplication()).toast(getString(R.string.restore_successful));
+                    if (storageDevicesAdaper.selectedDeviceRootPath.type ==
+                            ConstantManager.DEFAULT_FILE) {
+                        if (copyDBtoAPP(storageDevicesAdaper.selectedDeviceRootPath.defaultFile,
+                                textView)) {
+                            ((MyApplication) getApplication()).
+                                    toast(getString(R.string.restore_successful));
                             initUI();
                         } else {
                             ((MyApplication) getApplication()).toast(getString(R.string.restore_failed));
                         }
                     } else {
-                        if (copyDBtoAPP(storageDevicesAdaper.selectedDeviceRootPath.usbFile, textView,
+                        if (copyDBtoAPP(storageDevicesAdaper.selectedDeviceRootPath.usbFile,
+                                textView,
                                 storageDevicesAdaper.selectedDeviceRootPath.device)) {
-                            ((MyApplication) getApplication()).toast(getString(R.string.restore_successful));
+                            ((MyApplication) getApplication()).
+                                    toast(getString(R.string.restore_successful));
                             initUI();
                         } else {
                             ((MyApplication) getApplication()).toast(getString(R.string.restore_failed));
@@ -667,59 +672,6 @@ public class ItemListActivity extends AppCompatActivity {
         b = dialogBuilder.create();
         b.show();
 
-    }
-
-    private List<DeviceFile> getDevicePathSet(TextView textView) {
-        // Detect primary storage and secondary storage
-        List<DeviceFile> pathList = new ArrayList<>();
-        Map<String, File> externalLocations = ExternalStorage.getAllStorageLocations();
-        File sdCard = externalLocations.get(ExternalStorage.SD_CARD);
-        File externalSdCard = externalLocations.get(ExternalStorage.EXTERNAL_SD_CARD);
-        if (sdCard != null) {
-            DeviceFile deviceFile = new DeviceFile();
-            deviceFile.defaultFile = sdCard.getPath();
-            deviceFile.type = ConstantManager.DEFAULT_FILE;
-            deviceFile.deviceName = getString(R.string.internal_sd_card);
-            pathList.add(deviceFile);
-        } else if (externalSdCard != null) {
-            DeviceFile deviceFile = new DeviceFile();
-            deviceFile.defaultFile = externalSdCard.getPath();
-            deviceFile.type = ConstantManager.DEFAULT_FILE;
-            deviceFile.deviceName = getString(R.string.external_sd_card);
-            pathList.add(deviceFile);
-        }
-
-        // Detect USB devices
-        int counter = 1;
-        UsbManager mUsbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
-        UsbMassStorageDevice[] devices = UsbMassStorageDevice.
-                getMassStorageDevices(ItemListActivity.this);
-        for (UsbMassStorageDevice device : devices) {
-
-            // before interacting with a device you need to call init()!
-            try {
-                PendingIntent permissionIntent = PendingIntent.
-                        getBroadcast(this, 0, new Intent(ACTION_USB_PERMISSION), 0);
-                mUsbManager.requestPermission(device.getUsbDevice(), permissionIntent);
-                device.init();
-                // Only uses the first partition on the device
-                FileSystem currentFs = device.getPartitions().get(0).getFileSystem();
-                DeviceFile deviceFile = new DeviceFile();
-                deviceFile.usbFile = currentFs.getRootDirectory();
-                deviceFile.type = ConstantManager.USB_FILE;
-                deviceFile.device = device;
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-                    deviceFile.deviceName = "USB:" + device.getUsbDevice().getProductName();
-                else
-                    deviceFile.deviceName = "USB:" + counter++;
-                pathList.add(deviceFile);
-            } catch (Exception e) {
-                e.printStackTrace();
-                textView.setText(e.getMessage());
-                return null;
-            }
-        }
-        return pathList;
     }
 
     public boolean copyDBtoStorage(UsbFile targetRoot) {
@@ -780,11 +732,9 @@ public class ItemListActivity extends AppCompatActivity {
                             param.from, device.getPartitions().get(0).getFileSystem());
             byte[] bytes = new byte[4096];
             int count;
-            int total = 0;
 
             while ((count = inputStream.read(bytes)) != -1) {
                 out.write(bytes, 0, count);
-                total += count;
             }
 
             out.close();
@@ -805,7 +755,8 @@ public class ItemListActivity extends AppCompatActivity {
 
             String backupDBPath = String.format("%s.bak", getString(R.string.database_name));
             File backupDB = new File(targetpath, backupDBPath);
-            backupDB.createNewFile();
+            if (!backupDB.createNewFile())
+                return false;
             FileChannel src = new FileInputStream(currentDB).getChannel();
             FileChannel dst = new FileOutputStream(backupDB).getChannel();
             dst.transferFrom(src, 0, src.size());
@@ -976,19 +927,18 @@ public class ItemListActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
 
             String action = intent.getAction();
-            if (ACTION_USB_PERMISSION.equals(action)) {
+            if (ConstantManager.ACTION_USB_PERMISSION.equals(action)) {
 
                 UsbDevice device = intent.getParcelableExtra(UsbManager.EXTRA_DEVICE);
                 if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
-
                     if (device != null) {
-                        //setupDevice();
+                        discoverDevice();
                     }
                 } else {
                     UsbManager usbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
                     PendingIntent permissionIntent =
                             PendingIntent.getBroadcast(ItemListActivity.this, 0, new Intent(
-                                    ACTION_USB_PERMISSION), 0);
+                                    ConstantManager.ACTION_USB_PERMISSION), 0);
                     usbManager.requestPermission(device, permissionIntent);
                 }
 
@@ -1014,33 +964,11 @@ public class ItemListActivity extends AppCompatActivity {
     };
 
     /**
-     * Searches for connected mass storage devices, and initializes them if it
-     * could find some.
+     * Refresh the list.
      */
     private void discoverDevice() {
-        UsbManager usbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
-        UsbMassStorageDevice[] devices = UsbMassStorageDevice.getMassStorageDevices(this);
-
-        for (UsbMassStorageDevice device :
-                devices) {
-            UsbDevice usbDevice = getIntent().
-                    getParcelableExtra(UsbManager.EXTRA_DEVICE);
-
-            if (usbDevice != null && usbManager.hasPermission(usbDevice)) {
-                try {
-                    device.init();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                // first request permission from user to communicate with the
-                // underlying
-                // UsbDevice
-                PendingIntent permissionIntent = PendingIntent.getBroadcast(this, 0, new Intent(
-                        ACTION_USB_PERMISSION), 0);
-                usbManager.requestPermission(device.getUsbDevice(), permissionIntent);
-            }
+        if (storageDevicesAdaper != null) {
+            storageDevicesAdaper.updateDataSet();
         }
-
     }
 }

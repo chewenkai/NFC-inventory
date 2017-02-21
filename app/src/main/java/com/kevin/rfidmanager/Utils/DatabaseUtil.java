@@ -33,9 +33,9 @@ public class DatabaseUtil {
     /**
      * add a new user
      *
-     * @param activity
-     * @param username
-     * @param password
+     * @param activity activity of app
+     * @param username new user name
+     * @param password new user password
      */
     public static boolean addNewUser(Activity activity, String username, String password) {
         DaoSession daoSession = ((MyApplication) activity.getApplication()).getDaoSession();
@@ -52,9 +52,9 @@ public class DatabaseUtil {
 
     /**
      * Query the users by username
-     * @param activity
-     * @param username
-     * @return
+     * @param activity activity of app
+     * @param username username need to query
+     * @return Users
      */
     public static List<Users> queryUsers(Activity activity, String username){
         DaoSession daoSession = ((MyApplication) activity.getApplication()).getDaoSession();
@@ -75,17 +75,16 @@ public class DatabaseUtil {
 
         Query<Items> query = itemsDao.queryBuilder().where(ItemsDao.Properties.UserName.eq(user)).
                 build();
-        List<Items> allItems = query.list();
 
-        return allItems;
+        return query.list();
     }
 
     /**
      * Insert new item
      *
-     * @param activity
-     * @param id
-     * @param itemName
+     * @param activity activity of app
+     * @param id rfid
+     * @param itemName item name
      */
 
     public static void insertNewItem(Activity activity, String id, String itemName, String user) {
@@ -99,9 +98,9 @@ public class DatabaseUtil {
     /**
      * Get the current item which is on focus.
      *
-     * @param activity
-     * @param ID
-     * @return
+     * @param activity activity of app
+     * @param ID rfid
+     * @return items sets
      */
     public static Items getCurrentItem(Activity activity, String ID) {
 
@@ -139,16 +138,15 @@ public class DatabaseUtil {
 
         Query<KeyDescription> query = keyDescriptionDao.queryBuilder().
                 where(KeyDescriptionDao.Properties.Rfid.eq(RFID)).build();
-        List<KeyDescription> allItems = query.list();
 
-        return allItems;
+        return query.list();
     }
 
     /**
      * Query images paths
      *
-     * @param activity
-     * @return
+     * @param activity activity of app
+     * @return images path in detail page.
      */
     public static List<ImagesPath> queryImagesPaths(Activity activity, String ID) {
         // get the items DAO
@@ -160,27 +158,34 @@ public class DatabaseUtil {
     /**
      * Update new detail description into database.
      *
-     * @param activity
-     * @param detailDes
+     * @param activity activity of app
+     * @param detailDes detail description
+     * @param ID rfid
      */
-    public static void updateDetailDescription(Activity activity, String detailDes, String ID) {
+    public static boolean updateDetailDescription(Activity activity, String detailDes, String ID) {
         DaoSession daoSession = ((MyApplication) activity.getApplication()).getDaoSession();
         Items item = getCurrentItem(activity, ID);
+        if (item == null)
+            return false;
         item.setDetailDescription(detailDes);
         daoSession.getItemsDao().insertOrReplace(item);
+        return true;
     }
 
     /**
      * Update new item name into database.
      *
-     * @param activity
-     * @param newItemName
+     * @param activity activity of app
+     * @param newItemName item name
      */
-    public static void updateItemName(Activity activity, String newItemName, String ID) {
+    public static boolean updateItemName(Activity activity, String newItemName, String ID) {
         DaoSession daoSession = ((MyApplication) activity.getApplication()).getDaoSession();
         Items item = getCurrentItem(activity, ID);
+        if (item == null)
+            return false;
         item.setItemName(newItemName);
         daoSession.getItemsDao().insertOrReplace(item);
+        return true;
     }
 
     public static void importDB(Context context) {
@@ -188,7 +193,8 @@ public class DatabaseUtil {
             File sd = Environment.getExternalStorageDirectory();
             if (sd.canWrite()) {
                 File backupDB = context.getDatabasePath(context.getString(R.string.database_name));
-                String backupDBPath = String.format("%s.bak", context.getString(R.string.database_name));
+                String backupDBPath = String.format("%s.bak",
+                        context.getString(R.string.database_name));
                 File currentDB = new File(sd, backupDBPath);
 
                 FileChannel src = new FileInputStream(currentDB).getChannel();
@@ -196,9 +202,8 @@ public class DatabaseUtil {
                 dst.transferFrom(src, 0, src.size());
                 src.close();
                 dst.close();
-                ((MyApplication) context.getApplicationContext()).toast(context.getString(R.string.import_success));
-            } else {
-
+                ((MyApplication) context.getApplicationContext()).
+                        toast(context.getString(R.string.import_success));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -208,10 +213,9 @@ public class DatabaseUtil {
     public static void exportDB(Context context) {
         try {
             File sd = Environment.getExternalStorageDirectory();
-            File data = Environment.getDataDirectory();
-
             if (sd.canWrite()) {
-                String backupDBPath = String.format("%s.bak", context.getString(R.string.database_name));
+                String backupDBPath = String.format("%s.bak",
+                        context.getString(R.string.database_name));
                 File currentDB = context.getDatabasePath(context.getString(R.string.database_name));
                 File backupDB = new File(sd, backupDBPath);
 
@@ -221,7 +225,8 @@ public class DatabaseUtil {
                 src.close();
                 dst.close();
 
-                ((MyApplication) context.getApplicationContext()).toast(context.getString(R.string.backup_success));
+                ((MyApplication) context.getApplicationContext()).
+                        toast(context.getString(R.string.backup_success));
             }
         } catch (Exception e) {
             e.printStackTrace();

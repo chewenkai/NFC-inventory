@@ -46,7 +46,7 @@
     <string name="no_access">Permission derail!</string>
     <string name="detail_description">Detail description:</string>
     <string name="no_images_available">No images available</string>
-    <string name="saved_item">saved</string>
+    <string name="saved_item">item saved.</string>
     <string name="delete">X</string>
     <string name="image_regexp">.*\\.jpg|jpeg|gif|png$</string>
     <string name="backup_success">Backup Successful!</string>
@@ -98,6 +98,8 @@
     <string name="no_usb_permission">Do not have access to read USB device, please grant permission.</string>
     <string name="one_ID_multi_items_warning">There are more than one items with one ID.</string>
     <string name="another_users_card">This card already bind with another user.</string>
+    <string name="item_not_exist">Item do not exist.</string>
+    <string name="save_item_failed">Save item failed.</string>
 
     <!--Others-->
 

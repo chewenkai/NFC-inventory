@@ -9,10 +9,6 @@ public class ConstantManager {
     public static boolean IS_DEBUGING = false;
 
     // Main page
-    public static int HOME = 0;
-    public static int DETAIL = 1;
-    public static int EDIT = 2;
-    public static int SETTING = 3;
     public static int REQUEST_MAIN_IMAGE_FILE = 5;
     public static int REQUEST_GALLERY_IMAGE_FILE = 6;
     public static int PERMISSION_REQUEST_CODE=7;
@@ -20,16 +16,8 @@ public class ConstantManager {
     public static String DEFAULT_USER = "default user";
 
     // General
-    public static int DEFAULT_IMAGE_WIDTH = 300;
-    public static int DEFAULT_IMAGE_HEIGHT = 300;
-    public static int MAIN_IMAGE_WIDTH_DP = 300;
-    public static int MAIN_IMAGE_HEIGHT_DP = 400;
-    public static int DEFAULT_IMAGE_WIDTH_DP = 120;
-    public static int DEFAULT_IMAGE_HEIGHT_DP = 120;
-
-    // Extra name in PhotoActivity
-    public static String INTENT_STRING_EXTRA_FILE_PATH = "image_view_file_path_extra";
-    public static String GALLERY_CLICK_POSITION = "click_position";
+    public static int DEFAULT_IMAGE_HEIGHT_DP = 120;  // default image height of gallery images in
+    // Edit page and Detail page
 
     // Apperance
     public static int LINEAR_LAYOUT = 8;
@@ -39,10 +27,15 @@ public class ConstantManager {
     // File
     public final static int DEFAULT_FILE = 0;
     public final static int USB_FILE = 1;
+    public final static String ACTION_USB_PERMISSION =
+            "com.kevin.rfidmanager.USB_PERMISSION";
 
     // Extra
     public final static String CURRENT_USER_NAME = "current_user_name";
     public final static String CURRENT_ITEM_ID = "current_item_id";
+    public final static String INTENT_STRING_EXTRA_FILE_PATH = "image_view_file_path_extra";  // Extra name in PhotoActivity
+    public final static String GALLERY_CLICK_POSITION = "click_position";  // Extra name in PhotoActivity
+
 
 
 }
