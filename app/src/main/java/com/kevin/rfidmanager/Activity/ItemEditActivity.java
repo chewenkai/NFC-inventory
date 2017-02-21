@@ -81,10 +81,17 @@ public class ItemEditActivity extends AppCompatActivity {
     }
 
     private void initUI() {
+        // IMPORTANT: Below Line Must At The First Line Of The Method!
         currentID = getIntent().getStringExtra(ConstantManager.CURRENT_ITEM_ID);
-
         if (currentID.equals(ConstantManager.DEFAULT_RFID))
             return;
+
+        // Get and check the current item
+        Items item = DatabaseUtil.getCurrentItem(ItemEditActivity.this, currentID);
+        if (item == null) {
+            Toast.makeText(ItemEditActivity.this, R.string.item_not_exist, Toast.LENGTH_LONG).show();
+            return;
+        }
 
         imageGalleryPicker = new ImagePicker(this);
         imageGalleryPicker.setImagePickerCallback(new ImagePickerCallback() {
@@ -128,12 +135,6 @@ public class ItemEditActivity extends AppCompatActivity {
                                                       }
                                                   }
         );
-
-        Items item = DatabaseUtil.getCurrentItem(ItemEditActivity.this, currentID);
-        if (item == null) {
-            Toast.makeText(ItemEditActivity.this, R.string.item_not_exist, Toast.LENGTH_LONG).show();
-            return;
-        }
 
         imageGalleryPicker.shouldGenerateMetadata(false); // Default is true
         imageGalleryPicker.shouldGenerateThumbnails(false); // Default is true

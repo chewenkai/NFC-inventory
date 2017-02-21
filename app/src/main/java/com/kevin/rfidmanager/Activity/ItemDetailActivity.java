@@ -64,16 +64,17 @@ public class ItemDetailActivity extends AppCompatActivity {
     }
 
     private void initUI() {
+        // IMPORTANT: Below Line Must At The First Line Of The Method!
+        currentID = getIntent().getStringExtra(ConstantManager.CURRENT_ITEM_ID);
+        if (currentID.equals(ConstantManager.DEFAULT_RFID))
+            return;
+
+        // Get and check the current item
         Items item = DatabaseUtil.getCurrentItem(this, currentID);
         if (item == null) {
             Toast.makeText(this, R.string.item_not_exist, Toast.LENGTH_LONG).show();
             return;
         }
-
-        currentID = getIntent().getStringExtra(ConstantManager.CURRENT_ITEM_ID);
-
-        if (currentID.equals(ConstantManager.DEFAULT_RFID))
-            return;
 
         itemName = (EditText) findViewById(R.id.item_name);
         itemName.setVisibility(View.GONE);
