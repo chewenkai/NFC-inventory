@@ -41,16 +41,14 @@ public class UsersDao extends AbstractDao<Users, Long> {
      * Creates the underlying database table.
      */
     public static void createTable(Database db, boolean ifNotExists) {
-        String constraint = ifNotExists ? "IF NOT EXISTS " : "";
+        String constraint = ifNotExists ? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"USERS\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE ," + // 0: id
                 "\"USER_NAME\" TEXT," + // 1: userName
                 "\"PASS_WORD\" TEXT);"); // 2: passWord
     }
 
-    /**
-     * Drops the underlying database table.
-     */
+    /** Drops the underlying database table. */
     public static void dropTable(Database db, boolean ifExists) {
         String sql = "DROP TABLE " + (ifExists ? "IF EXISTS " : "") + "\"USERS\"";
         db.execSQL(sql);
@@ -59,17 +57,17 @@ public class UsersDao extends AbstractDao<Users, Long> {
     @Override
     protected final void bindValues(DatabaseStatement stmt, Users entity) {
         stmt.clearBindings();
-
+ 
         Long id = entity.getId();
         if (id != null) {
             stmt.bindLong(1, id);
         }
-
+ 
         String userName = entity.getUserName();
         if (userName != null) {
             stmt.bindString(2, userName);
         }
-
+ 
         String passWord = entity.getPassWord();
         if (passWord != null) {
             stmt.bindString(3, passWord);
@@ -79,17 +77,17 @@ public class UsersDao extends AbstractDao<Users, Long> {
     @Override
     protected final void bindValues(SQLiteStatement stmt, Users entity) {
         stmt.clearBindings();
-
+ 
         Long id = entity.getId();
         if (id != null) {
             stmt.bindLong(1, id);
         }
-
+ 
         String userName = entity.getUserName();
         if (userName != null) {
             stmt.bindString(2, userName);
         }
-
+ 
         String passWord = entity.getPassWord();
         if (passWord != null) {
             stmt.bindString(3, passWord);
@@ -99,7 +97,7 @@ public class UsersDao extends AbstractDao<Users, Long> {
     @Override
     public Long readKey(Cursor cursor, int offset) {
         return cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
-    }
+    }    
 
     @Override
     public Users readEntity(Cursor cursor, int offset) {
@@ -110,20 +108,20 @@ public class UsersDao extends AbstractDao<Users, Long> {
         );
         return entity;
     }
-
+     
     @Override
     public void readEntity(Cursor cursor, Users entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setUserName(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setPassWord(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-    }
-
+     }
+    
     @Override
     protected final Long updateKeyAfterInsert(Users entity, long rowId) {
         entity.setId(rowId);
         return rowId;
     }
-
+    
     @Override
     public Long getKey(Users entity) {
         if (entity != null) {
@@ -142,5 +140,5 @@ public class UsersDao extends AbstractDao<Users, Long> {
     protected final boolean isEntityUpdateable() {
         return true;
     }
-
+    
 }

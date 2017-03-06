@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:padding="0dp"
     android:background="@color/white"
-    tools:context="com.kevin.rfidmanager.Activity.PhotoActivity">
+    tools:context="com.kevin.rfidmanager.Activity.GalleryActivity">
 
     <com.daimajia.slider.library.SliderLayout
         android:id="@+id/show_photo_view"

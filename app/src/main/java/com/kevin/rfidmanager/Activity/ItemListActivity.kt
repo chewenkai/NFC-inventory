@@ -38,6 +38,7 @@ import com.nightonke.boommenu.BoomButtons.HamButton
 import com.nightonke.boommenu.BoomMenuButton
 import com.nightonke.boommenu.ButtonEnum
 import com.nightonke.boommenu.Piece.PiecePlaceEnum
+import kotlinx.android.synthetic.main.item_list_layout.*
 import java.io.*
 
 /**
@@ -49,6 +50,7 @@ class ItemListActivity : AppCompatActivity() {
     private var storageDevicesAdaper: StorageDevicesAdaper? = null
     private var mAdapter: NfcAdapter? = null
     private var pendingIntent: PendingIntent? = null
+    private var deleteItemsButton: CircleButton? = null
     var currentUser = ConstantManager.DEFAULT_USER
     var currentID = ConstantManager.DEFAULT_RFID
 
@@ -144,12 +146,13 @@ class ItemListActivity : AppCompatActivity() {
         currentUser = intent.getStringExtra(ConstantManager.CURRENT_USER_NAME)
         recyclerView = findViewById(R.id.recycle_item_list) as RecyclerView
         val items = DatabaseUtil.queryItems(this@ItemListActivity, currentUser)
-
-        itemListAdapter = ItemListAdaper(this@ItemListActivity, items)
+        deleteItemsButton = delete_items_button
+        itemListAdapter = ItemListAdaper(this@ItemListActivity, items, recyclerView, deleteItemsButton!!)
         recyclerView!!.adapter = itemListAdapter
         setRecyclerViewLayout()
         recyclerView!!.setHasFixedSize(true)
         registUSBBroadCast()
+        deleteItemsButton!!.setOnClickListener { itemListAdapter!!.deleteSelectedItems() }
     }
 
     private fun registUSBBroadCast() {
@@ -444,17 +447,17 @@ class ItemListActivity : AppCompatActivity() {
         recyclerView.setHasFixedSize(true)
         dialogBuilder.setPositiveButton(R.string.OK) { dialogInterface, i ->
             if (storageDevicesAdaper!!.selectedDeviceRootPath != null) {
-                if (storageDevicesAdaper!!.selectedDeviceRootPath.type == ConstantManager.DEFAULT_FILE) {
-                    if (copyDBtoStorage(storageDevicesAdaper!!.selectedDeviceRootPath.defaultFile)) {
+                if (storageDevicesAdaper!!.selectedDeviceRootPath!!.type == ConstantManager.DEFAULT_FILE) {
+                    if (copyDBtoStorage(storageDevicesAdaper!!.selectedDeviceRootPath!!.defaultFile)) {
                         (application as MyApplication).toast(getString(R.string.backup_successful) +
-                                " " + storageDevicesAdaper!!.selectedDeviceRootPath.deviceName)
+                                " " + storageDevicesAdaper!!.selectedDeviceRootPath!!.deviceName)
                     } else {
                         (application as MyApplication).toast(getString(R.string.backup_failed))
                     }
                 } else {
-                    if (copyDBtoStorage(storageDevicesAdaper!!.selectedDeviceRootPath.usbFile)) {
+                    if (copyDBtoStorage(storageDevicesAdaper!!.selectedDeviceRootPath!!.usbFile)) {
                         (application as MyApplication).toast(getString(R.string.backup_successful) +
-                                " " + storageDevicesAdaper!!.selectedDeviceRootPath.deviceName)
+                                " " + storageDevicesAdaper!!.selectedDeviceRootPath!!.deviceName)
                     } else {
                         (application as MyApplication).toast(getString(R.string.backup_failed))
                     }
@@ -492,7 +495,6 @@ class ItemListActivity : AppCompatActivity() {
         }
         storageDevicesAdaper = StorageDevicesAdaper(this@ItemListActivity, deviceFiles)
         recyclerView.adapter = storageDevicesAdaper
-        recyclerView.adapter = storageDevicesAdaper
         val layoutManager = LinearLayoutManager(this@ItemListActivity, LinearLayoutManager.VERTICAL, false)
         // Optionally customize the position you want to default scroll to
         layoutManager.scrollToPosition(0)
@@ -500,8 +502,8 @@ class ItemListActivity : AppCompatActivity() {
         recyclerView.setHasFixedSize(true)
         dialogBuilder.setPositiveButton(R.string.OK) { dialog, which ->
             if (storageDevicesAdaper!!.selectedDeviceRootPath != null) {
-                if (storageDevicesAdaper!!.selectedDeviceRootPath.type == ConstantManager.DEFAULT_FILE) {
-                    if (copyDBtoAPP(storageDevicesAdaper!!.selectedDeviceRootPath.defaultFile,
+                if (storageDevicesAdaper!!.selectedDeviceRootPath!!.type == ConstantManager.DEFAULT_FILE) {
+                    if (copyDBtoAPP(storageDevicesAdaper!!.selectedDeviceRootPath!!.defaultFile,
                             textView)) {
                         (application as MyApplication).toast(getString(R.string.restore_successful))
                         initUI()
@@ -509,9 +511,9 @@ class ItemListActivity : AppCompatActivity() {
                         (application as MyApplication).toast(getString(R.string.restore_failed))
                     }
                 } else {
-                    if (copyDBtoAPP(storageDevicesAdaper!!.selectedDeviceRootPath.usbFile,
+                    if (copyDBtoAPP(storageDevicesAdaper!!.selectedDeviceRootPath!!.usbFile,
                             textView,
-                            storageDevicesAdaper!!.selectedDeviceRootPath.device)) {
+                            storageDevicesAdaper!!.selectedDeviceRootPath!!.device)) {
                         (application as MyApplication).toast(getString(R.string.restore_successful))
                         initUI()
                     } else {
@@ -609,8 +611,10 @@ class ItemListActivity : AppCompatActivity() {
 
             val backupDBPath = String.format("%s.bak", getString(R.string.database_name))
             val backupDB = File(targetpath, backupDBPath)
-            if (!backupDB.createNewFile())
-                return false
+            if (!backupDB.exists()) {
+                if (!backupDB.createNewFile())
+                    return false
+            }
             val src = FileInputStream(currentDB).channel
             val dst = FileOutputStream(backupDB).channel
             dst.transferFrom(src, 0, src.size())

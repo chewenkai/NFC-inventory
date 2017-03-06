@@ -32,6 +32,7 @@ class GalleryActivity : AppCompatActivity() {
         imageView!!.stopAutoCycle()
         imageView!!.setCurrentPosition(default_position, true)
         imageView!!.indicatorVisibility = PagerIndicator.IndicatorVisibility.Visible
+
     }
 
     override fun onPause() {

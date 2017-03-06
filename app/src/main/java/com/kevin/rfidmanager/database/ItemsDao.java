@@ -45,7 +45,7 @@ public class ItemsDao extends AbstractDao<Items, Long> {
      * Creates the underlying database table.
      */
     public static void createTable(Database db, boolean ifNotExists) {
-        String constraint = ifNotExists ? "IF NOT EXISTS " : "";
+        String constraint = ifNotExists ? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"ITEMS\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE ," + // 0: id
                 "\"USER_NAME\" TEXT," + // 1: userName
@@ -56,9 +56,7 @@ public class ItemsDao extends AbstractDao<Items, Long> {
                 "\"DETAIL_DESCRIPTION\" TEXT);"); // 6: detailDescription
     }
 
-    /**
-     * Drops the underlying database table.
-     */
+    /** Drops the underlying database table. */
     public static void dropTable(Database db, boolean ifExists) {
         String sql = "DROP TABLE " + (ifExists ? "IF EXISTS " : "") + "\"ITEMS\"";
         db.execSQL(sql);
@@ -67,33 +65,33 @@ public class ItemsDao extends AbstractDao<Items, Long> {
     @Override
     protected final void bindValues(DatabaseStatement stmt, Items entity) {
         stmt.clearBindings();
-
+ 
         Long id = entity.getId();
         if (id != null) {
             stmt.bindLong(1, id);
         }
-
+ 
         String userName = entity.getUserName();
         if (userName != null) {
             stmt.bindString(2, userName);
         }
-
+ 
         String rfid = entity.getRfid();
         if (rfid != null) {
             stmt.bindString(3, rfid);
         }
-
+ 
         String itemName = entity.getItemName();
         if (itemName != null) {
             stmt.bindString(4, itemName);
         }
         stmt.bindDouble(5, entity.getPrice());
-
+ 
         String mainImagePath = entity.getMainImagePath();
         if (mainImagePath != null) {
             stmt.bindString(6, mainImagePath);
         }
-
+ 
         String detailDescription = entity.getDetailDescription();
         if (detailDescription != null) {
             stmt.bindString(7, detailDescription);
@@ -103,33 +101,33 @@ public class ItemsDao extends AbstractDao<Items, Long> {
     @Override
     protected final void bindValues(SQLiteStatement stmt, Items entity) {
         stmt.clearBindings();
-
+ 
         Long id = entity.getId();
         if (id != null) {
             stmt.bindLong(1, id);
         }
-
+ 
         String userName = entity.getUserName();
         if (userName != null) {
             stmt.bindString(2, userName);
         }
-
+ 
         String rfid = entity.getRfid();
         if (rfid != null) {
             stmt.bindString(3, rfid);
         }
-
+ 
         String itemName = entity.getItemName();
         if (itemName != null) {
             stmt.bindString(4, itemName);
         }
         stmt.bindDouble(5, entity.getPrice());
-
+ 
         String mainImagePath = entity.getMainImagePath();
         if (mainImagePath != null) {
             stmt.bindString(6, mainImagePath);
         }
-
+ 
         String detailDescription = entity.getDetailDescription();
         if (detailDescription != null) {
             stmt.bindString(7, detailDescription);
@@ -139,7 +137,7 @@ public class ItemsDao extends AbstractDao<Items, Long> {
     @Override
     public Long readKey(Cursor cursor, int offset) {
         return cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
-    }
+    }    
 
     @Override
     public Items readEntity(Cursor cursor, int offset) {
@@ -154,7 +152,7 @@ public class ItemsDao extends AbstractDao<Items, Long> {
         );
         return entity;
     }
-
+     
     @Override
     public void readEntity(Cursor cursor, Items entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
@@ -164,14 +162,14 @@ public class ItemsDao extends AbstractDao<Items, Long> {
         entity.setPrice(cursor.getFloat(offset + 4));
         entity.setMainImagePath(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
         entity.setDetailDescription(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
-    }
-
+     }
+    
     @Override
     protected final Long updateKeyAfterInsert(Items entity, long rowId) {
         entity.setId(rowId);
         return rowId;
     }
-
+    
     @Override
     public Long getKey(Items entity) {
         if (entity != null) {
@@ -190,5 +188,5 @@ public class ItemsDao extends AbstractDao<Items, Long> {
     protected final boolean isEntityUpdateable() {
         return true;
     }
-
+    
 }

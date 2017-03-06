@@ -14,4 +14,17 @@
 
     </android.support.v7.widget.RecyclerView>
 
+    <at.markushi.ui.CircleButton
+        android:id="@+id/delete_items_button"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:visibility="gone"
+        android:padding="20dp"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
+        android:src="@drawable/ic_black_white_android_delete"
+        app:cb_color="@color/blue_sky"
+        app:cb_pressedRingWidth="5dip" />
 </RelativeLayout>

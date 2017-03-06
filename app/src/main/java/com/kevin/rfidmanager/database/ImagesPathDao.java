@@ -41,16 +41,14 @@ public class ImagesPathDao extends AbstractDao<ImagesPath, Long> {
      * Creates the underlying database table.
      */
     public static void createTable(Database db, boolean ifNotExists) {
-        String constraint = ifNotExists ? "IF NOT EXISTS " : "";
+        String constraint = ifNotExists ? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"IMAGES_PATH\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE ," + // 0: id
                 "\"RFID\" TEXT," + // 1: rfid
                 "\"IMAGE_PATH\" TEXT);"); // 2: imagePath
     }
 
-    /**
-     * Drops the underlying database table.
-     */
+    /** Drops the underlying database table. */
     public static void dropTable(Database db, boolean ifExists) {
         String sql = "DROP TABLE " + (ifExists ? "IF EXISTS " : "") + "\"IMAGES_PATH\"";
         db.execSQL(sql);
@@ -59,17 +57,17 @@ public class ImagesPathDao extends AbstractDao<ImagesPath, Long> {
     @Override
     protected final void bindValues(DatabaseStatement stmt, ImagesPath entity) {
         stmt.clearBindings();
-
+ 
         Long id = entity.getId();
         if (id != null) {
             stmt.bindLong(1, id);
         }
-
+ 
         String rfid = entity.getRfid();
         if (rfid != null) {
             stmt.bindString(2, rfid);
         }
-
+ 
         String imagePath = entity.getImagePath();
         if (imagePath != null) {
             stmt.bindString(3, imagePath);
@@ -79,17 +77,17 @@ public class ImagesPathDao extends AbstractDao<ImagesPath, Long> {
     @Override
     protected final void bindValues(SQLiteStatement stmt, ImagesPath entity) {
         stmt.clearBindings();
-
+ 
         Long id = entity.getId();
         if (id != null) {
             stmt.bindLong(1, id);
         }
-
+ 
         String rfid = entity.getRfid();
         if (rfid != null) {
             stmt.bindString(2, rfid);
         }
-
+ 
         String imagePath = entity.getImagePath();
         if (imagePath != null) {
             stmt.bindString(3, imagePath);
@@ -99,7 +97,7 @@ public class ImagesPathDao extends AbstractDao<ImagesPath, Long> {
     @Override
     public Long readKey(Cursor cursor, int offset) {
         return cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
-    }
+    }    
 
     @Override
     public ImagesPath readEntity(Cursor cursor, int offset) {
@@ -110,20 +108,20 @@ public class ImagesPathDao extends AbstractDao<ImagesPath, Long> {
         );
         return entity;
     }
-
+     
     @Override
     public void readEntity(Cursor cursor, ImagesPath entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
         entity.setRfid(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
         entity.setImagePath(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-    }
-
+     }
+    
     @Override
     protected final Long updateKeyAfterInsert(ImagesPath entity, long rowId) {
         entity.setId(rowId);
         return rowId;
     }
-
+    
     @Override
     public Long getKey(ImagesPath entity) {
         if (entity != null) {
@@ -142,5 +140,5 @@ public class ImagesPathDao extends AbstractDao<ImagesPath, Long> {
     protected final boolean isEntityUpdateable() {
         return true;
     }
-
+    
 }
