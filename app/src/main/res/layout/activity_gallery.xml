@@ -8,10 +8,9 @@
     android:background="@color/white"
     tools:context="com.kevin.rfidmanager.Activity.GalleryActivity">
 
-    <com.daimajia.slider.library.SliderLayout
-        android:id="@+id/show_photo_view"
+    <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/pager"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white"/>
+        android:layout_height="match_parent" />
 
 </RelativeLayout>
