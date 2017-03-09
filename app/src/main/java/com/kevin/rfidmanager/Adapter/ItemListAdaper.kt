@@ -109,6 +109,7 @@ class ItemListAdaper(val activity: Activity, internal var itemes: MutableList<It
             if (deleteMdoe) {
                 setCachedCheckBoxVisible()
                 theCheckBox.isChecked = true
+                checkedItems.add(item)
                 deleteItemsButton.visibility = View.VISIBLE
             } else {
                 setCachedCheckBoxGone()
@@ -151,9 +152,11 @@ class ItemListAdaper(val activity: Activity, internal var itemes: MutableList<It
             val defaultViewHolder = this.recyclerView!!.findViewHolderForAdapterPosition(i)
             if (defaultViewHolder != null) {
                 (defaultViewHolder as ViewHolder).deleteCheckBox.visibility = View.GONE
+                (defaultViewHolder as ViewHolder).deleteCheckBox.isChecked = false
             }
         }
         deleteItemsButton.visibility = View.GONE
+        checkedItems.removeAll(checkedItems)
     }
 
     fun deleteSelectedItems() {
