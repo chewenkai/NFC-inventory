@@ -88,15 +88,51 @@
                     android:textSize="13sp" />
             </LinearLayout>
 
-            <ImageView
-                android:id="@+id/iamgeview_main_image"
+            <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:layout_margin="5dp"
                 android:layout_weight="1"
-                android:scaleType="centerInside"
-                android:src="@drawable/add_image" />
+                android:orientation="vertical">
+
+                <ImageView
+                    android:id="@+id/iamgeview_main_image"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
+                    android:layout_margin="5dp"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/add_image" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="@string/price"
+                        android:gravity="end"
+                        android:textColor="@color/black"
+                        android:textSize="14sp" />
+
+                    <EditText
+                        android:id="@+id/et_price"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textColor="@color/black"
+                        android:gravity="start"
+                        android:text="0"
+                        android:textStyle="bold"
+                        android:textSize="14sp"
+                        android:inputType="numberDecimal" />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
 
         </LinearLayout>
     </RelativeLayout>

@@ -175,7 +175,6 @@ class ItemListActivity : AppCompatActivity() {
 
     public override fun onResume() {
         super.onResume()
-        initUI()
         if (mAdapter != null)
             mAdapter!!.enableForegroundDispatch(this, pendingIntent, null, null)
     }
@@ -677,6 +676,11 @@ class ItemListActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.action_bar_add -> addNewItem("")
+            R.id.checkout -> {
+                intent = Intent(this@ItemListActivity, CheckoutActivity::class.java)
+                intent.putExtra(ConstantManager.CURRENT_USER_NAME, currentUser)
+                startActivity(intent)
+            }
         }
         return true
     }

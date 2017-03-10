@@ -21,6 +21,9 @@ import com.kevin.rfidmanager.Utils.ConstantManager
 import com.kevin.rfidmanager.Utils.DatabaseUtil
 import com.kevin.rfidmanager.Utils.ScreenUtil
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.item_add_layout.*
+import org.jetbrains.anko.enabled
+import org.jetbrains.anko.textColor
 import java.io.File
 
 class ItemDetailActivity : AppCompatActivity() {
@@ -112,6 +115,11 @@ class ItemDetailActivity : AppCompatActivity() {
 
         addKeyDes = findViewById(R.id.button_add_item_key_des) as TextView
         addKeyDes!!.visibility = View.GONE
+
+        et_price.enabled = false
+        et_price.textColor = resources.getColor(R.color.black)
+        et_price.setBackgroundColor(resources.getColor(R.color.white))
+        et_price.setText(item.price.toString())
 
         detailDescriptionTitle = findViewById(R.id.detail_description_title) as TextView
         detailDescriptionTitle!!.visibility = View.GONE

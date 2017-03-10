@@ -188,6 +188,23 @@ public class DatabaseUtil {
         return true;
     }
 
+    /**
+     * Update the item price into database
+     *
+     * @param activity
+     * @param itemPrice
+     * @param item
+     * @return
+     */
+    public static boolean updateItemPrice(Activity activity, float itemPrice, Items item) {
+        DaoSession daoSession = ((MyApplication) activity.getApplication()).getDaoSession();
+        if (item == null)
+            return false;
+        item.setPrice(itemPrice);
+        daoSession.getItemsDao().insertOrReplace(item);
+        return true;
+    }
+
     public static void importDB(Context context) {
         try {
             File sd = Environment.getExternalStorageDirectory();

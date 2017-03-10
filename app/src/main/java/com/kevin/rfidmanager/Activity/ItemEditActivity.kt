@@ -33,11 +33,16 @@ import com.kevin.rfidmanager.Utils.ConstantManager.PERMISSION_REQUEST_CODE
 import com.kevin.rfidmanager.Utils.DatabaseUtil
 import com.kevin.rfidmanager.Utils.ScreenUtil
 import com.kevin.rfidmanager.database.ImagesPath
+import com.kevin.rfidmanager.database.Items
 import com.kevin.rfidmanager.database.KeyDescription
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.item_add_layout.*
+import org.jetbrains.anko.enabled
+import org.jetbrains.anko.textColor
 import java.io.File
 
 class ItemEditActivity : AppCompatActivity() {
+    private var item: Items? = null
     private var addKeyDes: TextView? = null
     private var detailDescriptionTitle: TextView? = null
     private var key_des_list: ListView? = null
@@ -71,7 +76,7 @@ class ItemEditActivity : AppCompatActivity() {
             return
 
         // Get and check the current item
-        val item = DatabaseUtil.getCurrentItem(this@ItemEditActivity, currentID)
+        item = DatabaseUtil.getCurrentItem(this@ItemEditActivity, currentID)
         if (item == null) {
             Toast.makeText(this@ItemEditActivity, R.string.item_not_exist, Toast.LENGTH_LONG).show()
             return
@@ -79,7 +84,9 @@ class ItemEditActivity : AppCompatActivity() {
 
         imageGalleryPicker = ImagePicker(this)
         imageGalleryPicker!!.setImagePickerCallback(object : ImagePickerCallback {
-            override fun onImagesChosen(images: List<ChosenImage>) {
+            override fun onImagesChosen(images: List<ChosenImage>?) {
+                if (images == null)
+                    return
                 // Display images
                 for (image in images) {
                     if (image.requestId == ConstantManager.REQUEST_GALLERY_IMAGE_FILE) {
@@ -115,11 +122,15 @@ class ItemEditActivity : AppCompatActivity() {
         }
         )
 
+        et_price.enabled = true
+        et_price.textColor = resources.getColor(R.color.black)
+        et_price.setText(item!!.price.toString())
+
         imageGalleryPicker!!.shouldGenerateMetadata(false) // Default is true
         imageGalleryPicker!!.shouldGenerateThumbnails(false) // Default is true
 
         itemName = findViewById(R.id.item_name) as EditText
-        itemName!!.setText(item.itemName)
+        itemName!!.setText(item!!.itemName)
 
         key_des_list = findViewById(R.id.listview_item_key_des) as ListView
         desListAdapter = KeyDesListAdapter(this@ItemEditActivity,
@@ -132,7 +143,7 @@ class ItemEditActivity : AppCompatActivity() {
 
         mainImage = findViewById(R.id.iamgeview_main_image) as ImageView
 
-        val mainImagePath = item.mainImagePath
+        val mainImagePath = item!!.mainImagePath
         if (mainImagePath != null) {
             if (ContextCompat.checkSelfPermission(this@ItemEditActivity, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                 Picasso.with(this@ItemEditActivity).load(File(mainImagePath)).resize(ScreenUtil.getScreenWidth(this@ItemEditActivity) / 2, 0).into(mainImage)
@@ -178,7 +189,7 @@ class ItemEditActivity : AppCompatActivity() {
         detailDescription!!.inputType = InputType.TYPE_CLASS_TEXT or
                 InputType.TYPE_TEXT_FLAG_MULTI_LINE or InputType.TYPE_TEXT_FLAG_CAP_SENTENCES
 
-        detailDescription!!.setText(item.detailDescription)
+        detailDescription!!.setText(item!!.detailDescription)
 
         recyclerView = findViewById(R.id.recycle_gallery) as RecyclerView
         gallaryAdaper = GallaryAdaper(this@ItemEditActivity, DatabaseUtil.queryImagesPaths(this@ItemEditActivity, currentID), hideButtons, currentID)
@@ -193,11 +204,12 @@ class ItemEditActivity : AppCompatActivity() {
 
     }
 
-    public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
-        super.onActivityResult(requestCode, resultCode, data)
+    public override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == Picker.PICK_IMAGE_DEVICE && resultCode == Activity.RESULT_OK) {
-            imageGalleryPicker!!.submit(data)
+            if (data != null)
+                imageGalleryPicker!!.submit(data)
         }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     /*
@@ -276,6 +288,10 @@ class ItemEditActivity : AppCompatActivity() {
                     return true
                 }
                 if (!DatabaseUtil.updateDetailDescription(this@ItemEditActivity, detailDescription!!.text.toString(), currentID)) {
+                    Toast.makeText(this, R.string.save_item_failed, Toast.LENGTH_LONG).show()
+                    return true
+                }
+                if (!DatabaseUtil.updateItemPrice(this@ItemEditActivity, et_price.text.toString().toFloat(), this.item)) {
                     Toast.makeText(this, R.string.save_item_failed, Toast.LENGTH_LONG).show()
                     return true
                 }

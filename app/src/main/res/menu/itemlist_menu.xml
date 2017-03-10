@@ -7,5 +7,11 @@
         app:showAsAction="always"
         android:title="@string/add_new_item_explain" >
     </item>
+    <item xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/checkout"
+        android:icon="@drawable/checkout"
+        android:orderInCategory="100"
+        app:showAsAction="always"
+        android:title="@string/add_new_item_explain"></item>
 
 </menu>

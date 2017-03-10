@@ -55,6 +55,7 @@
     <string name="items_name">Items Name</string>
     <string name="add_more_images">Add more Images</string>
     <string name="description">Description...</string>
+    <string name="price">Price</string>
 
     <!--Setting Page-->
     <string name="select_backup_position">Select a location to backup</string>
@@ -100,6 +101,7 @@
     <string name="another_users_card">This card already bind with another user.</string>
     <string name="item_not_exist">Item do not exist.</string>
     <string name="save_item_failed">Save item failed.</string>
+    <string name="item_have_not_added">The item is not exist!</string>
 
     <!--Others-->
 
