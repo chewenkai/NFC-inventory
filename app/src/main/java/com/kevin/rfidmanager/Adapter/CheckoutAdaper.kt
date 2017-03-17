@@ -19,8 +19,11 @@ import at.markushi.ui.CircleButton
 import com.kevin.rfidmanager.Activity.ItemDetailActivity
 import com.kevin.rfidmanager.R
 import com.kevin.rfidmanager.Utils.ConstantManager
+import com.kevin.rfidmanager.Utils.DatabaseUtil
+import com.kevin.rfidmanager.Utils.SPUtil
 import com.kevin.rfidmanager.Utils.ScreenUtil
 import com.kevin.rfidmanager.database.Items
+import com.kevin.rfidmanager.database.KeyDescription
 import com.squareup.picasso.Picasso
 import java.io.File
 
@@ -118,6 +121,30 @@ class CheckoutAdaper(val activity: Activity, var recyclerView: RecyclerView? = n
 
         val itemName = holder.itemName
         itemName.text = item.item!!.itemName
+
+        val keys = DatabaseUtil.queryItemsKeyDes(activity, item.item!!.rfid)
+        var keyText: StringBuffer = StringBuffer()
+        for (key: KeyDescription in keys) {
+            keyText.append(" * " + key.keyDescription + "\n")
+        }
+        holder.keyDes.setText(keyText)
+        when (SPUtil.getInstence(activity).apperance) {
+            8  // ConstantManager.LINEAR_LAYOUT
+            -> {
+                holder.keyDes.visibility = View.GONE
+            }
+            9  // ConstantManager.STAGGER_LAYOUT
+            -> {
+                holder.keyDes.visibility = View.GONE
+            }
+            10  // ConstantManager.ONE_ROW_LAYOUT
+            -> {
+                holder.keyDes.visibility = View.GONE
+            }
+            11 -> {
+                holder.keyDes.visibility = View.VISIBLE
+            }
+        }
     }
 
     override fun getItemCount(): Int {
@@ -209,6 +236,7 @@ class CheckoutAdaper(val activity: Activity, var recyclerView: RecyclerView? = n
         var count: TextView
         var deduct: CircleButton
         var deleteCheckBox: CheckBox
+        var keyDes: TextView
 
         init {
             image = itemView.findViewById(R.id.item_thumb) as ImageView
@@ -217,6 +245,7 @@ class CheckoutAdaper(val activity: Activity, var recyclerView: RecyclerView? = n
             count = itemView.findViewById(R.id.item_count) as TextView
             deduct = itemView.findViewById(R.id.remove_item) as CircleButton
             deleteCheckBox = itemView.findViewById(R.id.item_delete_check_box) as CheckBox
+            keyDes = itemView.findViewById(R.id.itemlist_key_des) as TextView
         }// Stores the itemView in a public final member variable that can be used
         // to access the context from any ViewHolder instance.
     }

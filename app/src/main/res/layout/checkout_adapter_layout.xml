@@ -6,9 +6,15 @@
     android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:background="@color/white"
-    android:orientation="vertical">
+    android:orientation="horizontal">
 
-    <android.support.v7.widget.AppCompatCheckBox
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <android.support.v7.widget.AppCompatCheckBox
         android:id="@+id/item_delete_check_box"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -68,5 +74,19 @@
         android:gravity="center"
         android:text="remove"
         android:textColor="@color/black" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/itemlist_key_des"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="2"
+        android:padding="10dp"
+        android:gravity="left|center_vertical"
+        android:textSize="18sp"
+        android:elegantTextHeight="true"
+        android:layout_gravity="center_vertical"
+        android:text="remove\njfdh"
+        android:textColor="@color/item_list_key_des" />
 </LinearLayout>
 

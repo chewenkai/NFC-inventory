@@ -143,6 +143,11 @@ class CheckoutActivity : AppCompatActivity() {
                         this@CheckoutActivity, LinearLayoutManager.VERTICAL, false)
                 recycle_item_list!!.layoutManager = linearLayoutManager
             }
+            11 -> {
+                val linearLayoutManager = LinearLayoutManager(
+                        this@CheckoutActivity, LinearLayoutManager.VERTICAL, false)
+                recycle_item_list!!.layoutManager = linearLayoutManager
+            }
         }// the recycler view
     }
 

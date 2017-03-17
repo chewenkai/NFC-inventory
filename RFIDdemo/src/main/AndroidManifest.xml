@@ -31,10 +31,7 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name"
-        android:theme="@style/AppTheme"
-        android:name=".MyApplication">
+        android:label="@string/app_name">
 
         <!-- 您从百度网站获取的APP KEY -->
         <meta-data

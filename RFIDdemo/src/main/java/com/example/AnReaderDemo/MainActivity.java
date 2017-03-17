@@ -1,21 +1,17 @@
 package com.example.AnReaderDemo;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.text.format.Time;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -54,40 +50,39 @@ public class MainActivity extends Activity implements OnClickListener {
     private static final int INVENTORY_FAIL_MSG = 4;
     private static final int THREAD_END = 3;
     private TabHost myTabhost = null;
-    private Spinner sn_commType = null;// 通信类型
-    private Spinner sn_devName = null;// 设备类型
-    private EditText ed_ipAddr = null;// IP地址
-    private EditText ed_port = null;// 端口号
-    private Spinner sn_bluetooth = null;// 蓝牙
-    private Spinner sn_comName = null;// 串口名称
-    private Button btn_connect = null;// 连接标签
-    private Button btn_disconnect = null;// 断开连接
-    private Button btn_getDevInfo = null;// 获取设备信息
-    private Button btn_setTime = null;// 设置时间
-    private Button btn_startInventory = null;// 开始盘点
-    private Button btn_stopInventory = null;// 停止盘点
-    private Button btn_setInventoryPara = null;// 设置盘点参数
-    private Button btn_startScanf = null;// 开始扫描
-    private Button btn_stopScanf = null;// 停止扫描
-    private Button btn_openRF = null;// 打开射频
-    private Button btn_closeRF = null;// 关闭射频
-    private Button btn_clearInventoryRecord = null;// 清空盘点标签列表
-    private Button btn_clearScanfRecordList = null;// 清空扫描记录列表
-    private Spinner sn_RfPower = null;// 射频功率
-    private Button btn_readPower = null;// 获取射频功率
-    private Button btn_setPower = null;// 设置射频功率
-    private Button btn_loadDefault = null;// 恢复出厂设置
-    private Spinner sn_overflow_time = null;// 溢出时间
-    private Button btn_read_overflow_time = null;// 获取溢出时间
-    private Button btn_write_overflow_time = null;// 设置溢出时间
+    private Spinner sn_commType = null;// Connector
+    private Spinner sn_devName = null;// Device type
+    private EditText ed_ipAddr = null;// IP
+    private EditText ed_port = null;// Port
+    private Spinner sn_bluetooth = null;// bluetooth
+    private Spinner sn_comName = null;// com
+    private Button btn_connect = null;// connect tag
+    private Button btn_disconnect = null;// disconnect
+    private Button btn_getDevInfo = null;// get device information
+    private Button btn_setTime = null;// set time
+    private Button btn_startInventory = null;// start inventory
+    private Button btn_stopInventory = null;// stop inventory
+    private Button btn_setInventoryPara = null;// set para of inventory
+    private Button btn_startScanf = null;// Start scanf
+    private Button btn_stopScanf = null;// stop scanf
+    private Button btn_openRF = null;// Open RF
+    private Button btn_closeRF = null;// Close RF
+    private Button btn_clearInventoryRecord = null;// Clear inventory list
+    private Button btn_clearScanfRecordList = null;// clear scanf record
+    private Spinner sn_RfPower = null;// RF Power
+    private Button btn_readPower = null;// Get RF Power
+    private Button btn_setPower = null;// Set RF Power
+    private Button btn_loadDefault = null;// Reset
+    private Spinner sn_overflow_time = null;// overflow_time
+    private Button btn_read_overflow_time = null;// get overflow_time
+    private Button btn_write_overflow_time = null;// Set overflow_time
 
-    private ListView list_inventory_record = null;// 盘点标签列表
-    private ListView list_scanf_record = null;// 扫描标签列表
-    private ListView list_tag_name = null;// 读写选项标签列表
+    private ListView list_inventory_record = null;// inventory list
+    private ListView list_scanf_record = null;// scanf record list
+    private ListView list_tag_name = null;// tag name
 
     private TextView tv_inventoryInfo = null;
     private TextView tv_scanRecordInfo = null;
-    private TextView log = null;
     private List<InventoryReport> inventoryList = new ArrayList<InventoryReport>();
     private List<ScanReport> scanfReportList = new ArrayList<ScanReport>();
     private InventoryAdapter inventoryAdapter = null;
@@ -95,7 +90,7 @@ public class MainActivity extends Activity implements OnClickListener {
     ;
     static ADReaderInterface m_reader = new ADReaderInterface();
 
-    // 盘点参数
+    // Inventory parameter
     static int INVENTORY_REQUEST_CODE = 1;// requestCode
     private boolean bUseDefaultPara = true;
     private boolean bOnlyReadNew = false;
@@ -106,39 +101,27 @@ public class MainActivity extends Activity implements OnClickListener {
     private SoundPool soundPool = null;
     private int soundID = 0;
 
-    private Thread m_inventoryThrd = null;//盘点标签线程
-    private Thread m_getScanRecordThrd = null;//获取扫描数据线程
+    private Thread m_inventoryThrd = null;// The thread of inventory
+    private Thread m_getScanRecordThrd = null;// The thead of scanf the record.
+    // Only for rpan device.
+
+    private boolean isLoadScanfMode = false;
+
+    private int[] layRes = {R.id.tab_reader, R.id.tab_command,
+            R.id.tab_inventory, R.id.tab_TagTypeList, R.id.tab_ScanRecord};
+    private String[] layTittle = null; // { "设备", "命令", "盘点", "读写", "扫描" };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-// Here, thisActivity is the current activity
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
 
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+        layTittle = new String[]{getString(R.string.tx_tab_device),
+                getString(R.string.tx_tab_command),
+                getString(R.string.tx_tab_inventory),
+                getString(R.string.tx_tab_operate),
+                getString(R.string.tx_tab_scanf)};
 
-                // Show an expanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-
-            } else {
-
-                // No explanation needed, we can request the permission.
-
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                        0);
-
-                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
-            }
-        }
         sn_commType = (Spinner) findViewById(R.id.sn_commType);
         sn_devName = (Spinner) findViewById(R.id.sn_devType);
         ed_ipAddr = (EditText) findViewById(R.id.ed_ipAddr);
@@ -167,18 +150,14 @@ public class MainActivity extends Activity implements OnClickListener {
         btn_loadDefault = (Button) findViewById(R.id.btn_loadDefault);
         tv_inventoryInfo = (TextView) findViewById(R.id.tv_inventoryInfo);
         tv_scanRecordInfo = (TextView) findViewById(R.id.tv_scanRecordInfo);
-        log = (TextView) findViewById(R.id.log);
         list_tag_name = (ListView) findViewById(R.id.list_tagName);
         sn_overflow_time = (Spinner) findViewById(R.id.sn_overflow_time);
         btn_read_overflow_time = (Button) findViewById(R.id.btn_read_overflow_time);
         btn_write_overflow_time = (Button) findViewById(R.id.btn_write_overflow_time);
 
-        // 加page页面
-        int[] layRes = {R.id.tab_reader, R.id.tab_command, R.id.tab_inventory,
-                R.id.tab_ScanRecord, R.id.tab_TagTypeList};
-        String[] layTittle = {"Devices", "Command", "Inventory", "Scan", "Read/Write"};
+        // Load page
         myTabhost.setup();
-        for (int i = 0; i < layRes.length; i++) {
+        for (int i = 0; i < layRes.length - 1; i++) {
             TabSpec myTab = myTabhost.newTabSpec("tab" + i);
             myTab.setIndicator(layTittle[i]);
             myTab.setContent(layRes[i]);
@@ -186,11 +165,11 @@ public class MainActivity extends Activity implements OnClickListener {
         }
         myTabhost.setCurrentTab(0);
 
-        // 盘点标签列表标题
+        // Inventory list tittle
         ViewGroup InventorytableTitle = (ViewGroup) findViewById(R.id.inventorylist_title);
         InventorytableTitle.setBackgroundColor(Color.rgb(255, 100, 10));
 
-        // 扫描模式列表标题
+        // Scanf list tittle
         ViewGroup ScanRecordTableTitle = (ViewGroup) findViewById(R.id.scan_record_list_tittle);
         ScanRecordTableTitle.setBackgroundColor(Color.rgb(53, 190, 106));
 
@@ -211,7 +190,7 @@ public class MainActivity extends Activity implements OnClickListener {
 
         // 读写选项标签列表
         SimpleAdapter tagNamadapter = new SimpleAdapter(this, tagNameListItems,
-                R.layout.tag_name_items, new String[]{"title", "image"},
+                R.xml.tag_name_items, new String[]{"title", "image"},
                 new int[]{R.id.tagListtitle, R.id.tagListimage}); // 创建SimpleAdapter
         list_tag_name.setAdapter(tagNamadapter);
         list_tag_name.setOnItemClickListener(new OnItemClickListener() {
@@ -219,7 +198,7 @@ public class MainActivity extends Activity implements OnClickListener {
                                     long arg3) {
                 switch (arg2) {
                     case 0:
-                        // ICODE_SLI标签
+                        // ICODE_SLI TAG
                         Intent intent = new Intent(MainActivity.this,
                                 IcodesliTagActivity.class);
                         startActivity(intent);
@@ -232,6 +211,7 @@ public class MainActivity extends Activity implements OnClickListener {
         });
 
         // 列举已配对的蓝牙设备
+        // Get the bluetooth
         ArrayList<CharSequence> m_bluetoolNameList = null;
         ArrayAdapter<CharSequence> m_adaBluetoolName = null;
         m_bluetoolNameList = new ArrayList<CharSequence>();
@@ -249,6 +229,7 @@ public class MainActivity extends Activity implements OnClickListener {
         sn_bluetooth.setAdapter(m_adaBluetoolName);
 
         // 列举所有串口
+        // Get the Serial port
         ArrayList<CharSequence> m_comNameList = null;
         ArrayAdapter<CharSequence> m_adaComName = null;
 
@@ -261,7 +242,6 @@ public class MainActivity extends Activity implements OnClickListener {
                 android.R.layout.simple_spinner_dropdown_item, m_comNameList);
         sn_comName.setAdapter(m_adaComName);
 
-        // 溢出时间界面初始化
         ArrayList<CharSequence> overflowTime = new ArrayList<CharSequence>();
         for (int i = 0; i < 256; i++) {
             overflowTime.add(i + "");
@@ -311,10 +291,12 @@ public class MainActivity extends Activity implements OnClickListener {
         btn_read_overflow_time.setEnabled(false);
 
         // 初始化声音
+        // Initialize the sound
         soundPool = new SoundPool(5, AudioManager.STREAM_MUSIC, 5);
         soundID = soundPool.load(this, R.raw.msg, 1);
 
         // 加载上一次打开的端口数据
+        // Load the last open port data
         LoadActivityByHistory();
     }
 
@@ -323,6 +305,8 @@ public class MainActivity extends Activity implements OnClickListener {
         soundPool.unload(soundID);
         if (m_reader.isReaderOpen()) {
             // 如果盘点标签线程正在运行，则关闭该线程
+            // If thread of inventory is running,stop the thread before exit the
+            // application.
             if (m_inventoryThrd != null && m_inventoryThrd.isAlive()) {
                 b_inventoryThreadRun = false;
                 m_reader.RDR_SetCommuImmeTimeout();
@@ -334,13 +318,14 @@ public class MainActivity extends Activity implements OnClickListener {
             }
 
             // 如果获取扫描记录线程正在运行，则关闭该线程
+            // If thread of scannig is running,stop the thread before exit the
+            // application.
             if (m_getScanRecordThrd != null && m_getScanRecordThrd.isAlive()) {
                 bGetScanRecordFlg = false;
                 m_reader.RDR_SetCommuImmeTimeout();
                 try {
                     m_getScanRecordThrd.join();
                 } catch (InterruptedException e) {
-                    // TODO Auto-generated catch block
                     e.printStackTrace();
                 }
             }
@@ -350,179 +335,181 @@ public class MainActivity extends Activity implements OnClickListener {
         super.onDestroy();
     }
 
+    @Override
     public void onClick(View v) {
         int nret = -1;
         String str = "";
-        switch (v.getId()) {
-            case R.id.btn_connect:// 连接设备
-                try {
-                    OpenDev();
-                } catch (Exception e) {
-                    log.setText(e.toString());
-                }
-                break;
-            case R.id.btn_disconnect:// 断开连接
-                CloseDev();
-                break;
-            case R.id.btn_getDevInfo:// 获取设备信息
-                GetInformation();
-                break;
-            case R.id.btn_setTime:// 设置时间
-                SetSysTime();
-                break;
-            case R.id.btn_openRF:// 打开射频
-                nret = m_reader.RDR_OpenRFTransmitter();
-                if (nret == ApiErrDefinition.NO_ERROR) {
-                    str = "打开射频成功！";
-                } else {
-                    str = "打开射频失败";
-                }
-                MessageBox("打开射频", str);
-                break;
-            case R.id.btn_setPower:// 设置功率
-                byte powerIndex = (byte) (sn_RfPower.getSelectedItemPosition() + 1);
-                nret = m_reader.RDR_SetRFPower(powerIndex);
-                if (nret == ApiErrDefinition.NO_ERROR) {
-                    str = "设置射频功率成功!";
-                } else {
-                    str = "设置射频功率失败!";
-                }
-                MessageBox("设置射频功率", str);
-                break;
-            case R.id.btn_loadDefault:// 恢复出厂设置
-                nret = m_reader.RDR_LoadFactoryDefault();
-                if (nret == ApiErrDefinition.NO_ERROR) {
-                    str = "恢复出厂设置成功!";
-                } else {
-                    str = "恢复出厂设置失败!";
-                }
-                MessageBox("恢复出厂设置", str);
-                break;
-            case R.id.btn_readPower:// 获取功率
-                Byte mPower = new Byte((byte) 0);
-                nret = m_reader.RDR_GetRFPower(mPower);
-                if (nret != ApiErrDefinition.NO_ERROR) {
-                    MessageBox("获取射频功率", "获取射频功率失败！Err=" + nret);
-                    break;
-                }
-                sn_RfPower.setSelection(mPower.byteValue() - 1);
-                MessageBox("获取射频功率", "获取射频功率成功!");
-                break;
-            case R.id.btn_closeRF:// 关闭射频
-                nret = m_reader.RDR_CloseRFTransmitter();
-                if (nret == ApiErrDefinition.NO_ERROR) {
-                    str = "关闭射频成功！";
-                } else {
-                    str = "关闭射频失败";
-                }
-                MessageBox("关闭射频", str);
-                break;
-            case R.id.btn_startInventory:// 开始盘点
-                btn_connect.setEnabled(false);
-                btn_disconnect.setEnabled(false);
-                btn_getDevInfo.setEnabled(false);
-                btn_setTime.setEnabled(false);
-                btn_openRF.setEnabled(false);
-                btn_closeRF.setEnabled(false);
-                btn_startInventory.setEnabled(false);
-                btn_stopInventory.setEnabled(true);
-                btn_setInventoryPara.setEnabled(false);
-                btn_clearInventoryRecord.setEnabled(false);
-                btn_startScanf.setEnabled(false);
-                btn_stopScanf.setEnabled(false);
-                sn_RfPower.setEnabled(false);
-                btn_readPower.setEnabled(false);
-                btn_setPower.setEnabled(false);
-                btn_loadDefault.setEnabled(false);
-                list_tag_name.setEnabled(false);
-                sn_overflow_time.setEnabled(false);
-                btn_read_overflow_time.setEnabled(false);
-                btn_write_overflow_time.setEnabled(false);
-                inventoryList.clear();
-                inventoryAdapter.notifyDataSetChanged();
-                tv_inventoryInfo.setText("标签总数:0;失败次数:0");
-                m_inventoryThrd = new Thread(new InventoryThrd());
-                m_inventoryThrd.start();
-                break;
-            case R.id.btn_stopInventory:// 停止盘点
-                btn_stopInventory.setEnabled(false);
-                m_reader.RDR_SetCommuImmeTimeout();
-                b_inventoryThreadRun = false;
-                break;
-            case R.id.btn_paraInventory:// 盘点参数设置
-                Intent intent = new Intent(this, InventoryParaActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putBoolean("UseDefaultPara", this.bUseDefaultPara);
-                bundle.putBoolean("OnlyReadNew", this.bOnlyReadNew);
-                bundle.putBoolean("MathAFI", this.bMathAFI);
-                bundle.putByte("AFI", this.mAFIVal);
-                bundle.putBoolean("bBuzzer", this.bBuzzer);
-                intent.putExtras(bundle);
-                startActivityForResult(intent, INVENTORY_REQUEST_CODE);
-                break;
-            case R.id.btn_clearList:// 清空列表
-                inventoryList.clear();
-                this.inventoryAdapter.notifyDataSetChanged();
-                tv_inventoryInfo.setText("标签总数:0;失败次数:0");
-                break;
-            case R.id.btn_startScanfRecord:// 开始扫描
-                btn_connect.setEnabled(false);
-                btn_disconnect.setEnabled(false);
-                btn_getDevInfo.setEnabled(false);
-                btn_setTime.setEnabled(false);
-                btn_openRF.setEnabled(false);
-                btn_closeRF.setEnabled(false);
-                btn_startInventory.setEnabled(false);
-                btn_stopInventory.setEnabled(false);
-                btn_setInventoryPara.setEnabled(false);
-                btn_clearInventoryRecord.setEnabled(false);
-                btn_startScanf.setEnabled(false);
-                btn_stopScanf.setEnabled(true);
-                btn_clearScanfRecordList.setEnabled(false);
-                sn_RfPower.setEnabled(false);
-                btn_readPower.setEnabled(false);
-                btn_setPower.setEnabled(false);
-                btn_loadDefault.setEnabled(false);
-                list_tag_name.setEnabled(false);
-                sn_overflow_time.setEnabled(false);
-                btn_read_overflow_time.setEnabled(false);
-                btn_write_overflow_time.setEnabled(false);
-                scanfReportList.clear();
-                scanfAdapter.notifyDataSetChanged();
-                tv_scanRecordInfo.setText("记录数:0");
-                m_getScanRecordThrd = new Thread(new GetScanRecordThrd());
-                m_getScanRecordThrd.start();
-                break;
-            case R.id.btn_stopScanfRecord:// 停止采集记录
-                btn_stopScanf.setEnabled(false);
-                bGetScanRecordFlg = false;
-                break;
-            case R.id.btn_clearScanfRecordList:// 清空扫描记录
-                scanfReportList.clear();
-                tv_scanRecordInfo.setText("记录数:0");
-                this.scanfAdapter.notifyDataSetChanged();
-                break;
-            case R.id.btn_read_overflow_time:// 获取溢出时间
-                Integer mTime = 0;
-                nret = m_reader.RDR_GetOverflowTime(mTime);
-                if (nret != ApiErrDefinition.NO_ERROR) {
-                    MessageBox("溢出时间", "获取溢出时间失败.err=" + nret);
-                    break;
-                }
-                sn_overflow_time.setSelection(mTime.intValue());
-                MessageBox("溢出时间", "获取溢出时间成功");
-                break;
-            case R.id.btn_write_overflow_time:// 设置溢出时间
-                nret = m_reader.RDR_SetOverflowTime(sn_overflow_time
-                        .getSelectedItemPosition());
-                if (nret != ApiErrDefinition.NO_ERROR) {
-                    MessageBox("溢出时间", "设置溢出时间失败.err=" + nret);
-                    break;
-                }
-                MessageBox("溢出时间", "设置溢出时间成功");
-                break;
-            default:
-                break;
+        int i = v.getId();
+        if (i == R.id.btn_connect) {
+            OpenDev();
+
+        } else if (i == R.id.btn_disconnect) {
+            CloseDev();
+
+        } else if (i == R.id.btn_getDevInfo) {
+            GetInformation();
+
+        } else if (i == R.id.btn_setTime) {// rpan.
+            SetSysTime();
+
+        } else if (i == R.id.btn_openRF) {
+            nret = m_reader.RDR_OpenRFTransmitter();
+            if (nret == ApiErrDefinition.NO_ERROR) {
+                str = getString(R.string.tx_openRF_ok);
+            } else {
+                str = getString(R.string.tx_openRF_fail);
+            }
+            MessageBox(getString(R.string.tx_openRF), str);
+
+        } else if (i == R.id.btn_setPower) {
+            byte powerIndex = (byte) (sn_RfPower.getSelectedItemPosition() + 1);
+            nret = m_reader.RDR_SetRFPower(powerIndex);
+            if (nret == ApiErrDefinition.NO_ERROR) {
+                str = getString(R.string.tx_setPower_ok);
+            } else {
+                str = getString(R.string.tx_setPower_fail);
+            }
+            MessageBox(getString(R.string.tx_setPower), str);
+
+        } else if (i == R.id.btn_loadDefault) {
+            nret = m_reader.RDR_LoadFactoryDefault();
+            if (nret == ApiErrDefinition.NO_ERROR) {
+                str = getString(R.string.tx_loadDefault_ok);
+            } else {
+                str = getString(R.string.tx_loadDefault_fail);
+            }
+            MessageBox(getString(R.string.tx_loadDefault), str);
+
+        } else if (i == R.id.btn_readPower) {
+            Byte mPower = new Byte((byte) 0);
+            nret = m_reader.RDR_GetRFPower(mPower);
+            if (nret != ApiErrDefinition.NO_ERROR) {
+                MessageBox(getString(R.string.tx_getRFPower),
+                        getString(R.string.tx_getRFPower_fail) + nret);
+                return;
+            }
+            sn_RfPower.setSelection(mPower.byteValue() - 1);
+            MessageBox(getString(R.string.tx_getRFPower),
+                    getString(R.string.tx_getRFPower_ok));
+
+        } else if (i == R.id.btn_closeRF) {
+            nret = m_reader.RDR_CloseRFTransmitter();
+            if (nret == ApiErrDefinition.NO_ERROR) {
+                str = getString(R.string.tx_CloseRF_ok);// "关闭射频成功！";
+            } else {
+                str = getString(R.string.tx_CloseRF_fail);// "关闭射频失败";
+            }
+            MessageBox(getString(R.string.tx_CloseRF), str);
+
+        } else if (i == R.id.btn_startInventory) {
+            btn_connect.setEnabled(false);
+            btn_disconnect.setEnabled(false);
+            btn_getDevInfo.setEnabled(false);
+            btn_setTime.setEnabled(false);
+            btn_openRF.setEnabled(false);
+            btn_closeRF.setEnabled(false);
+            btn_startInventory.setEnabled(false);
+            btn_stopInventory.setEnabled(true);
+            btn_setInventoryPara.setEnabled(false);
+            btn_clearInventoryRecord.setEnabled(false);
+            btn_startScanf.setEnabled(false);
+            btn_stopScanf.setEnabled(false);
+            sn_RfPower.setEnabled(false);
+            btn_readPower.setEnabled(false);
+            btn_setPower.setEnabled(false);
+            btn_loadDefault.setEnabled(false);
+            list_tag_name.setEnabled(false);
+            sn_overflow_time.setEnabled(false);
+            btn_read_overflow_time.setEnabled(false);
+            btn_write_overflow_time.setEnabled(false);
+            inventoryList.clear();
+            inventoryAdapter.notifyDataSetChanged();
+            tv_inventoryInfo.setText(getString(R.string.tx_inventory_sum0));
+            m_inventoryThrd = new Thread(new InventoryThrd());
+            m_inventoryThrd.start();
+
+        } else if (i == R.id.btn_stopInventory) {
+            btn_stopInventory.setEnabled(false);
+            m_reader.RDR_SetCommuImmeTimeout();
+            b_inventoryThreadRun = false;
+
+        } else if (i == R.id.btn_paraInventory) {
+            Intent intent = new Intent(this, InventoryParaActivity.class);
+            Bundle bundle = new Bundle();
+            bundle.putBoolean("UseDefaultPara", this.bUseDefaultPara);
+            bundle.putBoolean("OnlyReadNew", this.bOnlyReadNew);
+            bundle.putBoolean("MathAFI", this.bMathAFI);
+            bundle.putByte("AFI", this.mAFIVal);
+            bundle.putBoolean("bBuzzer", this.bBuzzer);
+            intent.putExtras(bundle);
+            startActivityForResult(intent, INVENTORY_REQUEST_CODE);
+
+        } else if (i == R.id.btn_clearList) {
+            inventoryList.clear();
+            this.inventoryAdapter.notifyDataSetChanged();
+            tv_inventoryInfo.setText(getString(R.string.tx_inventory_sum0));
+
+        } else if (i == R.id.btn_startScanfRecord) {
+            btn_connect.setEnabled(false);
+            btn_disconnect.setEnabled(false);
+            btn_getDevInfo.setEnabled(false);
+            btn_setTime.setEnabled(false);
+            btn_openRF.setEnabled(false);
+            btn_closeRF.setEnabled(false);
+            btn_startInventory.setEnabled(false);
+            btn_stopInventory.setEnabled(false);
+            btn_setInventoryPara.setEnabled(false);
+            btn_clearInventoryRecord.setEnabled(false);
+            btn_startScanf.setEnabled(false);
+            btn_stopScanf.setEnabled(true);
+            btn_clearScanfRecordList.setEnabled(false);
+            sn_RfPower.setEnabled(false);
+            btn_readPower.setEnabled(false);
+            btn_setPower.setEnabled(false);
+            btn_loadDefault.setEnabled(false);
+            list_tag_name.setEnabled(false);
+            sn_overflow_time.setEnabled(false);
+            btn_read_overflow_time.setEnabled(false);
+            btn_write_overflow_time.setEnabled(false);
+            scanfReportList.clear();
+            scanfAdapter.notifyDataSetChanged();
+            tv_scanRecordInfo.setText(getString(R.string.tx_scanf_sum0));
+            m_getScanRecordThrd = new Thread(new GetScanRecordThrd());
+            m_getScanRecordThrd.start();
+
+        } else if (i == R.id.btn_stopScanfRecord) {
+            btn_stopScanf.setEnabled(false);
+            bGetScanRecordFlg = false;
+
+        } else if (i == R.id.btn_clearScanfRecordList) {
+            scanfReportList.clear();
+            tv_scanRecordInfo.setText(getString(R.string.tx_scanf_sum0));
+            this.scanfAdapter.notifyDataSetChanged();
+
+        } else if (i == R.id.btn_read_overflow_time) {
+            Integer mTime = 0;
+            nret = m_reader.RDR_GetOverflowTime(mTime);
+            if (nret != ApiErrDefinition.NO_ERROR) {
+                MessageBox(getString(R.string.tx_getOverflowTime),
+                        getString(R.string.tx_getOverflowTime_fail) + nret);
+                return;
+            }
+            sn_overflow_time.setSelection(mTime.intValue());
+            MessageBox(getString(R.string.tx_getOverflowTime),
+                    getString(R.string.tx_getOverflowTime_ok));
+
+        } else if (i == R.id.btn_write_overflow_time) {
+            nret = m_reader.RDR_SetOverflowTime(sn_overflow_time
+                    .getSelectedItemPosition());
+            if (nret != ApiErrDefinition.NO_ERROR) {
+                MessageBox(getString(R.string.tx_setOverflowTime),
+                        getString(R.string.tx_setOverflowTime_fail) + nret);
+                return;
+            }
+            MessageBox(getString(R.string.tx_setOverflowTime),
+                    getString(R.string.tx_setOverflowTime_ok) + nret);
+
+        } else {
         }
     }
 
@@ -548,7 +535,8 @@ public class MainActivity extends Activity implements OnClickListener {
 
     private void MessageBox(String sTittle, String msg) {
         new AlertDialog.Builder(this).setTitle(sTittle).setMessage(msg)
-                .setPositiveButton("Ok", null).show();
+                .setPositiveButton(getString(R.string.tx_msg_certain), null)
+                .show();
     }
 
     private void OpenDev() {
@@ -557,44 +545,75 @@ public class MainActivity extends Activity implements OnClickListener {
         String devName = "";
         devName = sn_devName.getSelectedItem().toString();
         commTypeStr = sn_commType.getSelectedItem().toString();
-        if (commTypeStr.equals("Bluetooth")) {
+        if (commTypeStr.equals(getString(R.string.tx_bluetooth))) // Bluetooth
+        {
             if (sn_bluetooth.getAdapter().isEmpty()) {
-                MessageBox("Select Device", "Select bluetooth device first！");
+                MessageBox(getString(R.string.tx_select_device),
+                        getString(R.string.tx_select_bluetooth));
                 return;
             }
             String bluetoolName = sn_bluetooth.getSelectedItem().toString();
             if (bluetoolName == "") {
-                MessageBox("Select Device", "Select bluetooth device first！！");
+                MessageBox(getString(R.string.tx_select_device),
+                        getString(R.string.tx_select_bluetooth));
                 return;
             }
             conStr = String.format("RDType=%s;CommType=BLUETOOTH;Name=%s",
                     devName, bluetoolName);
-        } else if (commTypeStr.equals("Serial port")) {
+        } else if (commTypeStr.equals(getString(R.string.tx_type_com)))// 串口
+        {
             if (sn_comName.getAdapter().isEmpty()) {
-                MessageBox("Select Device", "Select serial port device first！！");
+                MessageBox(getString(R.string.tx_msg_selectCom),
+                        getString(R.string.tx_msg_selectComTip));
                 return;
             }
             conStr = String
                     .format("RDType=%s;CommType=COM;ComPath=%s;Baund=38400;Frame=8E1;Addr=255",
                             devName, sn_comName.getSelectedItem().toString());
-        } else if (commTypeStr.equals("Network")) {
+        } else if (commTypeStr.equals(getString(R.string.tx_type_net)))// 网络
+        {
             String sRemoteIp = ed_ipAddr.getText().toString();
             String sRemotePort = ed_port.getText().toString();
             conStr = String.format(
                     "RDType=%s;CommType=NET;RemoteIp=%s;RemotePort=%s",
                     devName, sRemoteIp, sRemotePort);
+        } else if (commTypeStr.equals("USB")) {
+            // 注意：使用USB方式时，必须先要枚举所有USB设备
+            // Note: Before using USB, you must enumerate all USB devices first.
+            int usbCnt = ADReaderInterface.EnumerateUsb(this);
+            if (usbCnt <= 0) {
+                Toast.makeText(this, getString(R.string.tx_msg_noUsb),
+                        Toast.LENGTH_SHORT).show();
+                return;
+            }
+
+            if (!ADReaderInterface.HasUsbPermission("")) {
+                Toast.makeText(this,
+                        getString(R.string.tx_msg_noUsbPermission),
+                        Toast.LENGTH_SHORT).show();
+                ADReaderInterface.RequestUsbPermission("");
+                return;
+            }
+
+            conStr = String.format("RDType=%s;CommType=USB;Description=",
+                    devName);
         } else {
             return;
         }
-        int errorcode = 0;
-        try {
-            errorcode = m_reader.RDR_Open(conStr);
-        } catch (Exception e) {
-            log.setText(e.toString());
-        }
+        if (m_reader.RDR_Open(conStr) == ApiErrDefinition.NO_ERROR) {
+            // ///////////////////////只有RPAN设备支持扫描模式/////////////////////////////
+            if (!isLoadScanfMode && devName.equals("RPAN")) {
+                findViewById(layRes[4]).setVisibility(View.VISIBLE);
+                TabSpec myTab = myTabhost.newTabSpec("tab" + 4);
+                myTab.setIndicator(layTittle[4]);
+                myTab.setContent(layRes[4]);
+                myTabhost.addTab(myTab);
+                isLoadScanfMode = true;
+            }
 
-        if (errorcode == ApiErrDefinition.NO_ERROR) {
-            Toast.makeText(this, "Open device successful！", Toast.LENGTH_SHORT).show();
+            // ///////////////////////////////////////////////////
+            Toast.makeText(this, getString(R.string.tx_msg_openDev_ok),
+                    Toast.LENGTH_SHORT).show();
             SaveActivity();
             sn_devName.setEnabled(false);
             sn_commType.setEnabled(false);
@@ -623,7 +642,8 @@ public class MainActivity extends Activity implements OnClickListener {
             btn_write_overflow_time.setEnabled(true);
             btn_read_overflow_time.setEnabled(true);
         } else {
-            Toast.makeText(this, "Open device fail！", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.tx_msg_openDev_fail),
+                    Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -643,11 +663,11 @@ public class MainActivity extends Activity implements OnClickListener {
 
     private void CloseDev() {
         if (m_inventoryThrd != null && m_inventoryThrd.isAlive()) {
-            MessageBox("", "Please stop inventory first！");
+            MessageBox("", getString(R.string.tx_msg_stopInventory_tip));
             return;
         }
         if (m_getScanRecordThrd != null && m_getScanRecordThrd.isAlive()) {
-            MessageBox("", "Stop scan first！");
+            MessageBox("", getString(R.string.tx_msg_stopScanf_tip));
             return;
         }
         m_reader.RDR_Close();
@@ -680,13 +700,18 @@ public class MainActivity extends Activity implements OnClickListener {
         StringBuffer buffer = new StringBuffer();
         iret = m_reader.RDR_GetReaderInfor(buffer);
         if (iret == ApiErrDefinition.NO_ERROR) {
-            new AlertDialog.Builder(this).setTitle("Get device info")
+            new AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.tx_msg_getDevInfo))
                     .setMessage(buffer.toString())
-                    .setPositiveButton("OK", null).show();
+                    .setPositiveButton(getString(R.string.tx_msg_certain), null)
+                    .show();
         } else {
-            new AlertDialog.Builder(this).setTitle("Get device info")
-                    .setMessage("Get device info fail.err=" + iret)
-                    .setPositiveButton("OK", null).show();
+            new AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.tx_msg_getDevInfo))
+                    .setMessage(
+                            getString(R.string.tx_msg_getDevInfo_fail) + iret)
+                    .setPositiveButton(getString(R.string.tx_msg_certain), null)
+                    .show();
         }
     }
 
@@ -697,12 +722,17 @@ public class MainActivity extends Activity implements OnClickListener {
         iret = m_reader.RPAN_SetTime(t.year, t.month, t.monthDay, t.hour,
                 t.minute, t.second);
         if (iret == ApiErrDefinition.NO_ERROR) {
-            new AlertDialog.Builder(this).setTitle("Set time").setMessage("Time set")
-                    .setPositiveButton("Ok", null).show();
+            new AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.tx_msg_setTime))
+                    .setMessage(getString(R.string.tx_msg_setTime_ok))
+                    .setPositiveButton(getString(R.string.tx_msg_certain), null)
+                    .show();
         } else {
-            new AlertDialog.Builder(this).setTitle("Set time")
-                    .setMessage("time set fail.err=" + iret)
-                    .setPositiveButton("OK", null).show();
+            new AlertDialog.Builder(this)
+                    .setTitle(getString(R.string.tx_msg_setTime))
+                    .setMessage(getString(R.string.tx_msg_setTime_fail) + iret)
+                    .setPositiveButton(getString(R.string.tx_msg_certain), null)
+                    .show();
         }
     }
 
@@ -771,13 +801,17 @@ public class MainActivity extends Activity implements OnClickListener {
 
                         }
                     }
-                    pt.tv_inventoryInfo.setText("Tag number:" + pt.inventoryList.size()
-                            + ";fail number:" + msg.arg1);
+                    pt.tv_inventoryInfo.setText(pt
+                            .getString(R.string.tx_info_tagCnt)
+                            + pt.inventoryList.size()
+                            + pt.getString(R.string.tx_info_failCnt) + msg.arg1);
                     pt.inventoryAdapter.notifyDataSetChanged();
                     break;
                 case INVENTORY_FAIL_MSG:
-                    pt.tv_inventoryInfo.setText("Tag number:" + pt.inventoryList.size()
-                            + ";fail number:" + msg.arg1);
+                    pt.tv_inventoryInfo.setText(pt
+                            .getString(R.string.tx_info_tagCnt)
+                            + pt.inventoryList.size()
+                            + pt.getString(R.string.tx_info_failCnt) + msg.arg1);
                     break;
                 case GETSCANRECORD:// 扫描到记录
                     @SuppressWarnings("unchecked")
@@ -796,8 +830,9 @@ public class MainActivity extends Activity implements OnClickListener {
                         }
 
                     }
-                    pt.tv_scanRecordInfo
-                            .setText("Record number:" + pt.scanfReportList.size());
+                    pt.tv_scanRecordInfo.setText(pt
+                            .getString(R.string.tx_info_scanfCnt)
+                            + pt.scanfReportList.size());
                     pt.scanfAdapter.notifyDataSetChanged();
                     break;
                 case THREAD_END:// 线程结束
@@ -812,6 +847,7 @@ public class MainActivity extends Activity implements OnClickListener {
     private boolean b_inventoryThreadRun = false;
 
     private class InventoryThrd implements Runnable {
+        @Override
         public void run() {
             int failedCnt = 0;// 操作失败次数
             Object hInvenParamSpecList = null;
@@ -833,13 +869,15 @@ public class MainActivity extends Activity implements OnClickListener {
                 }
                 int iret = m_reader.RDR_TagInventory(newAI, null, 0,
                         hInvenParamSpecList);
-                if (iret == ApiErrDefinition.NO_ERROR) {
+                if (iret == ApiErrDefinition.NO_ERROR
+                        || iret == -ApiErrDefinition.ERR_STOPTRRIGOCUR) {
                     Vector<ISO15693Tag> tagList = new Vector<ISO15693Tag>();
-                    if (bOnlyReadNew) {
+                    newAI = RfidDef.AI_TYPE_NEW;
+                    if (bOnlyReadNew
+                            || iret == -ApiErrDefinition.ERR_STOPTRRIGOCUR) {
                         newAI = RfidDef.AI_TYPE_CONTINUE;
-                    } else {
-                        newAI = RfidDef.AI_TYPE_NEW;
                     }
+
                     Object tagReport = m_reader
                             .RDR_GetTagDataReport(RfidDef.RFID_SEEK_FIRST);
                     while (tagReport != null) {
@@ -872,6 +910,11 @@ public class MainActivity extends Activity implements OnClickListener {
                     msg.arg1 = failedCnt;
                     mHandler.sendMessage(msg);
                 }
+
+                try {
+                    Thread.sleep(30);
+                } catch (InterruptedException e) {
+                }
             }
             b_inventoryThreadRun = false;
             m_reader.RDR_ResetCommuImmeTimeout();
@@ -884,6 +927,7 @@ public class MainActivity extends Activity implements OnClickListener {
     private boolean bGetScanRecordFlg = false;
 
     private class GetScanRecordThrd implements Runnable {
+        @Override
         public void run() {
             int nret = 0;
             bGetScanRecordFlg = true;

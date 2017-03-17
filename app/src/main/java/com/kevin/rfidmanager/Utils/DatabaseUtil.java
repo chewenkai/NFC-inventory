@@ -80,6 +80,26 @@ public class DatabaseUtil {
     }
 
     /**
+     * Query a item by ID, if not exist, return null
+     *
+     * @param activity
+     * @param ID
+     * @return
+     */
+    public static Items queryItemsById(Activity activity, String ID) {
+        // get the items DAO
+        DaoSession daoSession = ((MyApplication) activity.getApplication()).getDaoSession();
+        ItemsDao itemsDao = daoSession.getItemsDao();
+
+        List<Items> item = itemsDao.queryBuilder().where(ItemsDao.Properties.Rfid.eq(ID)).
+                build().list();
+        if (item.size() == 1)
+            return item.get(0);
+        else
+            return null;
+    }
+
+    /**
      * Insert new item
      *
      * @param activity activity of app

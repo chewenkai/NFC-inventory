@@ -55,6 +55,7 @@ dependencies {
     compile "org.jetbrains.anko:anko-support-v4:$anko_version"
     // In case you need support-v4 bindings
     compile "org.jetbrains.anko:anko-appcompat-v7:$anko_version" // For appcompat-v7 bindings
+    compile project(path: ':RFID_demo')
 }
 
 greendao {

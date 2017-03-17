@@ -8,19 +8,21 @@ import android.content.IntentFilter
 import android.graphics.Rect
 import android.hardware.usb.UsbDevice
 import android.hardware.usb.UsbManager
+import android.media.AudioManager
+import android.media.SoundPool
 import android.nfc.NfcAdapter
 import android.nfc.Tag
 import android.os.AsyncTask
 import android.os.Bundle
+import android.os.Handler
+import android.os.Message
 import android.support.design.widget.TextInputEditText
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.*
+import android.support.v7.widget.Toolbar
 import android.view.*
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import at.markushi.ui.CircleButton
 import com.github.mjdev.libaums.UsbMassStorageDevice
 import com.github.mjdev.libaums.fs.FileSystem
@@ -28,6 +30,7 @@ import com.github.mjdev.libaums.fs.UsbFile
 import com.github.mjdev.libaums.fs.UsbFileOutputStream
 import com.github.mjdev.libaums.fs.UsbFileStreamFactory
 import com.kevin.rfidmanager.Adapter.ItemListAdaper
+import com.kevin.rfidmanager.Adapter.NewCardListAdapter
 import com.kevin.rfidmanager.Adapter.StorageDevicesAdaper
 import com.kevin.rfidmanager.MyApplication
 import com.kevin.rfidmanager.R
@@ -38,8 +41,19 @@ import com.nightonke.boommenu.BoomButtons.HamButton
 import com.nightonke.boommenu.BoomMenuButton
 import com.nightonke.boommenu.ButtonEnum
 import com.nightonke.boommenu.Piece.PiecePlaceEnum
+import com.rfid.api.ADReaderInterface
+import com.rfid.api.GFunction
+import com.rfid.api.ISO15693Interface
+import com.rfid.api.ISO15693Tag
+import com.rfid.def.ApiErrDefinition
+import com.rfid.def.RfidDef
 import kotlinx.android.synthetic.main.item_list_layout.*
+import org.jetbrains.anko.onClick
+import org.jetbrains.anko.toast
 import java.io.*
+import java.lang.ref.WeakReference
+import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Main page of the app
@@ -48,18 +62,42 @@ class ItemListActivity : AppCompatActivity() {
     private var recyclerView: RecyclerView? = null
     private var itemListAdapter: ItemListAdaper? = null
     private var storageDevicesAdaper: StorageDevicesAdaper? = null
-    private var mAdapter: NfcAdapter? = null
+    private var mNfcAdapter: NfcAdapter? = null
     private var pendingIntent: PendingIntent? = null
     private var deleteItemsButton: CircleButton? = null
     var currentUser = ConstantManager.DEFAULT_USER
     var currentID = ConstantManager.DEFAULT_RFID
+    // Read RFID PART
+    private var m_reader: ADReaderInterface = ADReaderInterface()
+    private var m_inventoryThrd: Thread? = null// The thread of inventory
+    private var m_getScanRecordThrd: Thread? = null// The thead of scanf the record.
+
+    val INVENTORY_MSG = 1
+    val GETSCANRECORD = 2
+    val INVENTORY_FAIL_MSG = 4
+    val THREAD_END = 3
+    private var soundPool: SoundPool? = null
+    private var soundID = 0
+    var newCardsIDsStringList = ArrayList<String>()
+    var dataAdapter: NewCardListAdapter? = null
+    var alertDialog: AlertDialog? = null
+    // Inventory parameter
+    internal var INVENTORY_REQUEST_CODE = 1// requestCode
+    private var bUseDefaultPara = true
+    private var bOnlyReadNew = false
+    private var bMathAFI = false
+    private var mAFIVal: Byte = 0x00
+    private var bBuzzer = true
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.item_list_layout)
         initActionBar()
         initUI()
+        initAddItemDialog()
         initNFC()
+        startScan()
     }
 
     private fun initActionBar() {
@@ -153,6 +191,11 @@ class ItemListActivity : AppCompatActivity() {
         recyclerView!!.setHasFixedSize(true)
         registUSBBroadCast()
         deleteItemsButton!!.setOnClickListener { itemListAdapter!!.deleteSelectedItems() }
+        // 初始化声音
+        // Initialize the sound
+        soundPool = SoundPool(5, AudioManager.STREAM_MUSIC, 5)
+        soundID = soundPool!!.load(this, R.raw.msg, 1)
+
     }
 
     private fun registUSBBroadCast() {
@@ -163,8 +206,8 @@ class ItemListActivity : AppCompatActivity() {
     }
 
     private fun initNFC(): Boolean {
-        mAdapter = NfcAdapter.getDefaultAdapter(this)
-        if (mAdapter == null) {
+        mNfcAdapter = NfcAdapter.getDefaultAdapter(this)
+        if (mNfcAdapter == null) {
             //nfc not support your device.
             return false
         }
@@ -175,14 +218,17 @@ class ItemListActivity : AppCompatActivity() {
 
     public override fun onResume() {
         super.onResume()
-        if (mAdapter != null)
-            mAdapter!!.enableForegroundDispatch(this, pendingIntent, null, null)
+        if (itemListAdapter != null) {
+            itemListAdapter!!.updateUI()
+        }
+        if (mNfcAdapter != null)
+            mNfcAdapter!!.enableForegroundDispatch(this, pendingIntent, null, null)
     }
 
     override fun onPause() {
         super.onPause()
-        if (mAdapter != null) {
-            mAdapter!!.disableForegroundDispatch(this)
+        if (mNfcAdapter != null) {
+            mNfcAdapter!!.disableForegroundDispatch(this)
         }
     }
 
@@ -209,8 +255,10 @@ class ItemListActivity : AppCompatActivity() {
                             R.string.another_users_card, Toast.LENGTH_LONG).show()
                     return
                 }
-            } else
-                addNewItem(ID)
+            } else {
+                addNewCardToList(ID)
+            }
+
             //            Parcelable[] rawMessages =
             //                    intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
             //            if (rawMessages != null) {
@@ -227,6 +275,7 @@ class ItemListActivity : AppCompatActivity() {
 
     override fun onDestroy() {
         unregisterReceiver(usbReceiver)
+        stopScan()
         super.onDestroy()
     }
 
@@ -251,13 +300,18 @@ class ItemListActivity : AppCompatActivity() {
                         this@ItemListActivity, LinearLayoutManager.VERTICAL, false)
                 recyclerView!!.layoutManager = linearLayoutManager
             }
+            11 -> {
+                val linearLayoutManager = LinearLayoutManager(
+                        this@ItemListActivity, LinearLayoutManager.VERTICAL, false)
+                recyclerView!!.layoutManager = linearLayoutManager
+            }
         }// the recycler view
     }
 
-    /*
-           This is a dialog used for add new key description
-            */
-    fun addNewItem(id: String) {
+    /**
+    This is a dialog used for add new key item
+     */
+    fun initAddItemDialog() {
         val dialogBuilder = AlertDialog.Builder(this@ItemListActivity)
         val inflater = layoutInflater
         val dialogView = inflater.inflate(R.layout.dialog_layout_two_edit_text, null)
@@ -267,15 +321,13 @@ class ItemListActivity : AppCompatActivity() {
         val itemName = dialogView.findViewById(R.id.item_name_edit) as TextInputEditText
         val saveButton = dialogView.findViewById(R.id.dialog_change) as Button
         val cancleButton = dialogView.findViewById(R.id.dialog_cancle) as Button
+        val cardsList = dialogView.findViewById(R.id.new_cards_list) as ListView
+        dataAdapter = NewCardListAdapter(this@ItemListActivity, newCardsIDsStringList, itemID)
+        cardsList.adapter = dataAdapter
 
-        itemID.setText(id)
         dialogBuilder.setTitle("Add new item: ")
-        if (!id.isEmpty())
-            dialogBuilder.setMessage("the ID below is read from your card.")
-        else
-            dialogBuilder.setMessage("you can input a ID manually.")
-        val b = dialogBuilder.create()
-        b.show()
+        dialogBuilder.setMessage("Take your RFID card close to card reader, the id will appear in the list.")
+        alertDialog = dialogBuilder.create()
 
         saveButton.setOnClickListener(View.OnClickListener {
             val new_id = itemID.text.toString()
@@ -300,10 +352,46 @@ class ItemListActivity : AppCompatActivity() {
             val intent = Intent(this@ItemListActivity, ItemEditActivity::class.java)
             intent.putExtra(ConstantManager.CURRENT_ITEM_ID, itemID.text.toString())
             startActivity(intent)
-            b.dismiss()
+            alertDialog!!.dismiss()
+
         })
 
-        cancleButton.setOnClickListener { b.dismiss() }
+        cancleButton.setOnClickListener {
+            alertDialog!!.dismiss()
+        }
+    }
+
+    /**
+     * Add new card to card ID list, then refresh the list
+     */
+    fun addNewCardToList(cardID: String) {
+        if (alertDialog == null)
+            return
+        if (dataAdapter == null)
+            return
+        // Are there any user info?
+        val daoSession = (application as MyApplication).getDaoSession()
+        val itemsDao = daoSession.itemsDao
+        val items = itemsDao.queryBuilder().where(ItemsDao.Properties.Rfid.like(cardID)).build().list()
+        if (items.size > 1) {
+            Toast.makeText(this@ItemListActivity,
+                    R.string.one_ID_multi_items_warning, Toast.LENGTH_LONG).show()
+            return
+        } else if (items.size == 1) {  // Database have an item bind with this card
+            if (items[0].userName == currentUser) {
+                val intentToDetail = Intent(this@ItemListActivity, ItemDetailActivity::class.java)
+                intentToDetail.putExtra(ConstantManager.CURRENT_ITEM_ID, cardID)
+                startActivity(intentToDetail)
+            } else {
+                Toast.makeText(this@ItemListActivity,
+                        R.string.another_users_card, Toast.LENGTH_LONG).show()
+                return
+            }
+        } else {
+            dataAdapter!!.addNewCardToList(cardID)
+            if (!alertDialog!!.isShowing)
+                alertDialog!!.show()
+        }
     }
 
     private fun changeApperanceDialog() {
@@ -318,6 +406,7 @@ class ItemListActivity : AppCompatActivity() {
         val linear_layout = dialogView.findViewById(R.id.linear_layout) as CircleButton
         val staggered_layout = dialogView.findViewById(R.id.staggered_layout) as CircleButton
         val one_row_layout = dialogView.findViewById(R.id.one_row_layout) as CircleButton
+        val detail_layout = dialogView.findViewById(R.id.detail_layout) as CircleButton
 
         when (SPUtil.getInstence(this@ItemListActivity).apperance) {
             8  // ConstantManager.LINEAR_LAYOUT
@@ -326,6 +415,8 @@ class ItemListActivity : AppCompatActivity() {
             -> textView.setText(R.string.current_selection_staggered)
             10  // ConstantManager.ONE_ROW_LAYOUT
             -> textView.setText(R.string.current_selection_one_row)
+            11 // ConstantManager.DETAIL_LAYOUT
+            -> textView.setText(R.string.current_selection_detail_layout)
         }
 
         linear_layout.setOnClickListener {
@@ -348,6 +439,14 @@ class ItemListActivity : AppCompatActivity() {
             initUI()
             b.dismiss()
         }
+
+        detail_layout.onClick {
+            SPUtil.getInstence(this@ItemListActivity).apperance = ConstantManager.DETAIL_LAYOUT
+            (application as MyApplication).toast(getString(R.string.apperance_updated))
+            initUI()
+            b.dismiss()
+        }
+
         b.show()
     }
 
@@ -675,11 +774,12 @@ class ItemListActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.action_bar_add -> addNewItem("")
+            R.id.action_bar_add -> alertDialog!!.show()
             R.id.checkout -> {
-                intent = Intent(this@ItemListActivity, CheckoutActivity::class.java)
-                intent.putExtra(ConstantManager.CURRENT_USER_NAME, currentUser)
-                startActivity(intent)
+                // Goto Check out Page
+//                intent = Intent(this@ItemListActivity, CheckoutActivity::class.java)
+//                intent.putExtra(ConstantManager.CURRENT_USER_NAME, currentUser)
+//                startActivity(intent)
             }
         }
         return true
@@ -808,5 +908,299 @@ class ItemListActivity : AppCompatActivity() {
         if (storageDevicesAdaper != null) {
             storageDevicesAdaper!!.updateDataSet()
         }
+    }
+
+    // Blow is the RFID read part
+
+    /**
+     * start scan RFID cards and show at the dialog
+     */
+    private fun startScan() {
+        OpenDev()
+        openRF()
+    }
+
+    /**
+     * stop scan RFID cards and stop at the dialog
+     */
+    private fun stopScan() {
+        // 如果盘点标签线程正在运行，则关闭该线程
+        // If thread of inventory is running,stop the thread before exit the
+        // application.
+        if (m_inventoryThrd != null && m_inventoryThrd!!.isAlive()) {
+            b_inventoryThreadRun = false
+            m_reader.RDR_SetCommuImmeTimeout()
+            try {
+                m_inventoryThrd!!.join()
+            } catch (e: InterruptedException) {
+                e.printStackTrace()
+            }
+
+        }
+        closeRF()
+        CloseDev()
+        b_inventoryThreadRun = false
+    }
+
+    /**
+     * Open the device
+     */
+    private fun OpenDev() {
+        var conStr = ""
+        val commTypeStr: String
+        var devName = ""
+        devName = "TPAD"
+        commTypeStr = "USB"
+
+        if (commTypeStr == "USB") {
+            // 注意：使用USB方式时，必须先要枚举所有USB设备
+            // Note: Before using USB, you must enumerate all USB devices first.
+            val usbCnt = ADReaderInterface.EnumerateUsb(this)
+            if (usbCnt <= 0) {
+                Toast.makeText(this, getString(R.string.tx_msg_noUsb),
+                        Toast.LENGTH_SHORT).show()
+                return
+            }
+
+            if (!ADReaderInterface.HasUsbPermission("")) {
+                Toast.makeText(this,
+                        getString(R.string.tx_msg_noUsbPermission),
+                        Toast.LENGTH_SHORT).show()
+                ADReaderInterface.RequestUsbPermission("")
+                return
+            }
+
+            conStr = String.format("RDType=%s;CommType=USB;Description=",
+                    devName)
+        } else {
+            return
+        }
+        if (m_reader.RDR_Open(conStr) == ApiErrDefinition.NO_ERROR) {
+            // ///////////////////////只有RPAN设备支持扫描模式/////////////////////////////
+
+            Toast.makeText(this, getString(R.string.tx_msg_openDev_ok),
+                    Toast.LENGTH_SHORT).show()
+
+//            m_getScanRecordThrd = Thread(GetScanRecordThrd())
+//            m_getScanRecordThrd!!.start()
+            m_inventoryThrd = Thread(InventoryThrd())
+            m_inventoryThrd!!.start()
+
+        } else {
+            Toast.makeText(this, getString(R.string.tx_msg_openDev_fail),
+                    Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    /**
+     * close the device
+     */
+    private fun CloseDev() {
+        if (m_getScanRecordThrd != null && m_getScanRecordThrd!!.isAlive()) {
+            toast(getString(R.string.tx_msg_stopScanf_tip))
+            return
+        }
+        m_reader.RDR_Close()
+    }
+
+    /**
+     * open the RF
+     */
+    fun openRF() {
+        var str = ""
+        if (m_reader.RDR_OpenRFTransmitter() == ApiErrDefinition.NO_ERROR) {
+            str = getString(R.string.tx_openRF_ok)
+        } else {
+            str = getString(R.string.tx_openRF_fail)
+        }
+        toast(getString(R.string.tx_openRF) + str)
+    }
+
+    /**
+     * close the RF
+     */
+    fun closeRF() {
+        var str = ""
+        if (m_reader.RDR_CloseRFTransmitter() == ApiErrDefinition.NO_ERROR) {
+            str = getString(R.string.tx_CloseRF_ok)// "关闭射频成功！";
+        } else {
+            str = getString(R.string.tx_CloseRF_fail)// "关闭射频失败";
+        }
+        toast(getString(R.string.tx_CloseRF) + str)
+    }
+
+    private var bGetScanRecordFlg = false
+
+
+    private inner class GetScanRecordThrd : Runnable {
+        override fun run() {
+            var nret = 0
+            bGetScanRecordFlg = true
+            var gFlg: Byte = 0x00// 初次采集数据或者上一次采集数据失败时，标志位为0x00
+            var dnhReport: Any? = null
+
+            // 清空缓冲区记录
+            nret = m_reader.RPAN_ClearScanRecord()
+            if (nret != ApiErrDefinition.NO_ERROR) {
+                bGetScanRecordFlg = false
+                mHandler.sendEmptyMessage(THREAD_END)// 盘点结束
+                return
+            }
+
+            while (bGetScanRecordFlg) {
+                if (mHandler.hasMessages(GETSCANRECORD)) {
+                    continue
+                }
+                nret = m_reader.RPAN_GetRecord(gFlg)
+                if (nret != ApiErrDefinition.NO_ERROR) {
+                    gFlg = 0x00
+                    continue
+                }
+                gFlg = 0x01// 数据获取成功，将标志位设置为0x01
+                dnhReport = m_reader
+                        .RDR_GetTagDataReport(RfidDef.RFID_SEEK_FIRST)
+                val dataList = Vector<String>()
+                while (dnhReport != null) {
+                    val byData = m_reader.RPAN_ParseRecord(dnhReport)
+                    val strData = GFunction.encodeHexStr(byData)
+                    dataList.add(strData)
+                    dnhReport = m_reader
+                            .RDR_GetTagDataReport(RfidDef.RFID_SEEK_NEXT)
+                }
+                if (!dataList.isEmpty()) {
+                    val msg = mHandler.obtainMessage()
+                    msg.what = GETSCANRECORD
+                    msg.obj = dataList
+                    mHandler.sendMessage(msg)
+                }
+            }
+            bGetScanRecordFlg = false
+            mHandler.sendEmptyMessage(THREAD_END)// 结束
+        }
+    };
+
+    /**
+     * Scan the Cards at another thread.
+     */
+    private var b_inventoryThreadRun = false
+
+    private inner class InventoryThrd : Runnable {
+        override fun run() {
+            var failedCnt = 0// 操作失败次数
+            var hInvenParamSpecList: Any? = null
+            var newAI = RfidDef.AI_TYPE_NEW
+            if (bOnlyReadNew) {
+                newAI = RfidDef.AI_TYPE_CONTINUE
+            }
+            if (!bUseDefaultPara) {
+                hInvenParamSpecList = ADReaderInterface
+                        .RDR_CreateInvenParamSpecList()
+                ISO15693Interface.ISO15693_CreateInvenParam(
+                        hInvenParamSpecList, 0.toByte(), bMathAFI, mAFIVal,
+                        0.toByte())
+            }
+            b_inventoryThreadRun = true
+            while (b_inventoryThreadRun) {
+                if (mHandler.hasMessages(INVENTORY_MSG)) {
+                    continue
+                }
+                var iret = m_reader.RDR_TagInventory(newAI, null, 0,
+                        hInvenParamSpecList)
+                if (iret == ApiErrDefinition.NO_ERROR || iret == -ApiErrDefinition.ERR_STOPTRRIGOCUR) {
+                    val tagList = Vector<ISO15693Tag>()
+                    newAI = RfidDef.AI_TYPE_NEW
+                    if (bOnlyReadNew || iret == -ApiErrDefinition.ERR_STOPTRRIGOCUR) {
+                        newAI = RfidDef.AI_TYPE_CONTINUE
+                    }
+
+                    var tagReport: Any? = m_reader
+                            .RDR_GetTagDataReport(RfidDef.RFID_SEEK_FIRST)
+                    while (tagReport != null) {
+                        val tagData = ISO15693Tag()
+                        iret = ISO15693Interface.ISO15693_ParseTagDataReport(
+                                tagReport, tagData)
+                        if (iret == ApiErrDefinition.NO_ERROR) {
+                            tagList.add(tagData)
+                        }
+                        tagReport = m_reader
+                                .RDR_GetTagDataReport(RfidDef.RFID_SEEK_NEXT)
+                    }
+                    if (!tagList.isEmpty()) {
+                        if (bBuzzer) {
+                            this@ItemListActivity.playVoice()
+                        }
+                        val msg = mHandler.obtainMessage()
+                        msg.what = INVENTORY_MSG
+                        msg.obj = tagList
+                        msg.arg1 = failedCnt
+                        mHandler.sendMessage(msg)
+                    }
+                } else {
+                    newAI = RfidDef.AI_TYPE_NEW
+                    if (b_inventoryThreadRun) {
+                        failedCnt++
+                    }
+                    val msg = mHandler.obtainMessage()
+                    msg.what = INVENTORY_FAIL_MSG
+                    msg.arg1 = failedCnt
+                    mHandler.sendMessage(msg)
+                }
+
+                try {
+                    Thread.sleep(30)
+                } catch (e: InterruptedException) {
+                }
+
+            }
+            b_inventoryThreadRun = false
+            m_reader.RDR_ResetCommuImmeTimeout()
+            mHandler.sendEmptyMessage(THREAD_END)// 盘点结束
+        }
+    };
+
+    private val mHandler = MyHandler(this)
+
+    private class MyHandler(activity: ItemListActivity) : Handler() {
+        private val mActivity: WeakReference<ItemListActivity>
+
+        init {
+            mActivity = WeakReference(activity)
+        }
+
+        override fun handleMessage(msg: Message) {
+            val itemListActivity = mActivity.get() ?: return
+            when (msg.what) {
+                itemListActivity.INVENTORY_MSG -> { // 盘点到标签
+                    val tagList = msg.obj as Vector<ISO15693Tag>
+                    for (i in tagList.indices) {
+                        val tagData = tagList[i]// (ISO15693Tag)
+                        // msg.obj;
+                        val uidStr = GFunction.encodeHexStr(tagData.uid)
+                        itemListActivity.addNewCardToList(uidStr)
+                    }
+
+                }
+                itemListActivity.INVENTORY_FAIL_MSG -> Toast.makeText(itemListActivity,
+                        "read failed", Toast.LENGTH_LONG).show()
+
+                itemListActivity.THREAD_END -> null // 线程结束
+                else -> {
+                }
+            }
+        }
+    }
+
+    // 播放声音池声音
+    private fun playVoice() {
+        val am = this
+                .getSystemService(Context.AUDIO_SERVICE) as AudioManager
+        val audioCurrentVolume = am
+                .getStreamVolume(AudioManager.STREAM_MUSIC).toFloat()
+        soundPool!!.play(soundID, // 播放的音乐Id
+                audioCurrentVolume, // 左声道音量
+                audioCurrentVolume, // 右声道音量
+                1, // 优先级，0为最低
+                0, // 循环次数，0无不循环，-1无永远循环
+                1f)// 回放速度，值在0.5-2.0之间，1为正常速度
     }
 }

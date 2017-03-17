@@ -9,6 +9,7 @@
     <color name="white">#ffffff</color>
     <color name="blue_sky">#29cccf</color>
     <color name="gray">#cacaca</color>
+    <color name="yellow">#cfca3e</color>
     <color name="warning_color">#ff4848</color>
 
     <color name="add_key_des_button_color">#46cc3d</color>
@@ -16,4 +17,6 @@
     <color name="remove_key_des_button_color">#ae3438</color>
     <color name="paper_color">#c6a677</color>
     <color name="item_name_bg">#aa13110d</color>
+    <color name="item_list_key_des">#353535</color>
+    <color name="item_list_background">#ffffff</color>
 </resources>

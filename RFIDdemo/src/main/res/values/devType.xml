@@ -3,6 +3,7 @@
     <string-array name="devType">
         <item>RPAN</item>
         <item>M201</item>
+        <item>TPAD</item>
     </string-array>
 
 </resources>

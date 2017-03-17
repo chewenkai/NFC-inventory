@@ -25,9 +25,11 @@ import com.kevin.rfidmanager.MyApplication
 import com.kevin.rfidmanager.R
 import com.kevin.rfidmanager.Utils.ConstantManager
 import com.kevin.rfidmanager.Utils.DatabaseUtil
+import com.kevin.rfidmanager.Utils.SPUtil
 import com.kevin.rfidmanager.Utils.ScreenUtil
 import com.kevin.rfidmanager.database.ImagesPathDao
 import com.kevin.rfidmanager.database.Items
+import com.kevin.rfidmanager.database.KeyDescription
 import com.kevin.rfidmanager.database.KeyDescriptionDao
 import com.squareup.picasso.Picasso
 import java.io.File
@@ -66,11 +68,10 @@ class ItemListAdaper(val activity: Activity, internal var itemes: MutableList<It
             theCheckBox.visibility = View.GONE
             deleteItemsButton.visibility = View.GONE
         }
-
         val swipeLayout = holder.swipeLayout
         //set show mode.
         swipeLayout.showMode = SwipeLayout.ShowMode.LayDown
-
+        swipeLayout.isRightSwipeEnabled = false
         //add drag edge.(If the BottomView has 'layout_gravity' attribute, this line is unnecessary)
         swipeLayout.addDrag(SwipeLayout.DragEdge.Left, holder.itemView.findViewById(R.id.bottom_wrapper))
 
@@ -104,6 +105,7 @@ class ItemListAdaper(val activity: Activity, internal var itemes: MutableList<It
             intent.putExtra(ConstantManager.CURRENT_ITEM_ID, item.rfid)
             activity.startActivity(intent)
         }
+
         val longClickListener = { v: View ->
             deleteMdoe = !deleteMdoe
             if (deleteMdoe) {
@@ -131,6 +133,31 @@ class ItemListAdaper(val activity: Activity, internal var itemes: MutableList<It
 
         val itemName = holder.itemName
         itemName.text = item.itemName
+
+        val keys = DatabaseUtil.queryItemsKeyDes(activity, item.rfid)
+        var keyText: StringBuffer = StringBuffer()
+        for (key: KeyDescription in keys) {
+            keyText.append(" * " + key.keyDescription + "\n")
+        }
+        holder.keyDes.setText(keyText)
+        when (SPUtil.getInstence(activity).apperance) {
+            8  // ConstantManager.LINEAR_LAYOUT
+            -> {
+                holder.keyDes.visibility = View.GONE
+            }
+            9  // ConstantManager.STAGGER_LAYOUT
+            -> {
+                holder.keyDes.visibility = View.GONE
+            }
+            10  // ConstantManager.ONE_ROW_LAYOUT
+            -> {
+                holder.keyDes.visibility = View.GONE
+            }
+            11 -> {
+                holder.keyDes.visibility = View.VISIBLE
+            }
+        }
+
     }
 
     override fun getItemCount(): Int {
@@ -198,6 +225,7 @@ class ItemListAdaper(val activity: Activity, internal var itemes: MutableList<It
         var editItem: CircleButton
         var deleteItem: CircleButton
         var deleteCheckBox: CheckBox
+        var keyDes: TextView
 
         init {
             swipeLayout = itemView.findViewById(R.id.swipe_layout) as SwipeLayout
@@ -206,6 +234,7 @@ class ItemListAdaper(val activity: Activity, internal var itemes: MutableList<It
             editItem = itemView.findViewById(R.id.edit_item) as CircleButton
             deleteItem = itemView.findViewById(R.id.remove_item) as CircleButton
             deleteCheckBox = itemView.findViewById(R.id.item_delete_check_box) as CheckBox
+            keyDes = itemView.findViewById(R.id.itemlist_key_des) as TextView
         }// Stores the itemView in a public final member variable that can be used
         // to access the context from any ViewHolder instance.
     }

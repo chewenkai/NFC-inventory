@@ -23,6 +23,7 @@ public class ConstantManager {
     public static int LINEAR_LAYOUT = 8;
     public static int STAGGER_LAYOUT = 9;
     public static int ONE_ROW_LAYOUT = 10;
+    public static int DETAIL_LAYOUT = 11;
 
     // File
     public final static int DEFAULT_FILE = 0;

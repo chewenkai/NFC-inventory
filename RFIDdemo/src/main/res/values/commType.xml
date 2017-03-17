@@ -2,8 +2,9 @@
 
     <string-array name="commType">
         <item>Bluetooth</item>
-        <item>Serial port</item>
-        <item>Network</item>
+        <item>COM</item>
+        <item>NET</item>
+        <item>USB</item>
     </string-array>
 
 </resources>

@@ -40,6 +40,7 @@ public class InventoryParaActivity extends Activity implements OnClickListener {
 
         check_useDefault
                 .setOnCheckedChangeListener(new OnCheckedChangeListener() {
+                    @Override
                     public void onCheckedChanged(CompoundButton arg0,
                                                  boolean isCheck) {
                         if (isCheck) {
@@ -68,41 +69,41 @@ public class InventoryParaActivity extends Activity implements OnClickListener {
         ed_afiVal.setText(String.format("%02X", mAFIVal));
     }
 
+    @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_inventorySetOk:
-                int afiTmp = 0;
-                boolean bErr = false;
-                Intent intent = new Intent();
-                Bundle bundle = new Bundle();
+        int i = v.getId();
+        if (i == R.id.btn_inventorySetOk) {
+            int afiTmp = 0;
+            boolean bErr = false;
+            Intent intent = new Intent();
+            Bundle bundle = new Bundle();
 
-                try {
-                    afiTmp = Integer.parseInt(ed_afiVal.getText().toString(), 16);
-                    if (afiTmp < 0 || afiTmp >= 256) {
-                        bErr = true;
-                    }
-                } catch (Exception e) {
+            try {
+                afiTmp = Integer.parseInt(ed_afiVal.getText().toString(), 16);
+                if (afiTmp < 0 || afiTmp >= 256) {
                     bErr = true;
+                }
+            } catch (Exception e) {
+                bErr = true;
 
-                }
-                if (bErr) {
-                    new AlertDialog.Builder(this).setTitle("")
-                            .setMessage("Please input a AFI hex value 请输入一个16进制的AFI值!")
-                            .setPositiveButton("OK 确定", null).show();
-                    break;
-                }
-                bundle.putBoolean("UseDefaultPara", check_useDefault.isChecked());
-                bundle.putBoolean("OnlyReadNew", check_onlyReadNew.isChecked());
-                bundle.putBoolean("MathAFI", check_mathAFI.isChecked());
-                bundle.putByte("AFI", (byte) (afiTmp & 0xff));
-                bundle.putBoolean("bBuzzer", check_buzzer.isChecked());
-                intent.putExtras(bundle);
-                this.setResult(RESULT_OK, intent);
-                this.finish();
-                break;
-            default:
-                this.finish();
-                break;
+            }
+            if (bErr) {
+                new AlertDialog.Builder(this).setTitle("")
+                        .setMessage(getString(R.string.tx_msg_inputHexAFI))
+                        .setPositiveButton(getString(R.string.tx_msg_certain), null).show();
+            }
+            bundle.putBoolean("UseDefaultPara", check_useDefault.isChecked());
+            bundle.putBoolean("OnlyReadNew", check_onlyReadNew.isChecked());
+            bundle.putBoolean("MathAFI", check_mathAFI.isChecked());
+            bundle.putByte("AFI", (byte) (afiTmp & 0xff));
+            bundle.putBoolean("bBuzzer", check_buzzer.isChecked());
+            intent.putExtras(bundle);
+            this.setResult(RESULT_OK, intent);
+            this.finish();
+
+        } else {
+            this.finish();
+
         }
     }
 }

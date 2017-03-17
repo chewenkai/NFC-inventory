@@ -92,6 +92,7 @@ public class IcodesliTagActivity extends Activity implements OnClickListener {
 
         ed_icodesli_blkData
                 .setOnFocusChangeListener(new OnFocusChangeListener() {
+                    @Override
                     public void onFocusChange(View v, boolean hasFocus) {
                         if (ed_icodesli_blkData.hasFocus()) {
                             ed_icodesli_blkData.setError(null, null);
@@ -100,6 +101,7 @@ public class IcodesliTagActivity extends Activity implements OnClickListener {
                 });
 
         ed_icodesli_dsfid.setOnFocusChangeListener(new OnFocusChangeListener() {
+            @Override
             public void onFocusChange(View arg0, boolean arg1) {
                 if (ed_icodesli_dsfid.hasFocus()) {
                     ed_icodesli_dsfid.setError(null, null);
@@ -108,6 +110,7 @@ public class IcodesliTagActivity extends Activity implements OnClickListener {
         });
 
         ed_icodesli_afi.setOnFocusChangeListener(new OnFocusChangeListener() {
+            @Override
             public void onFocusChange(View arg0, boolean arg1) {
                 if (ed_icodesli_afi.hasFocus()) {
                     ed_icodesli_afi.setError(null, null);
@@ -183,8 +186,11 @@ public class IcodesliTagActivity extends Activity implements OnClickListener {
         }
 
         if (connectMode == 1 && connectUid == null) {
-            new AlertDialog.Builder(this).setTitle("").setMessage("UID不能为空！")
-                    .setPositiveButton("确定", null).show();
+            new AlertDialog.Builder(this)
+                    .setTitle("")
+                    .setMessage(getString(R.string.tx_msg_uidNoNull))
+                    .setPositiveButton(getString(R.string.tx_msg_certain), null)
+                    .show();
             return;
         }
 
@@ -192,8 +198,11 @@ public class IcodesliTagActivity extends Activity implements OnClickListener {
                 RfidDef.RFID_ISO15693_PICC_ICODE_SLI_ID, connectMode,
                 connectUid);
         if (iret != ApiErrDefinition.NO_ERROR) {
-            new AlertDialog.Builder(this).setTitle("").setMessage("操作失败！")
-                    .setPositiveButton("确定", null).show();
+            new AlertDialog.Builder(this)
+                    .setTitle("")
+                    .setMessage(getString(R.string.tx_msg_operate_fail))
+                    .setPositiveButton(getString(R.string.tx_msg_certain), null)
+                    .show();
         }
         UiVisible(true);
     }
@@ -209,16 +218,22 @@ public class IcodesliTagActivity extends Activity implements OnClickListener {
         int iret = mTag.ISO15693_GetSystemInfo(infoUid, dsfid, afi, blkSize,
                 numOfBloks, icRef);
         if (iret != ApiErrDefinition.NO_ERROR) {
-            new AlertDialog.Builder(this).setTitle("")
-                    .setMessage("获取标签信息失败！err=" + iret)
-                    .setPositiveButton("确定", null).show();
+            new AlertDialog.Builder(this)
+                    .setTitle("")
+                    .setMessage(
+                            getString(R.string.tx_msg_getTagInfo_fail) + iret)
+                    .setPositiveButton(getString(R.string.tx_msg_certain), null)
+                    .show();
         } else {
             String sUid = GFunction.encodeHexStr(infoUid);
             String tagInfo = String
                     .format("Uid:%s\nDSFID:0x%02X\nAFI:0x%02X\nBlkSize:%d\nNumOfBloks:%d\nIcRef:0x%02X",
                             sUid, dsfid, afi, blkSize, numOfBloks, icRef);
-            new AlertDialog.Builder(this).setTitle("").setMessage(tagInfo)
-                    .setPositiveButton("确定", null).show();
+            new AlertDialog.Builder(this)
+                    .setTitle("")
+                    .setMessage(tagInfo)
+                    .setPositiveButton(getString(R.string.tx_msg_certain), null)
+                    .show();
         }
     }
 
@@ -235,9 +250,11 @@ public class IcodesliTagActivity extends Activity implements OnClickListener {
         int iret = mTag.ISO15693_ReadMultiBlocks(false, blkAddr,
                 numOfBlksToRead, numOfBlksRead, bufBlocks, bytesBlkDatRead);
         if (iret != ApiErrDefinition.NO_ERROR) {
-            new AlertDialog.Builder(this).setTitle("")
-                    .setMessage("读数据块失败！err" + iret)
-                    .setPositiveButton("确定", null).show();
+            new AlertDialog.Builder(this)
+                    .setTitle("")
+                    .setMessage(getString(R.string.tx_msg_readBlk_fail) + iret)
+                    .setPositiveButton(getString(R.string.tx_msg_certain), null)
+                    .show();
         }
         String strData = GFunction.encodeHexStr(bufBlocks);
         ed_icodesli_blkData.setText(strData);
@@ -247,30 +264,34 @@ public class IcodesliTagActivity extends Activity implements OnClickListener {
         String strData = ed_icodesli_blkData.getText().toString();
         byte byData[] = GFunction.decodeHex(strData);
         if (byData == null) {
-            ed_icodesli_blkData.setError("请输入一个十六进制字符串!");
+            ed_icodesli_blkData
+                    .setError(getString(R.string.tx_msg_inputHexString));
             return;
         }
         int blkNum = sn_icodesli_blkNum.getSelectedItemPosition() + 1;
         int blkAddr = sn_icodesli_blkAddr.getSelectedItemPosition();
         if (blkNum * 4 != byData.length) {
-            ed_icodesli_blkData.setError("数据长度不正确");
+            ed_icodesli_blkData.setError(getString(R.string.tx_msg_dataLenErr));
             return;
         }
         if (blkAddr + blkNum > 28) {
-            new AlertDialog.Builder(this).setMessage("参数不正确")
-                    .setPositiveButton("确定", null).show();
+            new AlertDialog.Builder(this)
+                    .setMessage(getString(R.string.tx_msg_paraErr))
+                    .setPositiveButton(getString(R.string.tx_msg_certain), null)
+                    .show();
             return;
         }
         int iret = mTag.ISO15693_WriteMultipleBlocks(blkAddr, blkNum, byData);
         String srtResult = "";
         if (iret == ApiErrDefinition.NO_ERROR) {
-            srtResult = "写数据块成功！";
+            srtResult = getString(R.string.tx_msg_writeBlk_ok);
 
         } else {
-            srtResult = "写数据块失败！err=" + iret;
+            srtResult = getString(R.string.tx_msg_writeBlk_fail) + iret;
         }
         new AlertDialog.Builder(this).setTitle("").setMessage(srtResult)
-                .setPositiveButton("确定", null).show();
+                .setPositiveButton(getString(R.string.tx_msg_certain), null)
+                .show();
     }
 
     private void UiLockBlock() {
@@ -279,12 +300,13 @@ public class IcodesliTagActivity extends Activity implements OnClickListener {
         int iret = mTag.ISO15693_LockMultipleBlocks(blkAddr, blkCnt);
         String srtResult;
         if (iret == ApiErrDefinition.NO_ERROR) {
-            srtResult = "锁数据块成功!";
+            srtResult = getString(R.string.tx_msg_lockBlk_ok);// "锁数据块成功!";
         } else {
-            srtResult = "锁数据块失败!err=" + iret;
+            srtResult = getString(R.string.tx_msg_lockBlk_fail) + iret;
         }
         new AlertDialog.Builder(this).setTitle("").setMessage(srtResult)
-                .setPositiveButton("确定", null).show();
+                .setPositiveButton(getString(R.string.tx_msg_certain), null)
+                .show();
     }
 
     private void UiWriteDsfid() {
@@ -292,166 +314,181 @@ public class IcodesliTagActivity extends Activity implements OnClickListener {
         byte dsfid[] = GFunction.decodeHex(dsfidStr);// Byte.parseByte(dsfidStr,
         // 16);
         if (dsfid == null) {
-            ed_icodesli_dsfid.setError("请输入DSFID值");
+            ed_icodesli_dsfid.setError(getString(R.string.tx_msg_inputDsfid));
             return;
         }
         int iret = mTag.ISO15693_WriteDSFID(dsfid[0]);
         String srtResult;
         if (iret == ApiErrDefinition.NO_ERROR) {
-            srtResult = "设置DSFID成功!";
+            srtResult = getString(R.string.tx_msg_setDsfid_ok);// "设置DSFID成功!";
         } else {
-            srtResult = "设置DSFID失败!err=" + iret;
+            srtResult = getString(R.string.tx_msg_setDsfid_fail) + iret;
         }
         new AlertDialog.Builder(this).setTitle("").setMessage(srtResult)
-                .setPositiveButton("确定", null).show();
+                .setPositiveButton(getString(R.string.tx_msg_certain), null)
+                .show();
     }
 
     private void UiWriteAFI() {
         String afiStr = ed_icodesli_afi.getText().toString();
         byte afi[] = GFunction.decodeHex(afiStr);
         if (afi == null) {
-            ed_icodesli_afi.setError("请输入AFI值");
+            ed_icodesli_afi.setError(getString(R.string.tx_msg_inputAFI));
             return;
         }
         int iret = mTag.ISO15693_WriteAFI(afi[0]);
         String srtResult;
         if (iret == ApiErrDefinition.NO_ERROR) {
-            srtResult = "设置AFI成功!";
+            srtResult = getString(R.string.tx_msg_setAfi_ok);// "设置AFI成功!";
         } else {
-            srtResult = "设置AFI失败!err=" + iret;
+            srtResult = getString(R.string.tx_msg_setAfi_fail) + iret;
         }
         new AlertDialog.Builder(this).setTitle("").setMessage(srtResult)
-                .setPositiveButton("确定", null).show();
+                .setPositiveButton(getString(R.string.tx_msg_certain), null)
+                .show();
     }
 
     private void UiLockDsfid() {
         int iret = mTag.ISO15693_LockDSFID();
         String srtResult;
         if (iret == ApiErrDefinition.NO_ERROR) {
-            srtResult = "锁DSFID成功!";
+            srtResult = getString(R.string.tx_msg_lockDsfid_ok);
         } else {
-            srtResult = "锁DSFID失败!err=" + iret;
+            srtResult = getString(R.string.tx_msg_lockDsfid_fail) + iret;
         }
         new AlertDialog.Builder(this).setTitle("").setMessage(srtResult)
-                .setPositiveButton("确定", null).show();
+                .setPositiveButton(getString(R.string.tx_msg_certain), null)
+                .show();
     }
 
     private void UiEnableEAS() {
         int iret = mTag.NXPICODESLI_EableEAS();
         String srtResult;
         if (iret == ApiErrDefinition.NO_ERROR) {
-            srtResult = "使能EAS成功!";
+            srtResult = getString(R.string.tx_msg_enEAS_ok);//"使能EAS成功!";
         } else {
-            srtResult = "使能EAS失败!err=" + iret;
+            srtResult = getString(R.string.tx_msg_enEAS_fail) + iret;
         }
         new AlertDialog.Builder(this).setTitle("").setMessage(srtResult)
-                .setPositiveButton("确定", null).show();
+                .setPositiveButton(getString(R.string.tx_msg_certain), null)
+                .show();
     }
 
     private void UiDisableEAS() {
         int iret = mTag.NXPICODESLI_DisableEAS();
         String srtResult;
         if (iret == ApiErrDefinition.NO_ERROR) {
-            srtResult = "禁止EAS成功!";
+            srtResult = getString(R.string.tx_msg_disEAS_ok);//"禁止EAS成功!";
         } else {
-            srtResult = "禁止EAS失败!err=" + iret;
+            srtResult = getString(R.string.tx_msg_disEAS_fail);//"禁止EAS失败!err=" + iret;
         }
         new AlertDialog.Builder(this).setTitle("").setMessage(srtResult)
-                .setPositiveButton("确定", null).show();
+                .setPositiveButton(getString(R.string.tx_msg_certain), null)
+                .show();
     }
 
     private void UiLockEAS() {
         int iret = mTag.NXPICODESLI_LockEAS();
         String srtResult;
         if (iret == ApiErrDefinition.NO_ERROR) {
-            srtResult = "锁EAS成功!";
+            srtResult = getString(R.string.tx_msg_lockEAS_ok);
         } else {
-            srtResult = "锁EAS失败!err=" + iret;
+            srtResult = getString(R.string.tx_msg_lockEAS_fail) + iret;
         }
         new AlertDialog.Builder(this).setTitle("").setMessage(srtResult)
-                .setPositiveButton("确定", null).show();
+                .setPositiveButton(getString(R.string.tx_msg_certain), null)
+                .show();
     }
 
     private void UiLockAFI() {
         int iret = mTag.ISO15693_LockAFI();
         String srtResult;
         if (iret == ApiErrDefinition.NO_ERROR) {
-            srtResult = "锁AFI成功!";
+            srtResult = getString(R.string.tx_msg_lockAFI_ok);
         } else {
-            srtResult = "锁AFI失败!err=" + iret;
+            srtResult = getString(R.string.tx_msg_lockAFI_fail) + iret;
         }
         new AlertDialog.Builder(this).setTitle("").setMessage(srtResult)
-                .setPositiveButton("确定", null).show();
+                .setPositiveButton(getString(R.string.tx_msg_certain), null)
+                .show();
     }
 
     private void UiEasCheck() {
         Byte easFlg = new Byte((byte) 0);
         int iret = mTag.NXPICODESLI_EASCheck(easFlg);
         if (iret != ApiErrDefinition.NO_ERROR) {
-            new AlertDialog.Builder(this).setTitle("")
-                    .setMessage("检测失败!err=" + iret)
-                    .setPositiveButton("确定", null).show();
+            new AlertDialog.Builder(this)
+                    .setTitle("")
+                    .setMessage(getString(R.string.tx_msg_checkEAS_fail) + iret)
+                    .setPositiveButton(getString(R.string.tx_msg_certain), null)
+                    .show();
             return;
         }
         if (easFlg.byteValue() == 0) {
-            new AlertDialog.Builder(this).setTitle("").setMessage("EAS已经关闭")
-                    .setPositiveButton("确定", null).show();
+            new AlertDialog.Builder(this)
+                    .setTitle("")
+                    .setMessage(getString(R.string.tx_msg_EasClosed))
+                    .setPositiveButton(getString(R.string.tx_msg_certain), null)
+                    .show();
         } else {
-            new AlertDialog.Builder(this).setTitle("").setMessage("EAS已经打开")
-                    .setPositiveButton("确定", null).show();
+            new AlertDialog.Builder(this)
+                    .setTitle("")
+                    .setMessage(getString(R.string.tx_msg_EasOpen))
+                    .setPositiveButton(getString(R.string.tx_msg_certain), null)
+                    .show();
         }
     }
 
+    @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_icodesli_inventory:
-                UiInventory();
-                break;
-            case R.id.btn_icodesli_connect:
-                UiConnect();
-                break;
-            case R.id.btn_icodesli_tagInfo:
-                UiGetTagInfo();
-                break;
-            case R.id.btn_icodesli_disconnect:
-                mTag.ISO15693_Disconnect();
-                UiVisible(false);
-                break;
-            case R.id.btn_icodesli_read:
-                UiReadBlock();
-                break;
-            case R.id.btn_icodesli_write:
-                UiWriteBlock();
-                break;
-            case R.id.btn_icodesli_lockBlk:
-                UiLockBlock();
-                break;
-            case R.id.btn_icodesli_setDsfid:
-                UiWriteDsfid();
-                break;
-            case R.id.btn_icodesli_lockDsfid:
-                UiLockDsfid();
-                break;
-            case R.id.btn_icodesli_setAFI:
-                UiWriteAFI();
-                break;
-            case R.id.btn_icodesli_lockAFI:
-                UiLockAFI();
-                break;
-            case R.id.btn_icodesli_enEAS:
-                UiEnableEAS();
-                break;
-            case R.id.btn_icodesli_disEnEAS:
-                UiDisableEAS();
-                break;
-            case R.id.btn_icodesli_lockEas:
-                UiLockEAS();
-                break;
-            case R.id.btn_icodesli_checkEAS:
-                UiEasCheck();
-                break;
-            default:
-                break;
+        int i = v.getId();
+        if (i == R.id.btn_icodesli_inventory) {
+            UiInventory();
+
+        } else if (i == R.id.btn_icodesli_connect) {
+            UiConnect();
+
+        } else if (i == R.id.btn_icodesli_tagInfo) {
+            UiGetTagInfo();
+
+        } else if (i == R.id.btn_icodesli_disconnect) {
+            mTag.ISO15693_Disconnect();
+            UiVisible(false);
+
+        } else if (i == R.id.btn_icodesli_read) {
+            UiReadBlock();
+
+        } else if (i == R.id.btn_icodesli_write) {
+            UiWriteBlock();
+
+        } else if (i == R.id.btn_icodesli_lockBlk) {
+            UiLockBlock();
+
+        } else if (i == R.id.btn_icodesli_setDsfid) {
+            UiWriteDsfid();
+
+        } else if (i == R.id.btn_icodesli_lockDsfid) {
+            UiLockDsfid();
+
+        } else if (i == R.id.btn_icodesli_setAFI) {
+            UiWriteAFI();
+
+        } else if (i == R.id.btn_icodesli_lockAFI) {
+            UiLockAFI();
+
+        } else if (i == R.id.btn_icodesli_enEAS) {
+            UiEnableEAS();
+
+        } else if (i == R.id.btn_icodesli_disEnEAS) {
+            UiDisableEAS();
+
+        } else if (i == R.id.btn_icodesli_lockEas) {
+            UiLockEAS();
+
+        } else if (i == R.id.btn_icodesli_checkEAS) {
+            UiEasCheck();
+
+        } else {
         }
     }
 }

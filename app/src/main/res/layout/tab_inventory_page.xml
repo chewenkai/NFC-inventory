@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/tab_inventory"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/btn_startInventory"
+            style="?android:attr/absListViewStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="@string/btn_startInventory"
+            android:textSize="15sp" />
+
+        <Button
+            android:id="@+id/btn_stopInventory"
+            style="?android:attr/absListViewStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="@string/btn_stopInventory"
+            android:textSize="15sp" />
+
+        <Button
+            android:id="@+id/btn_paraInventory"
+            style="?android:attr/absListViewStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="@string/btn_paraInventory"
+            android:textSize="15sp" />
+
+        <Button
+            android:id="@+id/btn_clearList"
+            style="?android:attr/absListViewStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="@string/btn_clearList"
+            android:textSize="15sp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/list_inventory"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/tv_inventoryInfo"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/tv_inventoryInfo"
+            android:textColor="#0000FF"
+            android:textSize="15sp" />
+
+        <include
+            android:id="@+id/inventorylist_title"
+            layout="@xml/inventorylist_tittle" />
+
+        <ListView
+            android:id="@+id/list_inventory_record"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_marginBottom="5dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:background="@drawable/list_bg"
+            android:cacheColorHint="@android:color/transparent"
+            android:divider="#f9b68b"
+            android:dividerHeight="1.0dp"
+            android:fadingEdge="none"
+            android:scrollbars="vertical"></ListView>
+    </LinearLayout>
+
+</LinearLayout>
