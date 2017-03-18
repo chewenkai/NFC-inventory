@@ -66,7 +66,7 @@ class LoginActivity : AppCompatActivity() {
         mLoginBtn!!.setOnClickListener(View.OnClickListener { v ->
             // The button is clicked.
             if (IS_DEBUGING) {
-                startActivity(Intent(this@LoginActivity, ItemListActivity::class.java))
+                startActivity(Intent(this@LoginActivity, ItemInventoryActivity::class.java))
                 finish()
             }
             mUserNameStr = mPersonEdit!!.text.toString()
@@ -87,7 +87,7 @@ class LoginActivity : AppCompatActivity() {
             else {
                 val user = users[0]
                 if (mPwdStr == user.passWord) {
-                    val intent = Intent(this@LoginActivity, ItemListActivity::class.java)
+                    val intent = Intent(this@LoginActivity, ItemInventoryActivity::class.java)
                     intent.putExtra(ConstantManager.CURRENT_USER_NAME, user.userName)
                     startActivity(intent)
                     finish()
@@ -147,7 +147,7 @@ class LoginActivity : AppCompatActivity() {
                 SPUtil.getInstence(applicationContext).saveNeedPassword(false)
                 Toast.makeText(applicationContext, R.string.password_omitted, Toast.LENGTH_LONG).show()
                 DatabaseUtil.addNewUser(this@LoginActivity, ConstantManager.DEFAULT_USER, "")
-                val intent = Intent(this@LoginActivity, ItemListActivity::class.java)
+                val intent = Intent(this@LoginActivity, ItemInventoryActivity::class.java)
                 intent.putExtra(ConstantManager.CURRENT_USER_NAME,
                         ConstantManager.DEFAULT_USER)
                 startActivity(intent)
@@ -174,7 +174,7 @@ class LoginActivity : AppCompatActivity() {
             //save password with edt.getText().toString();
             if (DatabaseUtil.addNewUser(this@LoginActivity, usernameEdt.text.toString(), firstPasswordEdt.text.toString())) {
                 Toast.makeText(applicationContext, R.string.password_saved, Toast.LENGTH_LONG).show()
-                val intent = Intent(this@LoginActivity, ItemListActivity::class.java)
+                val intent = Intent(this@LoginActivity, ItemInventoryActivity::class.java)
                 intent.putExtra(ConstantManager.CURRENT_USER_NAME, usernameEdt.text.toString())
                 startActivity(intent)
                 finish()
@@ -198,7 +198,7 @@ class LoginActivity : AppCompatActivity() {
      */
     private fun checkIsNeedPassword() {
         if (!SPUtil.getInstence(applicationContext).needPassword) {
-            val intent = Intent(this@LoginActivity, ItemListActivity::class.java)
+            val intent = Intent(this@LoginActivity, ItemInventoryActivity::class.java)
             intent.putExtra(ConstantManager.CURRENT_USER_NAME, ConstantManager.DEFAULT_USER)
             startActivity(intent)
             finish()

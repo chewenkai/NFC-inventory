@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/action_bar_add"
-        android:icon="@drawable/ic_add_black_48dp"
+        android:id="@+id/action_bar_show_all"
+        android:icon="@drawable/factory"
         android:orderInCategory="100"
-        app:showAsAction="always"
-        android:title="@string/add_new_item_explain" >
-    </item>
+        app:showAsAction="ifRoom"
+        android:title="@string/show_all_items_explain" />
+
     <item xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/checkout"
         android:icon="@drawable/checkout"
         android:orderInCategory="100"
         app:showAsAction="always"
-        android:title="@string/add_new_item_explain"></item>
+        android:title="@string/add_new_item_explain" />
 
 </menu>

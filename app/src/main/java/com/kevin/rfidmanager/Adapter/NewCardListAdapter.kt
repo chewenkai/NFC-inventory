@@ -9,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.TextView
 import com.kevin.rfidmanager.R
-import java.util.*
 
 /**
  * Created by Kevin on 2017/1/29.
@@ -74,6 +73,12 @@ class NewCardListAdapter(context: Context, newCardIDs: MutableList<String>, etID
         for (radioButton in radioButtons) {
             radioButton.isChecked = false
         }
+    }
+
+    fun updateList(cardIDs: ArrayList<String>) {
+        newCardIDs.clear()
+        newCardIDs.addAll(cardIDs)
+        this.notifyDataSetChanged()
     }
 
     fun addNewCardToList(cardID: String) {

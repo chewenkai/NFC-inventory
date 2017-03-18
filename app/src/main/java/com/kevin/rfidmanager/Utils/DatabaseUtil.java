@@ -73,7 +73,7 @@ public class DatabaseUtil {
         DaoSession daoSession = ((MyApplication) activity.getApplication()).getDaoSession();
         ItemsDao itemsDao = daoSession.getItemsDao();
 
-        Query<Items> query = itemsDao.queryBuilder().where(ItemsDao.Properties.UserName.eq(user)).
+        Query<Items> query = itemsDao.queryBuilder().where(ItemsDao.Properties.UserName.like(user)).
                 build();
 
         return query.list();
@@ -91,7 +91,7 @@ public class DatabaseUtil {
         DaoSession daoSession = ((MyApplication) activity.getApplication()).getDaoSession();
         ItemsDao itemsDao = daoSession.getItemsDao();
 
-        List<Items> item = itemsDao.queryBuilder().where(ItemsDao.Properties.Rfid.eq(ID)).
+        List<Items> item = itemsDao.queryBuilder().where(ItemsDao.Properties.Rfid.like(ID)).
                 build().list();
         if (item.size() == 1)
             return item.get(0);

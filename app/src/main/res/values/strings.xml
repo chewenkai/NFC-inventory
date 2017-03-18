@@ -104,6 +104,10 @@
     <string name="save_item_failed">Save item failed.</string>
     <string name="item_have_not_added">The item is not exist!</string>
     <string name="current_selection_detail_layout">Current selection: Detail Layout</string>
+    <string name="inventory_empty_hint">Please put RFID cards close to the card reader.</string>
+    <string name="no_items_recorded">No items recorded in database.</string>
+    <string name="show_all_items_explain">show all items</string>
+    <string name="all_items_actionbar_title">All Items</string>
 
     <!--Others-->
 
