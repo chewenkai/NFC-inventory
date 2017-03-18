@@ -125,7 +125,7 @@ class KeyDesListAdapter(context: Context, item_key_des: List<KeyDescription>, hi
      */
     fun deleteItemsKeyDes(keyDescription: KeyDescription) {
         // get the key description DAO
-        val daoSession = (currentActivity!!.application as MyApplication).getDaoSession()
+        val daoSession = (currentActivity!!.application as MyApplication).getmDaoSession()
         val keyDescriptionDao = daoSession.keyDescriptionDao
 
         keyDescriptionDao.delete(keyDescription)
@@ -140,7 +140,7 @@ class KeyDesListAdapter(context: Context, item_key_des: List<KeyDescription>, hi
     fun editItemsKeyDes(keyDescription: KeyDescription, newKeyDes: String) {
         keyDescription.keyDescription = newKeyDes
         // get the key description DAO
-        val daoSession = (currentActivity!!.application as MyApplication).getDaoSession()
+        val daoSession = (currentActivity!!.application as MyApplication).getmDaoSession()
         val keyDescriptionDao = daoSession.keyDescriptionDao
         keyDescriptionDao.insertOrReplace(keyDescription)
         updateKeyDescriptionList()

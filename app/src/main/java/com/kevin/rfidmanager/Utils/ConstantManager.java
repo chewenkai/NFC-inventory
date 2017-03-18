@@ -17,6 +17,9 @@ public class ConstantManager {
 
     // General
     public static int DEFAULT_IMAGE_HEIGHT_DP = 120;  // default image height of gallery images in
+    public static String NEW_RFID_CARD_BROADCAST_ACTION = "NEW_CARDS_COMING";
+    public static String NEW_RFID_CARD_KEY = "NEW_CARDS_KEY";
+
     // Edit page and Detail page
 
     // Apperance

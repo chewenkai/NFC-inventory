@@ -109,7 +109,7 @@ class LoginActivity : AppCompatActivity() {
      */
     private fun passwordReminder() {
         // Are there any user info?
-        val daoSession = (application as MyApplication).getDaoSession()
+        val daoSession = (application as MyApplication).getmDaoSession()
         val usersDao = daoSession.usersDao
         val users = usersDao.queryBuilder().where(UsersDao.Properties.UserName.isNotNull).build().list()
         if (users.size == 0 && SPUtil.getInstence(applicationContext).needPassword!!) {

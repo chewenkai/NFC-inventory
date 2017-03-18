@@ -206,7 +206,7 @@ class ItemListAdaper(val activity: Activity, internal var itemes: MutableList<It
         circleDialog.setMessage("please wait a while")
         circleDialog.show()
         Thread().run {
-            val daoSession = (activity.application as MyApplication).getDaoSession()
+            val daoSession = (activity.application as MyApplication).getmDaoSession()
             for (i: Int in 0..checkedItems.size - 1) {
                 daoSession.itemsDao.deleteInTx(checkedItems.get(i))
                 // delete image path
@@ -290,7 +290,7 @@ class ItemListAdaper(val activity: Activity, internal var itemes: MutableList<It
         builder.setTitle(R.string.delete_confirm_title)
         builder.setMessage(R.string.delete_confirm)
         builder.setPositiveButton(R.string.OK) { dialog, which ->
-            val daoSession = (activity.application as MyApplication).getDaoSession()
+            val daoSession = (activity.application as MyApplication).getmDaoSession()
             daoSession.itemsDao.delete(item)
             // delete image path
             daoSession.imagesPathDao.deleteInTx(daoSession.imagesPathDao.queryBuilder().where(ImagesPathDao.Properties.Rfid.eq(item.rfid)).build().list())

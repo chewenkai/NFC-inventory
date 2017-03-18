@@ -92,7 +92,7 @@ class CheckoutActivity : AppCompatActivity() {
             val ID = HexConvertUtil.bytesToHexString(tag.id)
 
             // Are there any user info?
-            val daoSession = (application as MyApplication).getDaoSession()
+            val daoSession = (application as MyApplication).getmDaoSession()
             val itemsDao = daoSession.itemsDao
             val items = itemsDao.queryBuilder().where(ItemsDao.Properties.Rfid.like(ID)).build().list()
             if (items.size > 1) {

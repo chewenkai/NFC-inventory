@@ -85,7 +85,7 @@ class GallaryAdaper(var activity: Activity, private val paths: MutableList<Image
             button.visibility = View.GONE
         }
         button.setOnClickListener {
-            val daoSession = (activity.applicationContext as MyApplication).getDaoSession()
+            val daoSession = (activity.applicationContext as MyApplication).getmDaoSession()
             daoSession.imagesPathDao.delete(path)
             updateUI()
         }

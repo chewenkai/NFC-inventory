@@ -93,12 +93,12 @@ class ItemEditActivity : AppCompatActivity() {
                         val imagePath = ImagesPath(null, currentID,
                                 image.originalPath)
                         // Add file path to database
-                        val daoSession = (application as MyApplication).getDaoSession()
+                        val daoSession = (application as MyApplication).getmDaoSession()
                         daoSession.insert(imagePath)
                         gallaryAdaper!!.updateUI()
                     } else if (image.requestId == ConstantManager.REQUEST_MAIN_IMAGE_FILE) {
                         // Add file path to database
-                        val daoSession = (application as MyApplication).getDaoSession()
+                        val daoSession = (application as MyApplication).getmDaoSession()
                         val item = DatabaseUtil.getCurrentItem(this@ItemEditActivity, currentID)
                         if (item == null) {
                             Toast.makeText(this@ItemEditActivity, R.string.item_not_exist, Toast.LENGTH_LONG).show()
@@ -248,7 +248,7 @@ class ItemEditActivity : AppCompatActivity() {
     fun insertNewItemKeyDes(newDes: String) {
         val keyDescription = KeyDescription(null, currentID, newDes)
         // get the key description DAO
-        val daoSession = (application as MyApplication).getDaoSession()
+        val daoSession = (application as MyApplication).getmDaoSession()
         val keyDescriptionDao = daoSession.keyDescriptionDao
         keyDescriptionDao.insert(keyDescription)
     }
