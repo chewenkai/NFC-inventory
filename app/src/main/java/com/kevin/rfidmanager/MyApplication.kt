@@ -1,15 +1,21 @@
 package com.kevin.rfidmanager
 
 import android.app.Application
+import android.app.PendingIntent
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.database.sqlite.SQLiteDatabase
+import android.hardware.usb.UsbDevice
+import android.hardware.usb.UsbManager
 import android.media.AudioManager
 import android.media.SoundPool
 import android.os.Handler
 import android.os.Message
 import android.widget.Toast
 import com.github.yuweiguocn.library.greendao.MigrationHelper
+import com.kevin.rfidmanager.Utils.ConstantManager
 import com.kevin.rfidmanager.Utils.ConstantManager.NEW_RFID_CARD_BROADCAST_ACTION
 import com.kevin.rfidmanager.Utils.ConstantManager.NEW_RFID_CARD_KEY
 import com.kevin.rfidmanager.database.*
@@ -60,10 +66,11 @@ class MyApplication : Application() {
         daoSession = DaoMaster(db).newSession()
 
         initSound()
-        startScan()
+        registUSBBroadCast()
     }
 
     override fun onTerminate() {
+        unregisterReceiver(usbReceiver)
         stopScan()
         super.onTerminate()
     }
@@ -386,5 +393,51 @@ class MyApplication : Application() {
                 1, // 优先级，0为最低
                 0, // 循环次数，0无不循环，-1无永远循环
                 1f)// 回放速度，值在0.5-2.0之间，1为正常速度
+    }
+
+    private fun registUSBBroadCast() {
+        val filter = IntentFilter(ConstantManager.ACTION_USB_PERMISSION)
+        filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED)
+        filter.addAction(UsbManager.ACTION_USB_DEVICE_DETACHED)
+        registerReceiver(usbReceiver, filter)
+    }
+
+    private val usbReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+
+            val action = intent.action
+            if (ConstantManager.ACTION_USB_PERMISSION == action) {
+
+                val device = intent.getParcelableExtra<UsbDevice>(UsbManager.EXTRA_DEVICE)
+                if (intent.getBooleanExtra(UsbManager.EXTRA_PERMISSION_GRANTED, false)) {
+                    if (device != null) {
+                        startScan()
+                    }
+                } else {
+                    val usbManager = getSystemService(Context.USB_SERVICE) as UsbManager
+                    val permissionIntent = PendingIntent.getBroadcast(this@MyApplication, 0, Intent(
+                            ConstantManager.ACTION_USB_PERMISSION), 0)
+                    usbManager.requestPermission(device, permissionIntent)
+                }
+
+            } else if (UsbManager.ACTION_USB_DEVICE_ATTACHED == action) {
+                val device = intent.getParcelableExtra<UsbDevice>(UsbManager.EXTRA_DEVICE)
+                // determine if connected device is a mass storage devuce
+                if (device != null) {
+                    startScan()
+                }
+            } else if (UsbManager.ACTION_USB_DEVICE_DETACHED == action) {
+                val device = intent.getParcelableExtra<UsbDevice>(UsbManager.EXTRA_DEVICE)
+
+
+                // determine if connected device is a mass storage devuce
+                if (device != null) {
+                    // check if there are other devices or set action bar title
+                    // to no device if not
+                    startScan()
+                }
+            }
+
+        }
     }
 }
