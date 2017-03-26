@@ -67,6 +67,7 @@ class LoginActivity : AppCompatActivity() {
             // The button is clicked.
             if (IS_DEBUGING) {
                 startActivity(Intent(this@LoginActivity, ItemInventoryActivity::class.java))
+                (application as MyApplication).currentUser = ConstantManager.DEFAULT_USER
                 finish()
             }
             mUserNameStr = mPersonEdit!!.text.toString()
@@ -90,6 +91,7 @@ class LoginActivity : AppCompatActivity() {
                     val intent = Intent(this@LoginActivity, ItemInventoryActivity::class.java)
                     intent.putExtra(ConstantManager.CURRENT_USER_NAME, user.userName)
                     startActivity(intent)
+                    (application as MyApplication).currentUser = user.userName
                     finish()
                 } else {
                     Snackbar.make(v, R.string.login_fail, Snackbar.LENGTH_LONG).show()
@@ -151,6 +153,7 @@ class LoginActivity : AppCompatActivity() {
                 intent.putExtra(ConstantManager.CURRENT_USER_NAME,
                         ConstantManager.DEFAULT_USER)
                 startActivity(intent)
+                (application as MyApplication).currentUser = ConstantManager.DEFAULT_USER
                 b.dismiss()
                 finish()
                 return@OnClickListener
@@ -177,6 +180,7 @@ class LoginActivity : AppCompatActivity() {
                 val intent = Intent(this@LoginActivity, ItemInventoryActivity::class.java)
                 intent.putExtra(ConstantManager.CURRENT_USER_NAME, usernameEdt.text.toString())
                 startActivity(intent)
+                (application as MyApplication).currentUser = usernameEdt.text.toString()
                 finish()
             } else {
                 message.setText(R.string.username_exist)
@@ -201,6 +205,7 @@ class LoginActivity : AppCompatActivity() {
             val intent = Intent(this@LoginActivity, ItemInventoryActivity::class.java)
             intent.putExtra(ConstantManager.CURRENT_USER_NAME, ConstantManager.DEFAULT_USER)
             startActivity(intent)
+            (application as MyApplication).currentUser = ConstantManager.DEFAULT_USER
             finish()
         }
     }

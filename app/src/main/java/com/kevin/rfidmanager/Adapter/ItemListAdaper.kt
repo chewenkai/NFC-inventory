@@ -234,13 +234,31 @@ class ItemListAdaper(val activity: Activity, internal var itemes: MutableList<It
         getItemCount()
     }
 
+
     /**
      * Set the new Items as data and notify list to refresh.
      */
     fun updateUI(items: ArrayList<Items>) {
-        this.itemes.clear()
-        this.itemes.addAll(items)
-        this.notifyDataSetChanged()
+        var itemesIter: MutableIterator<Items> = itemes.iterator();
+        while (itemesIter.hasNext()) {
+            var originItem = itemesIter.next()
+
+            if (!items.contains(originItem)) {
+                val index = itemes.indexOf(originItem)
+                itemesIter.remove()
+                notifyItemRemoved(index)
+            }
+        }
+
+        for (item in items) {
+            if (!itemes.contains(item)) {
+                itemes.add(item)
+                notifyDataSetChanged()
+            }
+        }
+//        this.itemes.removeAll(this.itemes)
+//        this.itemes.addAll(items)
+//        this.notifyDataSetChanged()
         getItemCount()
     }
 

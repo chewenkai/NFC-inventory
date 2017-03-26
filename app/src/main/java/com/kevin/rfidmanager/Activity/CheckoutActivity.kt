@@ -44,7 +44,6 @@ class CheckoutActivity : AppCompatActivity() {
         initNFC()
     }
 
-
     private fun initUI() {
         currentUser = intent.getStringExtra(ConstantManager.CURRENT_USER_NAME)
         itemListAdapter = CheckoutAdaper(this@CheckoutActivity, recycle_item_list, pay_button!!, tv_checkout_result)
@@ -224,6 +223,27 @@ class CheckoutActivity : AppCompatActivity() {
     private fun discoverDevice() {
         if (storageDevicesAdaper != null) {
             storageDevicesAdaper!!.updateDataSet()
+        }
+    }
+
+    /**
+     * as name said.
+     */
+    private fun registNewCardsBroadCast() {
+        val filter = IntentFilter(ConstantManager.NEW_RFID_CARD_BROADCAST_ACTION)
+        registerReceiver(newCardsReceiver, filter)
+    }
+
+    /**
+     * Receive notification of scanned cards
+     */
+    private val newCardsReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val action = intent.action
+            if (ConstantManager.NEW_RFID_CARD_BROADCAST_ACTION == action) {
+                supportActionBar!!.title = getString(R.string.item_number) +
+                        (application as MyApplication).savedCardsNumber
+            }
         }
     }
 

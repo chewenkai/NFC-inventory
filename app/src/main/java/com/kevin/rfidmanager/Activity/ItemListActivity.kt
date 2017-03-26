@@ -1,5 +1,9 @@
 package com.kevin.rfidmanager.Activity
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.GridLayoutManager
@@ -11,6 +15,7 @@ import android.view.Menu
 import android.view.MenuItem
 import at.markushi.ui.CircleButton
 import com.kevin.rfidmanager.Adapter.ItemListAdaper
+import com.kevin.rfidmanager.MyApplication
 import com.kevin.rfidmanager.R
 import com.kevin.rfidmanager.Utils.ConstantManager
 import com.kevin.rfidmanager.Utils.SPUtil
@@ -35,6 +40,7 @@ class ItemListActivity : AppCompatActivity() {
         setContentView(R.layout.item_inventory_list_layout)
         initActionBar()
         initUI()
+//        registNewCardsBroadCast()
     }
 
     private fun initActionBar() {
@@ -69,6 +75,7 @@ class ItemListActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
+//        unregisterReceiver(newCardsReceiver)
         super.onDestroy()
     }
 
@@ -120,5 +127,26 @@ class ItemListActivity : AppCompatActivity() {
             android.R.id.home -> finish()
         }
         return true
+    }
+
+    /**
+     * as name said.
+     */
+    private fun registNewCardsBroadCast() {
+        val filter = IntentFilter(ConstantManager.NEW_RFID_CARD_BROADCAST_ACTION)
+        registerReceiver(newCardsReceiver, filter)
+    }
+
+    /**
+     * Receive notification of scanned cards
+     */
+    private val newCardsReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val action = intent.action
+            if (ConstantManager.NEW_RFID_CARD_BROADCAST_ACTION == action) {
+                supportActionBar!!.title = getString(R.string.item_number) +
+                        (application as MyApplication).savedCardsNumber
+            }
+        }
     }
 }

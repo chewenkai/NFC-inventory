@@ -107,7 +107,8 @@
     <string name="inventory_empty_hint">Please put RFID cards close to the card reader.</string>
     <string name="no_items_recorded">No items recorded in database.</string>
     <string name="show_all_items_explain">show all items</string>
-    <string name="all_items_actionbar_title">All Items</string>
+    <string name="all_items_actionbar_title">Collection</string>
+    <string name="item_number">Item number:</string>
 
     <!--Others-->
 

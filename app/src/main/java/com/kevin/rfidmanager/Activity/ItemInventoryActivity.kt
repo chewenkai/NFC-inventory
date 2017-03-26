@@ -12,6 +12,7 @@ import android.nfc.NfcAdapter
 import android.nfc.Tag
 import android.os.AsyncTask
 import android.os.Bundle
+import android.support.design.widget.Snackbar
 import android.support.design.widget.TextInputEditText
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
@@ -38,8 +39,10 @@ import com.nightonke.boommenu.BoomButtons.HamButton
 import com.nightonke.boommenu.BoomMenuButton
 import com.nightonke.boommenu.ButtonEnum
 import com.nightonke.boommenu.Piece.PiecePlaceEnum
+import com.rfid.def.ApiErrDefinition
 import kotlinx.android.synthetic.main.item_inventory_list_layout.*
 import org.jetbrains.anko.onClick
+import org.jetbrains.anko.toast
 import java.io.*
 
 /**
@@ -50,6 +53,7 @@ class ItemInventoryActivity : AppCompatActivity() {
     private var recyclerView: RecyclerView? = null
     private var itemListAdapter: ItemListAdaper? = null
     val items: MutableList<Items> = ArrayList<Items>()
+    var currentTags = ArrayList<String>()
     private var storageDevicesAdaper: StorageDevicesAdaper? = null
     private var mNfcAdapter: NfcAdapter? = null
     private var pendingIntent: PendingIntent? = null
@@ -125,7 +129,7 @@ class ItemInventoryActivity : AppCompatActivity() {
         leftBmb.addBuilder(changePassword)
 
         val change_rfid_range = HamButton.Builder()
-                .listener { showPasswordChangeDialog(); }
+                .listener { showRFPowerChangeDialog(); }
                 .normalImageRes(R.drawable.range)
                 .imagePadding(Rect(paddingPixels, paddingPixels, paddingPixels, paddingPixels))
                 .normalTextRes(R.string.change_rfid_range)
@@ -167,6 +171,22 @@ class ItemInventoryActivity : AppCompatActivity() {
         registNewCardsBroadCast()
     }
 
+    private fun clearAllRadioButtonInPowerChangeDialog(rbs: ArrayList<AppCompatRadioButton>) {
+        for (rb in rbs) {
+            rb.isChecked = false
+        }
+    }
+
+    private fun getSelectedPower(rbs: ArrayList<AppCompatRadioButton>): Int {
+        var count = -1
+        for (rb in rbs) {
+            count++
+            if (rb.isChecked)
+                return count
+        }
+        return -1
+    }
+
     private fun registUSBBroadCast() {
         val filter = IntentFilter(ConstantManager.ACTION_USB_PERMISSION)
         filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED)
@@ -192,6 +212,7 @@ class ItemInventoryActivity : AppCompatActivity() {
 
     public override fun onResume() {
         super.onResume()
+        itemListAdapter!!.notifyDataSetChanged()
         if (mNfcAdapter != null)
             mNfcAdapter!!.enableForegroundDispatch(this, pendingIntent, null, null)
     }
@@ -338,6 +359,8 @@ class ItemInventoryActivity : AppCompatActivity() {
      * Add new card to card ID list, then refresh the list
      */
     fun updateCardsList(cardIDs: ArrayList<String>) {
+        currentTags = cardIDs
+
         if (alertDialog == null)
             return
         if (dataAdapter == null)
@@ -355,16 +378,16 @@ class ItemInventoryActivity : AppCompatActivity() {
         for (cardID in cardIDs) {
             val items = itemsDao.queryBuilder().where(ItemsDao.Properties.Rfid.like(cardID)).build().list()
             if (items.size > 1) {
-                Toast.makeText(this@ItemInventoryActivity,
-                        R.string.one_ID_multi_items_warning, Toast.LENGTH_LONG).show()
+//                Toast.makeText(this@ItemInventoryActivity,
+//                        R.string.one_ID_multi_items_warning, Toast.LENGTH_LONG).show()
                 return
             } else if (items.size == 1) {  // Database have an item bind with this card
-                if (items[0].userName == currentUser) {
+                if (items[0].userName.equals(currentUser)) {
                     // Add item to List
                     itemsInDatabase.add(items[0])
                 } else {
-                    Toast.makeText(this@ItemInventoryActivity,
-                            R.string.another_users_card, Toast.LENGTH_LONG).show()
+//                    Toast.makeText(this@ItemInventoryActivity,
+//                            R.string.another_users_card, Toast.LENGTH_LONG).show()
                     return
                 }
             } else {
@@ -372,8 +395,7 @@ class ItemInventoryActivity : AppCompatActivity() {
             }
         }
         //modify the count number
-        val mActionBar = supportActionBar!!
-        actionBarTitle?.setText("Item number:" + itemsInDatabase.size)
+        actionBarTitle?.setText(getString(R.string.item_number) + itemsInDatabase.size)
 
         // Notify update the item list, show the newest cards which are read from card reader.
         itemListAdapter!!.updateUI(itemsInDatabase)
@@ -481,6 +503,20 @@ class ItemInventoryActivity : AppCompatActivity() {
                     message.setTextColor(resources.getColor(R.color.warning_color))
                     return@OnClickListener
                 }
+
+                // check the emptiness of newPasswordEdt
+                val newPasswdStr = newPasswordEdt!!.text.toString()
+                if (StringUtil.isEmpty(newPasswdStr)) {
+                    Snackbar.make(dialogView, R.string.empty_password_warning, Snackbar.LENGTH_LONG).show()
+                    return@OnClickListener
+                }
+                // check the emptiness of confirmNewPasswordEdt
+                val confirmPasswdStr = confirmNewPasswordEdt!!.text.toString()
+                if (StringUtil.isEmpty(confirmPasswdStr)) {
+                    Snackbar.make(dialogView, R.string.empty_password_warning, Snackbar.LENGTH_LONG).show()
+                    return@OnClickListener
+                }
+
                 // check password of two text editors
                 if (newPasswordEdt.text.toString() != confirmNewPasswordEdt.text.toString()) {
                     message.setText(R.string.diff_passwd)
@@ -495,6 +531,66 @@ class ItemInventoryActivity : AppCompatActivity() {
 
             Toast.makeText(applicationContext,
                     R.string.password_updated, Toast.LENGTH_LONG).show()
+            b.dismiss()
+        })
+
+        cancleButton.setOnClickListener {
+            //dismiss dialog
+            b.dismiss()
+        }
+    }
+
+    /*
+    This is a dialog used for changing RF power.
+     */
+    fun showRFPowerChangeDialog() {
+        val dialogBuilder = AlertDialog.Builder(this@ItemInventoryActivity)
+        val inflater = layoutInflater
+        val dialogView = inflater.inflate(R.layout.rf_power_change_dialog_layout, null)
+        dialogBuilder.setView(dialogView)
+        val rbs = ArrayList<AppCompatRadioButton>()
+        rbs.add(dialogView.findViewById(R.id.RBDot25W) as AppCompatRadioButton)
+        rbs.add(dialogView.findViewById(R.id.RBDot50W) as AppCompatRadioButton)
+        rbs.add(dialogView.findViewById(R.id.RBDot75W) as AppCompatRadioButton)
+        rbs.add(dialogView.findViewById(R.id.RB1W) as AppCompatRadioButton)
+        rbs.add(dialogView.findViewById(R.id.RB1Dot25W) as AppCompatRadioButton)
+        rbs.add(dialogView.findViewById(R.id.RB1Dot50W) as AppCompatRadioButton)
+        for (rb in rbs) {
+            rb.onClick {
+                clearAllRadioButtonInPowerChangeDialog(rbs)
+                rb.isChecked = true
+            }
+        }
+
+        val saveButton = dialogView.findViewById(R.id.dialog_change) as Button
+        val cancleButton = dialogView.findViewById(R.id.dialog_cancle) as Button
+
+        val mPower = 0.toByte()
+        val nret = (application as MyApplication).
+                m_reader.RDR_GetRFPower(mPower)
+        if (nret != ApiErrDefinition.NO_ERROR) {
+            toast(getString(com.example.AnReaderDemo.R.string.tx_getRFPower_fail) + nret)
+            return
+        }
+        clearAllRadioButtonInPowerChangeDialog(rbs)
+        toast("Please record this number and tell Kevin:" + (mPower - 1).toString())
+        return
+        rbs.get(mPower.toByte() - 1).isChecked = true
+        dialogBuilder.setTitle(resources.getString(R.string.change_passwd))
+        val b = dialogBuilder.create()
+        b.show()
+
+        saveButton.setOnClickListener(View.OnClickListener {
+            var str = ""
+            val nret_set = (application as MyApplication).
+                    m_reader.RDR_SetRFPower(getSelectedPower(rbs).toByte())
+            if (nret_set == ApiErrDefinition.NO_ERROR) {
+                str = getString(com.example.AnReaderDemo.R.string.tx_setPower_ok)
+            } else {
+                str = getString(com.example.AnReaderDemo.R.string.tx_setPower_fail)
+            }
+            Toast.makeText(applicationContext,
+                    str, Toast.LENGTH_LONG).show()
             b.dismiss()
         })
 

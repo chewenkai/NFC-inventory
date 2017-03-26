@@ -69,18 +69,19 @@
             android:name="BaiduMobAd_WIFI_LOCATION"
             android:value="true" />
 
-        <activity
-            android:name=".MainActivity"
-            android:configChanges="keyboardHidden"
-            android:label="@string/app_name"
-            android:windowSoftInputMode="stateHidden">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+        <!--<activity-->
+        <!--android:name=".MainActivity"-->
+        <!--android:configChanges="keyboardHidden"-->
+        <!--android:label="@string/app_name"-->
+        <!--android:windowSoftInputMode="stateHidden">-->
+        <!--<intent-filter>-->
+        <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".InventoryParaActivity" />
+        <!--<category android:name="android.intent.category.LAUNCHER" />-->
+        <!--</intent-filter>-->
+        <!--</activity>-->
+        <!--<activity android:name=".Inventory
+        ParaActivity" />-->
     </application>
 
 </manifest>

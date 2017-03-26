@@ -25,6 +25,8 @@ import com.rfid.api.ISO15693Interface
 import com.rfid.api.ISO15693Tag
 import com.rfid.def.ApiErrDefinition
 import com.rfid.def.RfidDef
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 import java.lang.ref.WeakReference
 import java.util.*
 
@@ -37,9 +39,11 @@ class MyApplication : Application() {
 
     var daoSession: DaoSession? = null  // database session
     var cardIDs = ArrayList<String>()
+    var savedCardsNumber = 0
+    var currentUser = ConstantManager.DEFAULT_USER
 
     // Read RFID PART
-    private var m_reader: ADReaderInterface = ADReaderInterface()
+    var m_reader: ADReaderInterface = ADReaderInterface()
     private var m_inventoryThrd: Thread? = null// The thread of inventory
     private var m_getScanRecordThrd: Thread? = null// The thead of scanf the record.
 
@@ -64,9 +68,10 @@ class MyApplication : Application() {
                 resources.getString(R.string.database_name), null)
         val db = helper.writableDb
         daoSession = DaoMaster(db).newSession()
-
+        startScan()
         initSound()
         registUSBBroadCast()
+//        emulateRFIDReader()
     }
 
     override fun onTerminate() {
@@ -99,6 +104,25 @@ class MyApplication : Application() {
     private fun startScan() {
         OpenDev()
         openRF()
+        doAsync {
+            while (true) {
+
+                try {
+                    Thread.sleep(3000)
+                    if (m_inventoryThrd != null && m_inventoryThrd!!.isAlive()) {
+                        uiThread {
+                            OpenDev()
+                            openRF()
+                        }
+                    }
+
+                } catch (e: InterruptedException) {
+                }
+            }
+
+
+        }
+
     }
 
     /**
@@ -168,8 +192,8 @@ class MyApplication : Application() {
             m_inventoryThrd!!.start()
 
         } else {
-            Toast.makeText(this, getString(R.string.tx_msg_openDev_fail),
-                    Toast.LENGTH_SHORT).show()
+//            Toast.makeText(this, getString(R.string.tx_msg_openDev_fail),
+//                    Toast.LENGTH_SHORT).show()
         }
     }
 
@@ -177,8 +201,8 @@ class MyApplication : Application() {
      * close the device
      */
     private fun CloseDev() {
-        if (m_getScanRecordThrd != null && m_getScanRecordThrd!!.isAlive()) {
-            toast(getString(R.string.tx_msg_stopScanf_tip))
+        if (m_inventoryThrd != null && m_inventoryThrd!!.isAlive()) {
+            toast(getString(R.string.tx_msg_stopInventory_tip))
             return
         }
         m_reader.RDR_Close()
@@ -188,13 +212,12 @@ class MyApplication : Application() {
      * open the RF
      */
     fun openRF() {
-        var str = ""
         if (m_reader.RDR_OpenRFTransmitter() == ApiErrDefinition.NO_ERROR) {
-            str = getString(R.string.tx_openRF_ok)
+//            str = getString(R.string.tx_openRF_ok)
+//            toast(str)
         } else {
-            str = getString(R.string.tx_openRF_fail)
+//            str = getString(R.string.tx_openRF_fail)
         }
-        toast(getString(R.string.tx_openRF) + str)
     }
 
     /**
@@ -207,7 +230,7 @@ class MyApplication : Application() {
         } else {
             str = getString(R.string.tx_CloseRF_fail)// "关闭射频失败";
         }
-        toast(getString(R.string.tx_CloseRF) + str)
+        toast(str)
     }
 
     private var bGetScanRecordFlg = false
@@ -315,6 +338,12 @@ class MyApplication : Application() {
                         msg.obj = tagList
                         msg.arg1 = failedCnt
                         mHandler.sendMessage(msg)
+                    } else {
+                        val msg = mHandler.obtainMessage()
+                        msg.what = INVENTORY_MSG
+                        msg.obj = tagList
+                        msg.arg1 = failedCnt
+                        mHandler.sendMessage(msg)
                     }
                 } else {
                     newAI = RfidDef.AI_TYPE_NEW
@@ -328,7 +357,7 @@ class MyApplication : Application() {
                 }
 
                 try {
-                    Thread.sleep(30)
+                    Thread.sleep(1000)
                 } catch (e: InterruptedException) {
                 }
 
@@ -351,7 +380,6 @@ class MyApplication : Application() {
         override fun handleMessage(msg: Message) {
             val myApplication = thisApplicaiton.get() ?: return
             when (msg.what) {
-
                 myApplication.INVENTORY_MSG -> { // 盘点到标签
                     val tagList = msg.obj as Vector<ISO15693Tag>
                     val cardIDs = ArrayList<String>()
@@ -359,6 +387,7 @@ class MyApplication : Application() {
                         cardIDs.add(GFunction.encodeHexStr(tagData.uid))
                     }
                     myApplication.cardIDs = cardIDs
+                    myApplication.updateSavedCardsNumber(cardIDs)
                     val intent = Intent().setAction(NEW_RFID_CARD_BROADCAST_ACTION)
                     intent.putStringArrayListExtra(NEW_RFID_CARD_KEY, cardIDs)
                     myApplication.sendBroadcast(intent)
@@ -371,6 +400,36 @@ class MyApplication : Application() {
                 else -> {
                 }
             }
+        }
+    }
+
+    fun emulateRFIDReader() {
+        val cardIDs = ArrayList<String>()
+        var count = 1
+        while (count < 10) {
+            cardIDs.add(count.toString())
+            count++
+        }
+        doAsync {
+            while (true) {
+
+                try {
+                    Thread.sleep(5000)
+                    uiThread {
+                        if (cardIDs.size > 0) {
+                            cardIDs.removeAt(cardIDs.size - 1)
+                        }
+
+                        this@MyApplication.cardIDs = cardIDs
+                        updateSavedCardsNumber(cardIDs)
+                        val intent = Intent().setAction(NEW_RFID_CARD_BROADCAST_ACTION)
+                        intent.putStringArrayListExtra(NEW_RFID_CARD_KEY, cardIDs)
+                        sendBroadcast(intent)
+                    }
+                } catch (e: InterruptedException) {
+                }
+            }
+            // Long background task
         }
     }
 
@@ -439,5 +498,39 @@ class MyApplication : Application() {
             }
 
         }
+    }
+
+    /**
+     * Update the item count number in UI
+     */
+    fun updateSavedCardsNumber(cardIDs: ArrayList<String>) {
+        // Init the arraylist of items in database
+        val itemsInDatabase = ArrayList<Items>()
+        // Init the arraylist of un-recorded items ID
+        val unRecordedItemsIDs = ArrayList<String>()
+
+        // Are there any user info?
+        val daoSession = getmDaoSession()
+        val itemsDao = daoSession.itemsDao
+
+        for (cardID in cardIDs) {
+            val items = itemsDao.queryBuilder().where(ItemsDao.Properties.Rfid.like(cardID)).build().list()
+            if (items.size > 1) {
+                return
+            } else if (items.size == 1) {  // Database have an item bind with this card
+                if (items[0].userName.equals(currentUser)) {
+                    // Add item to List
+                    itemsInDatabase.add(items[0])
+                } else {
+                    Toast.makeText(this,
+                            R.string.another_users_card, Toast.LENGTH_LONG).show()
+                    return
+                }
+            } else {
+                unRecordedItemsIDs.add(cardID)
+            }
+        }
+        //modify the count number
+        savedCardsNumber = itemsInDatabase.size
     }
 }

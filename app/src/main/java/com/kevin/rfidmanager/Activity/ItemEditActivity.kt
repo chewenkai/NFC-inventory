@@ -2,8 +2,10 @@ package com.kevin.rfidmanager.Activity
 
 import android.Manifest
 import android.app.Activity
+import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.design.widget.TextInputEditText
@@ -67,6 +69,12 @@ class ItemEditActivity : AppCompatActivity() {
         val actionBar = supportActionBar!!
         actionBar.setTitle(R.string.edit_page)
         initUI()
+        registNewCardsBroadCast()
+    }
+
+    override fun onDestroy() {
+        unregisterReceiver(newCardsReceiver)
+        super.onDestroy()
     }
 
     private fun initUI() {
@@ -309,5 +317,26 @@ class ItemEditActivity : AppCompatActivity() {
             }
         }
         return true
+    }
+
+    /**
+     * as name said.
+     */
+    private fun registNewCardsBroadCast() {
+        val filter = IntentFilter(ConstantManager.NEW_RFID_CARD_BROADCAST_ACTION)
+        registerReceiver(newCardsReceiver, filter)
+    }
+
+    /**
+     * Receive notification of scanned cards
+     */
+    private val newCardsReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val action = intent.action
+            if (ConstantManager.NEW_RFID_CARD_BROADCAST_ACTION == action) {
+                supportActionBar!!.title = getString(R.string.item_number) +
+                        (application as MyApplication).savedCardsNumber
+            }
+        }
     }
 }
