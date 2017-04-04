@@ -26,9 +26,6 @@ import com.github.mjdev.libaums.fs.FileSystem
 import com.github.mjdev.libaums.fs.UsbFile
 import com.github.mjdev.libaums.fs.UsbFileOutputStream
 import com.github.mjdev.libaums.fs.UsbFileStreamFactory
-import com.kevin.rfidmanager.Adapter.ItemListAdaper
-import com.kevin.rfidmanager.Adapter.NewCardListAdapter
-import com.kevin.rfidmanager.Adapter.StorageDevicesAdaper
 import com.kevin.rfidmanager.MyApplication
 import com.kevin.rfidmanager.R
 import com.kevin.rfidmanager.Utils.*
@@ -44,6 +41,7 @@ import kotlinx.android.synthetic.main.item_inventory_list_layout.*
 import org.jetbrains.anko.onClick
 import org.jetbrains.anko.toast
 import java.io.*
+import java.util.*
 
 /**
  * Main page of the app
@@ -573,7 +571,7 @@ class ItemInventoryActivity : AppCompatActivity() {
             return
         }
         clearAllRadioButtonInPowerChangeDialog(rbs)
-        toast("Please record this number and tell Kevin:" + (mPower - 1).toString())
+        toast("Please record this number and tell Kevin:" + (mPower - 1).toString()) //1
         return
         rbs.get(mPower.toByte() - 1).isChecked = true
         dialogBuilder.setTitle(resources.getString(R.string.change_passwd))

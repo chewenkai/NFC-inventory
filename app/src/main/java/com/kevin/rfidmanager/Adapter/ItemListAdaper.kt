@@ -96,7 +96,11 @@ class ItemListAdaper(val activity: Activity, internal var itemes: MutableList<It
             Picasso.with(activity).load(R.drawable.image_read_fail).resize(ScreenUtil.getScreenWidth(activity), 0).into(image)
         } else {
             if (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                Picasso.with(activity).load(File(item.mainImagePath)).resize(ScreenUtil.getScreenWidth(activity), 0).into(image)
+                if (File(item.mainImagePath).exists()) {
+                    Picasso.with(activity).load(File(item.mainImagePath)).resize(ScreenUtil.getScreenWidth(activity), 0).into(image)
+                } else {
+                    Picasso.with(activity).load(R.drawable.image_read_fail).resize(ScreenUtil.getScreenWidth(activity), 0).into(image)
+                }
             } else {
                 Picasso.with(activity).load(R.drawable.image_read_fail).resize(ScreenUtil.getScreenWidth(activity), 0).into(image)
             }

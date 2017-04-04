@@ -17,8 +17,6 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
-import com.kevin.rfidmanager.Adapter.GallaryAdaper
-import com.kevin.rfidmanager.Adapter.KeyDesListAdapter
 import com.kevin.rfidmanager.MyApplication
 import com.kevin.rfidmanager.R
 import com.kevin.rfidmanager.Utils.ConstantManager
@@ -98,6 +96,12 @@ class ItemDetailActivity : AppCompatActivity() {
         val mainImagePath = item.mainImagePath
         if (mainImagePath != null) {
             if (ContextCompat.checkSelfPermission(this@ItemDetailActivity, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                // check if the file exist
+                if (File(mainImagePath).exists()) {
+                    Picasso.with(this@ItemDetailActivity).load(File(mainImagePath)).resize(ScreenUtil.getScreenWidth(this@ItemDetailActivity) / 2, 0).into(mainImage)
+                } else {
+                    Picasso.with(this@ItemDetailActivity).load(R.drawable.image_read_fail).resize(ScreenUtil.getScreenWidth(this@ItemDetailActivity) / 2, 0).into(mainImage)
+                }
                 Picasso.with(this@ItemDetailActivity).load(File(mainImagePath)).resize(ScreenUtil.getScreenWidth(this@ItemDetailActivity) / 2, 0).into(mainImage)
                 mainImage!!.setOnClickListener {
                     // Open picture
@@ -112,13 +116,13 @@ class ItemDetailActivity : AppCompatActivity() {
             } else {
                 Picasso.with(this@ItemDetailActivity).load(R.drawable.image_read_fail).resize(ScreenUtil.getScreenWidth(this@ItemDetailActivity) / 2, 0).into(mainImage)
                 mainImage!!.setOnClickListener {
-                    // Open picture
+                    // Disable Click Listening
                 }
             }
         } else {
             Picasso.with(this@ItemDetailActivity).load(R.drawable.image_read_fail).resize(ScreenUtil.getScreenWidth(this@ItemDetailActivity) / 2, 0).into(mainImage)
             mainImage!!.setOnClickListener {
-                // Open picture
+                // Disable Click Listening
             }
         }
 
