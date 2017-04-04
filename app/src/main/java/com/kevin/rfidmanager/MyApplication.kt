@@ -104,24 +104,24 @@ class MyApplication : Application() {
     private fun startScan() {
         OpenDev()
         openRF()
-        doAsync {
-            while (true) {
+//        doAsync {
+//            while (true) {
+//
+//                try {
+//                    Thread.sleep(3000)
+//                    if (m_inventoryThrd != null && m_inventoryThrd!!.isAlive()) {
+//                        uiThread {
+//                            OpenDev()
+//                            openRF()
+//                        }
+//                    }
+//
+//                } catch (e: InterruptedException) {
+//                }
+//            }
 
-                try {
-                    Thread.sleep(3000)
-                    if (m_inventoryThrd != null && m_inventoryThrd!!.isAlive()) {
-                        uiThread {
-                            OpenDev()
-                            openRF()
-                        }
-                    }
 
-                } catch (e: InterruptedException) {
-                }
-            }
-
-
-        }
+//        }
 
     }
 
@@ -281,7 +281,7 @@ class MyApplication : Application() {
             bGetScanRecordFlg = false
             mHandler.sendEmptyMessage(THREAD_END)// 结束
         }
-    };
+    }
 
     /**
      * Scan the Cards at another thread.
@@ -366,7 +366,7 @@ class MyApplication : Application() {
             m_reader.RDR_ResetCommuImmeTimeout()
             mHandler.sendEmptyMessage(THREAD_END)// 盘点结束
         }
-    };
+    }
 
     private val mHandler = MyHandler(this)
 
