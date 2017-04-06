@@ -28,13 +28,11 @@ import com.squareup.picasso.Picasso
 import java.io.File
 
 /**
- * Created by Kevin on 2017/1/29.
+ * Created by kevin on 17-4-5.
  * Mail: chewenkaich@gmail.com
  */
-
 class CheckoutAdaper(val activity: Activity, var recyclerView: RecyclerView? = null,
-                     var deleteItemsButton: CircleButton, var tv_checkout_result: TextView) :
-        RecyclerView.Adapter<CheckoutAdaper.ViewHolder>() {
+                     var deleteItemsButton: CircleButton, var tv_checkout_result: TextView) : RecyclerView.Adapter<CheckoutAdaper.ViewHolder>() {
     val detectedItems: MutableList<ItemWithCount> = ArrayList<ItemWithCount>()
     val circleDialog: ProgressDialog = ProgressDialog(activity)
     var deleteMdoe = false

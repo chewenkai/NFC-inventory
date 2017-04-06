@@ -124,10 +124,10 @@
                         android:layout_weight="1"
                         android:textColor="@color/black"
                         android:gravity="start"
-                        android:text="0"
+                        android:text="-80.0"
                         android:textStyle="bold"
                         android:textSize="14sp"
-                        android:inputType="numberDecimal" />
+                        android:inputType="number" />
 
                 </LinearLayout>
 

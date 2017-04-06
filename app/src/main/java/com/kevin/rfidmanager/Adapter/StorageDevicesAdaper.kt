@@ -18,9 +18,10 @@ import com.kevin.rfidmanager.Utils.USBUtil
 import java.util.*
 
 /**
- * Created by Kevin on 2017/1/29.
+ * Created by kevin on 17-4-5.
  * Mail: chewenkaich@gmail.com
  */
+
 
 class StorageDevicesAdaper(var activity: Activity, internal var paths: List<DeviceFile>) : RecyclerView.Adapter<StorageDevicesAdaper.ViewHolder>() {
     var selectedDeviceRootPath: DeviceFile? = null

@@ -11,10 +11,9 @@ import android.widget.TextView
 import com.kevin.rfidmanager.R
 
 /**
- * Created by Kevin on 2017/1/29.
+ * Created by kevin on 17-4-5.
  * Mail: chewenkaich@gmail.com
  */
-
 class NewCardListAdapter(context: Context, newCardIDs: MutableList<String>, etID: TextInputEditText) : ArrayAdapter<String>(context, R.layout.recycle_adapter_new_cards, newCardIDs) {
     var radioButtons: MutableList<AppCompatRadioButton> = ArrayList()
     val etID: TextInputEditText
@@ -78,6 +77,9 @@ class NewCardListAdapter(context: Context, newCardIDs: MutableList<String>, etID
     fun updateList(cardIDs: ArrayList<String>) {
         newCardIDs.clear()
         newCardIDs.addAll(cardIDs)
+        // Clear radio button and ID edittext when add or remove tags
+        clearAllRadioButtons()
+        etID.setText("")
         this.notifyDataSetChanged()
     }
 

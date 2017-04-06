@@ -26,6 +26,8 @@ import com.kbeanie.multipicker.api.ImagePicker
 import com.kbeanie.multipicker.api.Picker
 import com.kbeanie.multipicker.api.callbacks.ImagePickerCallback
 import com.kbeanie.multipicker.api.entity.ChosenImage
+import com.kevin.rfidmanager.Adapter.GallaryAdaper
+import com.kevin.rfidmanager.Adapter.KeyDesListAdapter
 import com.kevin.rfidmanager.MyApplication
 import com.kevin.rfidmanager.R
 import com.kevin.rfidmanager.Utils.ConstantManager
@@ -130,7 +132,7 @@ class ItemEditActivity : AppCompatActivity() {
 
         et_price.enabled = true
         et_price.textColor = resources.getColor(R.color.black)
-        et_price.setText(item!!.price.toString())
+        et_price.setText(item!!.price.toInt().toString())
 
         imageGalleryPicker!!.shouldGenerateMetadata(false) // Default is true
         imageGalleryPicker!!.shouldGenerateThumbnails(false) // Default is true

@@ -1,5 +1,4 @@
 package com.kevin.rfidmanager.Adapter
-
 import android.app.Activity
 import android.content.Context
 import android.support.design.widget.TextInputEditText
@@ -16,12 +15,10 @@ import com.kevin.rfidmanager.R
 import com.kevin.rfidmanager.Utils.ConstantManager
 import com.kevin.rfidmanager.Utils.DatabaseUtil
 import com.kevin.rfidmanager.database.KeyDescription
-
 /**
- * Created by Kevin on 2017/1/29.
+ * Created by kevin on 17-4-5.
  * Mail: chewenkaich@gmail.com
  */
-
 class KeyDesListAdapter(context: Context, item_key_des: List<KeyDescription>, hideButton: Boolean = false, currentID: String = ConstantManager.DEFAULT_RFID) : ArrayAdapter<KeyDescription>(context, R.layout.key_description_listview_llayout, item_key_des) {
     private val instance = this
     private var currentActivity: Activity? = null

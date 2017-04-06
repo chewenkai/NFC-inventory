@@ -26,7 +26,7 @@ import com.squareup.picasso.Picasso
 import java.io.File
 
 /**
- * Created by Kevin on 2017/1/29.
+ * Created by kevin on 17-4-5.
  * Mail: chewenkaich@gmail.com
  */
 

@@ -28,7 +28,8 @@ import kotlinx.android.synthetic.main.item_checkout_layout.*
 import org.jetbrains.anko.toast
 
 /**
- * Main page of the app
+ * Created by kevin on 17-4-5.
+ * Mail: chewenkaich@gmail.com
  */
 class CheckoutActivity : AppCompatActivity() {
     private var itemListAdapter: CheckoutAdaper? = null

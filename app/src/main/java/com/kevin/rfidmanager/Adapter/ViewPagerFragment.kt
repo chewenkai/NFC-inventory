@@ -11,9 +11,10 @@ import com.davemorrissey.labs.subscaleview.SubsamplingScaleImageView
 import com.kevin.rfidmanager.R
 
 /**
- * Created by kevin on 17-3-6.
+ * Created by kevin on 17-4-5.
  * Mail: chewenkaich@gmail.com
  */
+
 class ViewPagerFragment : Fragment() {
 
     private var asset: String? = null

@@ -1,5 +1,6 @@
 package com.kevin.rfidmanager.Adapter
 
+
 import android.Manifest
 import android.app.Activity
 import android.app.ProgressDialog
@@ -52,9 +53,10 @@ class ItemListAdaper(val activity: Activity, internal var itemes: MutableList<It
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val context = parent.context
         val inflater = LayoutInflater.from(context)
-
-        // Inflate the custom layout
         var contactView = inflater.inflate(R.layout.item_adapter_layout, parent, false)
+        // Inflate the custom layout
+        if (SPUtil.getInstence(activity).apperance == ConstantManager.DETAIL_LAYOUT)
+            contactView = inflater.inflate(R.layout.item_adapter_detail_layout, parent, false)
 
         // Return a new holder instance
         return ViewHolder(contactView)
@@ -172,6 +174,8 @@ class ItemListAdaper(val activity: Activity, internal var itemes: MutableList<It
                 holder.keyDes.visibility = View.VISIBLE
             }
         }
+
+        holder.price.setText((item.price.toInt()).toString())
 
     }
 
@@ -291,6 +295,7 @@ class ItemListAdaper(val activity: Activity, internal var itemes: MutableList<It
         var deleteItem: CircleButton
         var deleteCheckBox: CheckBox
         var keyDes: TextView
+        var price: TextView
 
         init {
             swipeLayout = itemView.findViewById(R.id.swipe_layout) as SwipeLayout
@@ -300,6 +305,7 @@ class ItemListAdaper(val activity: Activity, internal var itemes: MutableList<It
             deleteItem = itemView.findViewById(R.id.remove_item) as CircleButton
             deleteCheckBox = itemView.findViewById(R.id.item_delete_check_box) as CheckBox
             keyDes = itemView.findViewById(R.id.itemlist_key_des) as TextView
+            price = itemView.findViewById(R.id.et_price) as TextView
         }// Stores the itemView in a public final member variable that can be used
         // to access the context from any ViewHolder instance.
     }

@@ -13,6 +13,10 @@ import com.kevin.rfidmanager.Utils.DatabaseUtil
 import com.kevin.rfidmanager.database.ImagesPath
 import kotlinx.android.synthetic.main.activity_gallery.*
 
+/**
+ * Created by kevin on 17-4-5.
+ * Mail: chewenkaich@gmail.com
+ */
 
 class GalleryActivity : AppCompatActivity() {
     internal var default_position = 0

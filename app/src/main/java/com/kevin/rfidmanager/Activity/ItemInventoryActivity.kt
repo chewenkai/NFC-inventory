@@ -26,6 +26,9 @@ import com.github.mjdev.libaums.fs.FileSystem
 import com.github.mjdev.libaums.fs.UsbFile
 import com.github.mjdev.libaums.fs.UsbFileOutputStream
 import com.github.mjdev.libaums.fs.UsbFileStreamFactory
+import com.kevin.rfidmanager.Adapter.ItemListAdaper
+import com.kevin.rfidmanager.Adapter.NewCardListAdapter
+import com.kevin.rfidmanager.Adapter.StorageDevicesAdaper
 import com.kevin.rfidmanager.MyApplication
 import com.kevin.rfidmanager.R
 import com.kevin.rfidmanager.Utils.*
@@ -292,7 +295,7 @@ class ItemInventoryActivity : AppCompatActivity() {
                         this@ItemInventoryActivity, LinearLayoutManager.VERTICAL, false)
                 recyclerView!!.layoutManager = linearLayoutManager
             }
-            11 -> {
+            11 -> { // ConstantManager.DETAIL_LAYOUT
                 val linearLayoutManager = LinearLayoutManager(
                         this@ItemInventoryActivity, LinearLayoutManager.VERTICAL, false)
                 recyclerView!!.layoutManager = linearLayoutManager
@@ -317,6 +320,8 @@ class ItemInventoryActivity : AppCompatActivity() {
         dataAdapter = NewCardListAdapter(this@ItemInventoryActivity, newCardsIDsStringList, itemID)
         cardsList.adapter = dataAdapter
 
+        itemID.visibility = View.GONE  // Hooman said do not need this.
+
         dialogBuilder.setTitle("Add new item: ")
         dialogBuilder.setMessage("Take your RFID card close to card reader, the id will appear in the list.")
         alertDialog = dialogBuilder.create()
@@ -325,7 +330,7 @@ class ItemInventoryActivity : AppCompatActivity() {
             val new_id = itemID.text.toString()
             if (new_id.isEmpty()) {
                 Toast.makeText(this@ItemInventoryActivity,
-                        "please input an ID or close your card to reader.",
+                        "please close your card to reader.",
                         Toast.LENGTH_LONG).show()
                 return@OnClickListener
             }

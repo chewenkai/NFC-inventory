@@ -23,10 +23,9 @@ import com.kevin.rfidmanager.Utils.SPUtil
 import com.kevin.rfidmanager.Utils.StringUtil
 import com.kevin.rfidmanager.database.UsersDao
 
-
 /**
- * Login UI
- * Created by Kevin on 2017/1/26
+ * Created by kevin on 17-4-5.
+ * Mail: chewenkaich@gmail.com
  */
 class LoginActivity : AppCompatActivity() {
     private var mPersonEdit: EditText? = null   // user name editor

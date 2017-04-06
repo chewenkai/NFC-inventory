@@ -17,6 +17,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
+import com.kevin.rfidmanager.Adapter.GallaryAdaper
+import com.kevin.rfidmanager.Adapter.KeyDesListAdapter
 import com.kevin.rfidmanager.MyApplication
 import com.kevin.rfidmanager.R
 import com.kevin.rfidmanager.Utils.ConstantManager
@@ -133,7 +135,7 @@ class ItemDetailActivity : AppCompatActivity() {
         et_price.enabled = false
         et_price.textColor = resources.getColor(R.color.black)
         et_price.setBackgroundColor(resources.getColor(R.color.white))
-        et_price.setText(item.price.toString())
+        et_price.setText((item.price.toInt()).toString())
 
         detailDescriptionTitle = findViewById(R.id.detail_description_title) as TextView
         detailDescriptionTitle!!.visibility = View.GONE
