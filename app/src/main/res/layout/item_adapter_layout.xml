@@ -61,11 +61,11 @@
             android:orientation="vertical">
 
             <TextView
-                android:id="@+id/et_price"
+                android:id="@+id/list_item_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="15"
-                android:gravity="end"
+                android:gravity="center"
                 android:layout_gravity="end"
                 android:padding="2dp"
                 android:layout_marginRight="10dp"
@@ -91,7 +91,7 @@
                 android:src="@drawable/add_image" />
 
             <TextView
-                android:id="@+id/list_item_name"
+                android:id="@+id/et_price"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="bottom|center_horizontal"
