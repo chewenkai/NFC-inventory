@@ -39,6 +39,7 @@
     <string name="delete_confirm_title"> will be deleted permanently</string>
     <string name="delete_confirm"> Are you sure you want to delete it permanently?</string>
     <string name="delete_success">Delete successful</string>
+    <string name="change_power">Changing Power</string>
 
     <!--Add Page-->
     <string name="dialog_title_edit_key_des">Edit key description</string>

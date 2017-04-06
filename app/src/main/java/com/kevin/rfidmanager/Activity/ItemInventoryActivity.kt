@@ -576,10 +576,10 @@ class ItemInventoryActivity : AppCompatActivity() {
             return
         }
         clearAllRadioButtonInPowerChangeDialog(rbs)
-        toast("Please record this number and tell Kevin:" + (mPower - 1).toString()) //1
-        return
+//        toast("Please record this number and tell Kevin:" + (mPower - 1).toString()) //1
+
         rbs.get(mPower.toByte() - 1).isChecked = true
-        dialogBuilder.setTitle(resources.getString(R.string.change_passwd))
+        dialogBuilder.setTitle(resources.getString(R.string.change_power))
         val b = dialogBuilder.create()
         b.show()
 
