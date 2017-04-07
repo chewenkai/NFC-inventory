@@ -43,6 +43,7 @@ class MyApplication : Application() {
     var currentUser = ConstantManager.DEFAULT_USER
 
     // Read RFID PART
+    var isReaderConnected = false
     var m_reader: ADReaderInterface = ADReaderInterface()
     private var m_inventoryThrd: Thread? = null// The thread of inventory
     private var m_getScanRecordThrd: Thread? = null// The thead of scanf the record.
@@ -71,6 +72,7 @@ class MyApplication : Application() {
         startScan()
         initSound()
         registUSBBroadCast()
+        detectConnection()
 //        emulateRFIDReader()
     }
 
@@ -98,31 +100,38 @@ class MyApplication : Application() {
 
     // Blow is the RFID read part
 
+    private fun detectConnection() {
+        doAsync {
+            while (true) {
+                try {
+                    Thread.sleep(5000)
+                    if (!m_reader.isReaderOpen) {
+                        uiThread {
+                            startScan()
+                        }
+                    }
+                } catch (e: InterruptedException) {
+                    uiThread {
+                        toast(e.toString())
+                    }
+                }
+            }
+        }
+    }
     /**
      * start scan RFID cards and show at the dialog
      */
     private fun startScan() {
+        ADReaderInterface.EnumerateUsb(this)
+        if (!ADReaderInterface.HasUsbPermission("")) {
+            Toast.makeText(this,
+                    getString(R.string.tx_msg_noUsbPermission),
+                    Toast.LENGTH_SHORT).show()
+            ADReaderInterface.RequestUsbPermission("")
+            return
+        }
         OpenDev()
         openRF()
-//        doAsync {
-//            while (true) {
-//
-//                try {
-//                    Thread.sleep(3000)
-//                    if (m_inventoryThrd != null && m_inventoryThrd!!.isAlive()) {
-//                        uiThread {
-//                            OpenDev()
-//                            openRF()
-//                        }
-//                    }
-//
-//                } catch (e: InterruptedException) {
-//                }
-//            }
-
-
-//        }
-
     }
 
     /**
@@ -177,9 +186,8 @@ class MyApplication : Application() {
 
             conStr = String.format("RDType=%s;CommType=USB;Description=",
                     devName)
-        } else {
-            return
         }
+
         if (m_reader.RDR_Open(conStr) == ApiErrDefinition.NO_ERROR) {
             // ///////////////////////只有RPAN设备支持扫描模式/////////////////////////////
 
@@ -346,6 +354,7 @@ class MyApplication : Application() {
                         mHandler.sendMessage(msg)
                     }
                 } else {
+//                    toast("tell kevin:" + iret.toString())
                     newAI = RfidDef.AI_TYPE_NEW
                     if (b_inventoryThreadRun) {
                         failedCnt++
@@ -354,8 +363,18 @@ class MyApplication : Application() {
                     msg.what = INVENTORY_FAIL_MSG
                     msg.arg1 = failedCnt
                     mHandler.sendMessage(msg)
-                }
 
+                    // reboot the rfid reader
+                    m_reader.RDR_CloseRFTransmitter()
+                    m_reader.RDR_Close()
+                    m_reader.RDR_Open(String.format("RDType=%s;CommType=USB;Description=", "TPAD"))
+                    m_reader.RDR_OpenRFTransmitter()
+                    try {
+                        Thread.sleep(2000)  // delay two seconds
+                    } catch (e: InterruptedException) {
+                    }
+
+                }
                 try {
                     Thread.sleep(1000)
                 } catch (e: InterruptedException) {
