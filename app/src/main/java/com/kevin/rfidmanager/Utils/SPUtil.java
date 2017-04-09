@@ -15,6 +15,7 @@ public class SPUtil {
     private static final String PERSON_PWD = "person_pwd";  // password
     private static final String NEED_PASSWD = "need_passwd";  // is user need password to protect info?
     private static final String APPERANCE = "apperance";  // set apperance
+    private static final String SELECTED_POWER = "power";  // set apperance
 
     private static SPUtil instence;
     private SharedPreferences sharedPreferences;
@@ -97,4 +98,13 @@ public class SPUtil {
         return sharedPreferences.getInt(APPERANCE, ConstantManager.LINEAR_LAYOUT);
     }
 
+    public void savePowerValue(int power){
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        editor.putInt(SELECTED_POWER, power);
+        editor.commit();
+    }
+
+    public int getPowerValue(){
+        return sharedPreferences.getInt(SELECTED_POWER, 2);
+    }
 }

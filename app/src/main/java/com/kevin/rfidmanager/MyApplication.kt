@@ -110,7 +110,7 @@ class MyApplication : Application() {
                             startScan()
                         }
                     }
-                } catch (e: InterruptedException) {
+                } catch (e: Throwable ) {
                     uiThread {
                         toast(e.toString())
                     }
@@ -124,9 +124,6 @@ class MyApplication : Application() {
     private fun startScan() {
         ADReaderInterface.EnumerateUsb(this)
         if (!ADReaderInterface.HasUsbPermission("")) {
-            Toast.makeText(this,
-                    getString(R.string.tx_msg_noUsbPermission),
-                    Toast.LENGTH_SHORT).show()
             ADReaderInterface.RequestUsbPermission("")
             return
         }
@@ -242,7 +239,6 @@ class MyApplication : Application() {
     }
 
     private var bGetScanRecordFlg = false
-
 
     private inner class GetScanRecordThrd : Runnable {
         override fun run() {

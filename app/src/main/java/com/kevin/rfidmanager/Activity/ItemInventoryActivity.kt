@@ -178,12 +178,12 @@ class ItemInventoryActivity : AppCompatActivity() {
         }
     }
 
-    private fun getSelectedPower(rbs: ArrayList<AppCompatRadioButton>): Int {
-        var count = -1
+    private fun getSelectedPower(rbs: ArrayList<AppCompatRadioButton>): Byte {
+        var count = 0
         for (rb in rbs) {
             count++
             if (rb.isChecked)
-                return count
+                return count.toByte()
         }
         return -1
     }
@@ -244,8 +244,9 @@ class ItemInventoryActivity : AppCompatActivity() {
                     id.add(ID)
                     updateCardsList(id)
                 } else {
-                    Toast.makeText(this@ItemInventoryActivity,
-                            R.string.another_users_card, Toast.LENGTH_LONG).show()
+                    if (items[0].userName != ConstantManager.DEFAULT_USER)
+                        Toast.makeText(this@ItemInventoryActivity,
+                                R.string.another_users_card, Toast.LENGTH_LONG).show()
                     return
                 }
             } else {
@@ -568,17 +569,30 @@ class ItemInventoryActivity : AppCompatActivity() {
         val saveButton = dialogView.findViewById(R.id.dialog_change) as Button
         val cancleButton = dialogView.findViewById(R.id.dialog_cancle) as Button
 
-        val mPower = 0.toByte()
-        val nret = (application as MyApplication).
-                m_reader.RDR_GetRFPower(mPower)
-        if (nret != ApiErrDefinition.NO_ERROR) {
-            toast(getString(com.example.AnReaderDemo.R.string.tx_getRFPower_fail) + nret)
-            return
-        }
+//        clearAllRadioButtonInPowerChangeDialog(rbs)
+//        for (i in 1..6){
+//            val mPower = i.toByte()
+//            val nret = (application as MyApplication).
+//                    m_reader.RDR_GetRFPower(mPower)
+//            if (nret == ApiErrDefinition.NO_ERROR) {
+//                rbs.get(i-1).isChecked = true
+//                break
+//            }
+//        }
+
         clearAllRadioButtonInPowerChangeDialog(rbs)
+//        val mPower = 0.toByte()
+//        val nret = (application as MyApplication).
+//                m_reader.RDR_GetRFPower(mPower)
+//        if (nret != ApiErrDefinition.NO_ERROR) {
+//            toast(getString(com.example.AnReaderDemo.R.string.tx_getRFPower_fail) + nret)
+//            return
+//        }
+
 //        toast("Please record this number and tell Kevin:" + (mPower - 1).toString()) //1
 
-        rbs.get(mPower.toByte() - 1).isChecked = true
+        if (SPUtil.getInstence(this@ItemInventoryActivity).powerValue>=0)
+            rbs.get(SPUtil.getInstence(this@ItemInventoryActivity).powerValue).isChecked = true
         dialogBuilder.setTitle(resources.getString(R.string.change_power))
         val b = dialogBuilder.create()
         b.show()
@@ -586,9 +600,11 @@ class ItemInventoryActivity : AppCompatActivity() {
         saveButton.setOnClickListener(View.OnClickListener {
             var str = ""
             val nret_set = (application as MyApplication).
-                    m_reader.RDR_SetRFPower(getSelectedPower(rbs).toByte())
+                    m_reader.RDR_SetRFPower(getSelectedPower(rbs))
             if (nret_set == ApiErrDefinition.NO_ERROR) {
                 str = getString(com.example.AnReaderDemo.R.string.tx_setPower_ok)
+                SPUtil.getInstence(this@ItemInventoryActivity).
+                        savePowerValue(getSelectedPower(rbs)-1)
             } else {
                 str = getString(com.example.AnReaderDemo.R.string.tx_setPower_fail)
             }

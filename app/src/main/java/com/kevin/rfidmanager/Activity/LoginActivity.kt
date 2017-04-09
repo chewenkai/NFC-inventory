@@ -16,12 +16,17 @@ import android.widget.*
 import com.kevin.rfidmanager.MyApplication
 import com.kevin.rfidmanager.R
 import com.kevin.rfidmanager.Utils.ConstantManager
-import com.kevin.rfidmanager.Utils.ConstantManager.IS_DEBUGING
-import com.kevin.rfidmanager.Utils.ConstantManager.PERMISSION_REQUEST_CODE
 import com.kevin.rfidmanager.Utils.DatabaseUtil
 import com.kevin.rfidmanager.Utils.SPUtil
 import com.kevin.rfidmanager.Utils.StringUtil
 import com.kevin.rfidmanager.database.UsersDao
+import android.net.wifi.WifiInfo
+import android.net.wifi.WifiManager
+import com.kevin.rfidmanager.Utils.NetWorkUtil.getMacAddr
+import org.jetbrains.anko.toast
+import android.telephony.TelephonyManager
+import com.kevin.rfidmanager.Utils.ConstantManager.*
+
 
 /**
  * Created by kevin on 17-4-5.
@@ -47,6 +52,62 @@ class LoginActivity : AppCompatActivity() {
 
     }
 
+    /**
+     * This method will get a unique code of device.
+     */
+    private fun checkUUID(){
+        val telephonyManager: TelephonyManager
+
+        telephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+
+        /*
+        * getDeviceId() returns the unique device ID.
+        * For example,the IMEI for GSM and the MEID or ESN for CDMA phones.
+        */
+        val deviceId = telephonyManager.deviceId
+//        toast(deviceId)  /// This code will make your device show an message of Unique ID
+        if (!deviceId.equals(ConstantManager.UniqueCode)){
+            toast("This device is not supported.")
+            finish()
+        }
+    }
+
+    /**
+     *refer to Android 6.0 Changes.
+
+        To provide users with greater data protection, starting in this release,
+    Android removes programmatic access to the device’s local hardware identifier
+    for apps using the Wi-Fi and Bluetooth APIs. The WifiInfo.getMacAddress()
+    and the BluetoothAdapter.getAddress() methods now return a constant value of 02:00:00:00:00:00.
+     */
+    private fun checkWifiMacAddress() {
+        val manager = getSystemService(Context.WIFI_SERVICE) as WifiManager
+        val info = manager.connectionInfo
+        val address = info.macAddress
+//        toast(address)
+//        toast(getMacAddr())
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int,
+                                            permissions: Array<String>, grantResults: IntArray) {
+        when (requestCode) {
+            PHONE_STAT_PERMISSION_REQUEST_CODE -> {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    checkUUID()
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return
+            }
+        }// other 'case' lines to check for other
+        // permissions this app might request
+    }
     /*
      * find view in layout file.(xml file)
      */
@@ -214,6 +275,11 @@ class LoginActivity : AppCompatActivity() {
         if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), PERMISSION_REQUEST_CODE)
         }
+        val phoneStatePermissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)
+        if (phoneStatePermissionCheck != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_PHONE_STATE), PHONE_STAT_PERMISSION_REQUEST_CODE)
+        }else
+            checkUUID()
     }
 
     /*

@@ -6,12 +6,14 @@ package com.kevin.rfidmanager.Utils;
  */
 
 public class ConstantManager {
+    public static String UniqueCode = "000000000000";
     public static boolean IS_DEBUGING = false;
 
     // Main page
     public static int REQUEST_MAIN_IMAGE_FILE = 5;
     public static int REQUEST_GALLERY_IMAGE_FILE = 6;
     public static int PERMISSION_REQUEST_CODE=7;
+    public static int PHONE_STAT_PERMISSION_REQUEST_CODE=12;
     public static String DEFAULT_RFID = "-1";
     public static String DEFAULT_USER = "default user";
 
