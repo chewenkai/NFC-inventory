@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.TextView
 import com.kevin.rfidmanager.R
 
 /**
@@ -26,7 +25,6 @@ class NewCardListAdapter(context: Context, newCardIDs: MutableList<String>, etID
 
     // View lookup cache
     private class ViewHolder {
-        internal var cardID: TextView? = null
         internal var radioButton: AppCompatRadioButton? = null
     }
 
@@ -42,7 +40,6 @@ class NewCardListAdapter(context: Context, newCardIDs: MutableList<String>, etID
             viewHolder = ViewHolder()
             val inflater = LayoutInflater.from(context)
             convertView = inflater.inflate(R.layout.recycle_adapter_new_cards, parent, false)
-            viewHolder.cardID = convertView!!.findViewById(R.id.card_id) as TextView
             viewHolder.radioButton = convertView.findViewById(R.id.new_card_ratio_button) as AppCompatRadioButton
             // Cache the viewHolder object inside the fresh view
             convertView.tag = viewHolder
@@ -52,26 +49,36 @@ class NewCardListAdapter(context: Context, newCardIDs: MutableList<String>, etID
         }
         // Populate the data from the data object via the viewHolder object
         // into the template view.
-        viewHolder.cardID!!.text = cardID
 
         // listen the event of radio button
         val radioButton = viewHolder.radioButton
+
+        // set text
+        radioButton?.text = cardID
+
         if (!radioButtons.contains(radioButton))
             radioButtons.add(radioButton!!)
+
         radioButton!!.setOnClickListener {
             clearAllRadioButtons()
             radioButton.isChecked = true
-            etID.setText(cardID)
         }
 
         // Return the completed view to render on screen
-        return convertView
+        return convertView!!
     }
 
     fun clearAllRadioButtons() {
         for (radioButton in radioButtons) {
             radioButton.isChecked = false
         }
+    }
+
+    fun getSelectedRadioButton(): AppCompatRadioButton? {
+        for (radioButton in radioButtons) {
+            if (radioButton.isChecked) return radioButton
+        }
+        return null
     }
 
     fun updateList(cardIDs: ArrayList<String>) {

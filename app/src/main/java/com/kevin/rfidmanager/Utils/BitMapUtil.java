@@ -11,7 +11,6 @@ import android.graphics.Paint;
 import android.graphics.drawable.BitmapDrawable;
 import android.media.ThumbnailUtils;
 import android.net.Uri;
-import android.util.Log;
 
 import java.io.BufferedOutputStream;
 import java.io.File;

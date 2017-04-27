@@ -42,7 +42,6 @@ import com.nightonke.boommenu.Piece.PiecePlaceEnum
 import com.rfid.def.ApiErrDefinition
 import kotlinx.android.synthetic.main.item_inventory_list_layout.*
 import org.jetbrains.anko.onClick
-import org.jetbrains.anko.toast
 import java.io.*
 import java.util.*
 
@@ -63,7 +62,7 @@ class ItemInventoryActivity : AppCompatActivity() {
     var currentID = ConstantManager.DEFAULT_RFID
     // Read RFID PART
     var newCardsIDsStringList = ArrayList<String>()
-    var dataAdapter: NewCardListAdapter? = null
+    var newCardListAdapter: NewCardListAdapter? = null
     var alertDialog: AlertDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -318,8 +317,8 @@ class ItemInventoryActivity : AppCompatActivity() {
         val saveButton = dialogView.findViewById(R.id.dialog_change) as Button
         val cancleButton = dialogView.findViewById(R.id.dialog_cancle) as Button
         val cardsList = dialogView.findViewById(R.id.new_cards_list) as ListView
-        dataAdapter = NewCardListAdapter(this@ItemInventoryActivity, newCardsIDsStringList, itemID)
-        cardsList.adapter = dataAdapter
+        newCardListAdapter = NewCardListAdapter(this@ItemInventoryActivity, newCardsIDsStringList, itemID)
+        cardsList.adapter = newCardListAdapter
 
         itemID.visibility = View.GONE  // Hooman said do not need this.
 
@@ -328,7 +327,7 @@ class ItemInventoryActivity : AppCompatActivity() {
         alertDialog = dialogBuilder.create()
 
         saveButton.setOnClickListener(View.OnClickListener {
-            val new_id = itemID.text.toString()
+            val new_id = newCardListAdapter?.getSelectedRadioButton()?.text.toString()
             if (new_id.isEmpty()) {
                 Toast.makeText(this@ItemInventoryActivity,
                         "please close your card to reader.",
@@ -345,10 +344,9 @@ class ItemInventoryActivity : AppCompatActivity() {
                 return@OnClickListener
             }
             DatabaseUtil.insertNewItem(this@ItemInventoryActivity,
-                    itemID.text.toString(),
-                    itemName.text.toString(), currentUser)
+                    new_id, itemName.text.toString(), currentUser)
             val intent = Intent(this@ItemInventoryActivity, ItemEditActivity::class.java)
-            intent.putExtra(ConstantManager.CURRENT_ITEM_ID, itemID.text.toString())
+            intent.putExtra(ConstantManager.CURRENT_ITEM_ID, new_id)
             startActivity(intent)
             alertDialog!!.dismiss()
 
@@ -367,7 +365,7 @@ class ItemInventoryActivity : AppCompatActivity() {
 
         if (alertDialog == null)
             return
-        if (dataAdapter == null)
+        if (newCardListAdapter == null)
             return
 
         // Init the arraylist of items in database
@@ -406,7 +404,7 @@ class ItemInventoryActivity : AppCompatActivity() {
 
         // Update the un-recorded item list, show the newest cards which are read from card reader.
         if (!unRecordedItemsIDs.isEmpty()) {
-            dataAdapter!!.updateList(unRecordedItemsIDs)
+            newCardListAdapter!!.updateList(unRecordedItemsIDs)
             if (!alertDialog!!.isShowing)
                 alertDialog!!.show()
         }

@@ -1,7 +1,6 @@
 package com.kevin.rfidmanager.Utils;
 
 import android.content.Context;
-import android.location.LocationManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.TrafficStats;

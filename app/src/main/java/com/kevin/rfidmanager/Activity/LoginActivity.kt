@@ -4,28 +4,26 @@ import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.wifi.WifiManager
 import android.os.Bundle
 import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AlertDialog
 import android.support.v7.app.AppCompatActivity
+import android.telephony.TelephonyManager
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import com.kevin.rfidmanager.MyApplication
 import com.kevin.rfidmanager.R
 import com.kevin.rfidmanager.Utils.ConstantManager
+import com.kevin.rfidmanager.Utils.ConstantManager.*
 import com.kevin.rfidmanager.Utils.DatabaseUtil
 import com.kevin.rfidmanager.Utils.SPUtil
 import com.kevin.rfidmanager.Utils.StringUtil
 import com.kevin.rfidmanager.database.UsersDao
-import android.net.wifi.WifiInfo
-import android.net.wifi.WifiManager
-import com.kevin.rfidmanager.Utils.NetWorkUtil.getMacAddr
 import org.jetbrains.anko.toast
-import android.telephony.TelephonyManager
-import com.kevin.rfidmanager.Utils.ConstantManager.*
 
 
 /**

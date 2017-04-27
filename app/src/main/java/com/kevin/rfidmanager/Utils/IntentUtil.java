@@ -1,6 +1,5 @@
 package com.kevin.rfidmanager.Utils;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 
