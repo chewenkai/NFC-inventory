@@ -66,7 +66,7 @@ class ItemListActivity : AppCompatActivity() {
     public override fun onResume() {
         super.onResume()
         if (itemListAdapter != null) {
-            itemListAdapter!!.updateUI()
+            itemListAdapter?.updateUI()
         }
     }
 
@@ -118,12 +118,17 @@ class ItemListActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater = menuInflater
-        inflater.inflate(R.menu.empty_menu, menu)
+        inflater.inflate(R.menu.statistic_menu, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.action_bar_statistic -> {
+                val intent = Intent(this, StatisticActivity::class.java)
+                intent.putExtra(ConstantManager.CURRENT_USER_NAME, currentUser)
+                startActivity(intent)
+            }
             android.R.id.home -> finish()
         }
         return true

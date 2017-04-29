@@ -21,11 +21,13 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig itemsDaoConfig;
     private final DaoConfig keyDescriptionDaoConfig;
     private final DaoConfig usersDaoConfig;
+    private final DaoConfig saleInfoDaoConfig;
 
     private final ImagesPathDao imagesPathDao;
     private final ItemsDao itemsDao;
     private final KeyDescriptionDao keyDescriptionDao;
     private final UsersDao usersDao;
+    private final SaleInfoDao saleInfoDao;
 
     public DaoSession(Database db, IdentityScopeType type, Map<Class<? extends AbstractDao<?, ?>>, DaoConfig>
             daoConfigMap) {
@@ -43,15 +45,20 @@ public class DaoSession extends AbstractDaoSession {
         usersDaoConfig = daoConfigMap.get(UsersDao.class).clone();
         usersDaoConfig.initIdentityScope(type);
 
+        saleInfoDaoConfig = daoConfigMap.get(SaleInfoDao.class).clone();
+        saleInfoDaoConfig.initIdentityScope(type);
+
         imagesPathDao = new ImagesPathDao(imagesPathDaoConfig, this);
         itemsDao = new ItemsDao(itemsDaoConfig, this);
         keyDescriptionDao = new KeyDescriptionDao(keyDescriptionDaoConfig, this);
         usersDao = new UsersDao(usersDaoConfig, this);
+        saleInfoDao = new SaleInfoDao(saleInfoDaoConfig, this);
 
         registerDao(ImagesPath.class, imagesPathDao);
         registerDao(Items.class, itemsDao);
         registerDao(KeyDescription.class, keyDescriptionDao);
         registerDao(Users.class, usersDao);
+        registerDao(SaleInfo.class, saleInfoDao);
     }
     
     public void clear() {
@@ -59,6 +66,7 @@ public class DaoSession extends AbstractDaoSession {
         itemsDaoConfig.clearIdentityScope();
         keyDescriptionDaoConfig.clearIdentityScope();
         usersDaoConfig.clearIdentityScope();
+        saleInfoDaoConfig.clearIdentityScope();
     }
 
     public ImagesPathDao getImagesPathDao() {
@@ -75,6 +83,10 @@ public class DaoSession extends AbstractDaoSession {
 
     public UsersDao getUsersDao() {
         return usersDao;
+    }
+
+    public SaleInfoDao getSaleInfoDao() {
+        return saleInfoDao;
     }
 
 }

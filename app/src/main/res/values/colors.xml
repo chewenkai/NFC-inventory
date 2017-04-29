@@ -10,6 +10,7 @@
     <color name="blue_sky">#29cccf</color>
     <color name="screen_bg">#424242</color>
     <color name="gray">#cacaca</color>
+    <color name="slight_gray">#efebe9</color>
     <color name="yellow">#cfca3e</color>
     <color name="warning_color">#ff4848</color>
 
@@ -20,4 +21,7 @@
     <color name="item_name_bg">#aa13110d</color>
     <color name="item_list_key_des">#353535</color>
     <color name="item_list_background">#ffffff</color>
+
+    <color name="bg_statistic_normal">#e9e9e9</color>
+    <color name="bg_statistic_pressed">#cccccc</color>
 </resources>

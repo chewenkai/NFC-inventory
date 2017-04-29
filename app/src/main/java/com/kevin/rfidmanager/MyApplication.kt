@@ -97,7 +97,7 @@ class MyApplication : Application() {
 
         override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
             MigrationHelper.migrate(db, ItemsDao::class.java, KeyDescriptionDao::class.java, ImagesPathDao::class.java,
-                    UsersDao::class.java)
+                    UsersDao::class.java, SaleInfoDao::class.java)
         }
     }
 

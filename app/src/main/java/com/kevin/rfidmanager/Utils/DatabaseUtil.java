@@ -75,7 +75,7 @@ public class DatabaseUtil {
         DaoSession daoSession = ((MyApplication) activity.getApplication()).getDaoSession();
         ItemsDao itemsDao = daoSession.getItemsDao();
 
-        Query<Items> query = itemsDao.queryBuilder().where(ItemsDao.Properties.UserName.like(user)).
+        Query<Items> query = itemsDao.queryBuilder().where(ItemsDao.Properties.UserName.eq(user)).
                 build();
 
         return query.list();

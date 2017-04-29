@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context="com.kevin.rfidmanager.Activity.StatisticActivity">
+
+    <android.support.design.widget.TabLayout
+        android:id="@+id/tab_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        app:tabTextAppearance="@style/MyTabLayoutTextAppearance"
+        app:tabSelectedTextColor="@color/colorAccent">
+
+    </android.support.design.widget.TabLayout>
+
+    <ScrollView
+        android:id="@+id/select_date_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Select the start date:"
+                android:layout_margin="10dp" />
+
+            <LinearLayout
+                android:id="@+id/start_date_picker_layout"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="170dp">
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Select the end date:"
+                android:layout_margin="10dp" />
+
+            <LinearLayout
+                android:id="@+id/end_date_picker_layout"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="170dp"></LinearLayout>
+
+            <Button
+                android:id="@+id/done_select_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="40dp"
+                android:layout_marginStart="40dp"
+                android:layout_marginRight="40dp"
+                android:layout_marginEnd="40dp"
+                android:text="Done"
+                style="@style/Base.Widget.AppCompat.Button.Colored" />
+        </LinearLayout>
+    </ScrollView>
+
+
+    <ListView
+        android:id="@+id/statistic_list"
+        android:layout_width="match_parent"
+        android:layout_margin="10dp"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+    </ListView>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_margin="10dp">
+
+        <TextView
+            android:id="@+id/total_volume"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginLeft="30dp"
+            android:layout_marginStart="30dp"
+            android:text="Total volume: 0"
+            android:textColor="@color/black"
+            android:textStyle="normal"
+            android:textSize="18sp" />
+
+        <TextView
+            android:id="@+id/total_price"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginRight="30dp"
+            android:layout_marginEnd="30dp"
+            android:text="Total price: 0"
+            android:textColor="@color/black"
+            android:textStyle="normal"
+            android:textSize="18sp" />
+    </LinearLayout>
+</LinearLayout>

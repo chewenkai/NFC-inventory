@@ -5,9 +5,9 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.NFC" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE"/>
-    <!--<uses-feature android:name="android.hardware.nfc" android:required="true" />-->
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
+    <!-- <uses-feature android:name="android.hardware.nfc" android:required="true" /> -->
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
@@ -47,12 +47,12 @@
         <activity
             android:name=".Activity.ItemListActivity"
             android:parentActivityName=".Activity.ItemInventoryActivity">
+
             <!-- The meta-data element is needed for versions lower than 4.1 -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.kevin.rfidmanager.Activity.ItemInventoryActivity" />
         </activity>
-
         <activity android:name=".Activity.ItemInventoryActivity">
             <intent-filter>
                 <action android:name="android.nfc.action.TAG_DISCOVERED" />
@@ -62,7 +62,6 @@
                 android:name="android.nfc.action.TECH_DISCOVERED"
                 android:resource="@xml/nfc_tech_filter" />
         </activity>
-
         <activity
             android:name=".Activity.CheckoutActivity"
             android:parentActivityName=".Activity.ItemInventoryActivity">
@@ -78,10 +77,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.kevin.rfidmanager.Activity.ItemInventoryActivity" />
         </activity>
-
         <activity
             android:name=".Activity.ItemEditActivity"
             android:parentActivityName=".Activity.ItemDetailActivity">
+
             <!-- The meta-data element is needed for versions lower than 4.1 -->
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
@@ -93,6 +92,8 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.kevin.rfidmanager.Activity.ItemListActivity" />
+        </activity>
+        <activity android:name=".Activity.StatisticActivity">
         </activity>
     </application>
 

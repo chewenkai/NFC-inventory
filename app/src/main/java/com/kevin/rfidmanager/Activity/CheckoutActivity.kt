@@ -28,6 +28,7 @@ import com.kevin.rfidmanager.Utils.HexConvertUtil
 import com.kevin.rfidmanager.Utils.SPUtil
 import com.kevin.rfidmanager.database.Items
 import com.kevin.rfidmanager.database.ItemsDao
+import com.kevin.rfidmanager.database.SaleInfo
 import kotlinx.android.synthetic.main.item_checkout_layout.*
 import org.jetbrains.anko.toast
 import java.util.*
@@ -175,6 +176,14 @@ class CheckoutActivity : AppCompatActivity() {
         when (item.itemId) {
             R.id.action_bar_checkout_done -> {
                 DatabaseUtil.updateMultiItems(this@CheckoutActivity, itemListAdapter?.detectedItems!!)
+                for (item in itemListAdapter?.detectedItems!!) {
+                    if (item.count == 0)
+                        continue
+                    val saleInfo = SaleInfo(null, item.item?.userName, item.item?.rfid, item.item?.itemName,
+                            item.item?.price!!, item.item?.mainImagePath, item.item?.detailDescription, System
+                            .currentTimeMillis(), item.count)
+                    (application as MyApplication).daoSession?.saleInfoDao?.insertOrReplace(saleInfo)
+                }
                 finish()
             }
             android.R.id.home -> {
