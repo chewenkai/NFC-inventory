@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.os.Environment;
 
+import com.kevin.rfidmanager.Adapter.CheckoutAdaper;
 import com.kevin.rfidmanager.MyApplication;
 import com.kevin.rfidmanager.R;
 import com.kevin.rfidmanager.database.DaoSession;
@@ -22,6 +23,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.channels.FileChannel;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -111,7 +113,7 @@ public class DatabaseUtil {
         DaoSession daoSession = ((MyApplication) activity.getApplication()).getDaoSession();
         ItemsDao itemsDao = daoSession.getItemsDao();
 
-        Items item = new Items(null, user, id, itemName, 0, null, null);
+        Items item = new Items(null, user, id, itemName, 0, 1, null, null);
         itemsDao.insert(item);
     }
 
@@ -176,6 +178,19 @@ public class DatabaseUtil {
     }
 
     /**
+     * Query available inventory
+     *
+     * @param activity activity of app
+     * @return images path in detail page.
+     */
+    public static int queryAvailableInventory(Activity activity, String ID) {
+        // get the items DAO
+        DaoSession daoSession = ((MyApplication) activity.getApplication()).getDaoSession();
+        return daoSession.getItemsDao().queryBuilder().where(ItemsDao.Properties.Rfid.
+                eq(ID)).build().list().get(0).getAvaliableInventory();
+    }
+
+    /**
      * Update new detail description into database.
      *
      * @param activity activity of app
@@ -222,6 +237,39 @@ public class DatabaseUtil {
             return false;
         item.setPrice(itemPrice);
         daoSession.getItemsDao().insertOrReplace(item);
+        return true;
+    }
+
+    /**
+     * Update the item available inventory into database
+     *
+     * @param activity
+     * @param availableInventory
+     * @param item
+     * @return
+     */
+    public static boolean updateItemAvailableInventory(Activity activity, int availableInventory, Items item) {
+        DaoSession daoSession = ((MyApplication) activity.getApplication()).getDaoSession();
+        if (item == null)
+            return false;
+        item.setAvaliableInventory(availableInventory);
+        daoSession.getItemsDao().insertOrReplace(item);
+        return true;
+    }
+
+    /**
+     * Update the multiple items
+     *
+     * @param activity
+     * @param items
+     * @return
+     */
+    public static boolean updateMultiItems(Activity activity, ArrayList<CheckoutAdaper.ItemWithCount> items) {
+        DaoSession daoSession = ((MyApplication) activity.getApplication()).getDaoSession();
+        for (CheckoutAdaper.ItemWithCount item :
+                items) {
+            daoSession.getItemsDao().insertOrReplace(item.getItem());
+        }
         return true;
     }
 

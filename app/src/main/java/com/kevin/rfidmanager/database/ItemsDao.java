@@ -27,8 +27,9 @@ public class ItemsDao extends AbstractDao<Items, Long> {
         public final static Property Rfid = new Property(2, String.class, "rfid", false, "RFID");
         public final static Property ItemName = new Property(3, String.class, "itemName", false, "ITEM_NAME");
         public final static Property Price = new Property(4, float.class, "price", false, "PRICE");
-        public final static Property MainImagePath = new Property(5, String.class, "mainImagePath", false, "MAIN_IMAGE_PATH");
-        public final static Property DetailDescription = new Property(6, String.class, "detailDescription", false, "DETAIL_DESCRIPTION");
+        public final static Property AvaliableInventory = new Property(5, int.class, "avaliableInventory", false, "AVALIABLE_INVENTORY");
+        public final static Property MainImagePath = new Property(6, String.class, "mainImagePath", false, "MAIN_IMAGE_PATH");
+        public final static Property DetailDescription = new Property(7, String.class, "detailDescription", false, "DETAIL_DESCRIPTION");
     }
 
 
@@ -49,8 +50,9 @@ public class ItemsDao extends AbstractDao<Items, Long> {
                 "\"RFID\" TEXT," + // 2: rfid
                 "\"ITEM_NAME\" TEXT," + // 3: itemName
                 "\"PRICE\" REAL NOT NULL ," + // 4: price
-                "\"MAIN_IMAGE_PATH\" TEXT," + // 5: mainImagePath
-                "\"DETAIL_DESCRIPTION\" TEXT);"); // 6: detailDescription
+                "\"AVALIABLE_INVENTORY\" INTEGER NOT NULL ," + // 5: avaliableInventory
+                "\"MAIN_IMAGE_PATH\" TEXT," + // 6: mainImagePath
+                "\"DETAIL_DESCRIPTION\" TEXT);"); // 7: detailDescription
     }
 
     /** Drops the underlying database table. */
@@ -83,15 +85,16 @@ public class ItemsDao extends AbstractDao<Items, Long> {
             stmt.bindString(4, itemName);
         }
         stmt.bindDouble(5, entity.getPrice());
+        stmt.bindLong(6, entity.getAvaliableInventory());
  
         String mainImagePath = entity.getMainImagePath();
         if (mainImagePath != null) {
-            stmt.bindString(6, mainImagePath);
+            stmt.bindString(7, mainImagePath);
         }
  
         String detailDescription = entity.getDetailDescription();
         if (detailDescription != null) {
-            stmt.bindString(7, detailDescription);
+            stmt.bindString(8, detailDescription);
         }
     }
 
@@ -119,15 +122,16 @@ public class ItemsDao extends AbstractDao<Items, Long> {
             stmt.bindString(4, itemName);
         }
         stmt.bindDouble(5, entity.getPrice());
+        stmt.bindLong(6, entity.getAvaliableInventory());
  
         String mainImagePath = entity.getMainImagePath();
         if (mainImagePath != null) {
-            stmt.bindString(6, mainImagePath);
+            stmt.bindString(7, mainImagePath);
         }
  
         String detailDescription = entity.getDetailDescription();
         if (detailDescription != null) {
-            stmt.bindString(7, detailDescription);
+            stmt.bindString(8, detailDescription);
         }
     }
 
@@ -144,8 +148,9 @@ public class ItemsDao extends AbstractDao<Items, Long> {
             cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // rfid
             cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // itemName
             cursor.getFloat(offset + 4), // price
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // mainImagePath
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6) // detailDescription
+                cursor.getInt(offset + 5), // avaliableInventory
+                cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // mainImagePath
+                cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7) // detailDescription
         );
         return entity;
     }
@@ -157,8 +162,9 @@ public class ItemsDao extends AbstractDao<Items, Long> {
         entity.setRfid(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
         entity.setItemName(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
         entity.setPrice(cursor.getFloat(offset + 4));
-        entity.setMainImagePath(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setDetailDescription(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setAvaliableInventory(cursor.getInt(offset + 5));
+        entity.setMainImagePath(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setDetailDescription(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
      }
     
     @Override

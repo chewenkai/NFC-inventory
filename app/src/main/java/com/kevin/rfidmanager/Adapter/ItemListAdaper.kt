@@ -156,26 +156,19 @@ class ItemListAdaper(val activity: Activity, internal var itemes: MutableList<It
         for (key: KeyDescription in keys) {
             keyText.append(" * " + key.keyDescription + "\n")
         }
+        holder.keyDes.hint = context.getString(R.string.no_key_description_information)
         holder.keyDes.setText(keyText)
         when (SPUtil.getInstence(activity).apperance) {
-            8  // ConstantManager.LINEAR_LAYOUT
+            ConstantManager.LINEAR_LAYOUT, ConstantManager.STAGGER_LAYOUT, ConstantManager.ONE_ROW_LAYOUT  // ConstantManager.LINEAR_LAYOUT
             -> {
                 holder.keyDes.visibility = View.GONE
+                holder.price.text = "$" + (item.price.toInt()).toString() + "\nremain:" + item.avaliableInventory.toString()
             }
-            9  // ConstantManager.STAGGER_LAYOUT
-            -> {
-                holder.keyDes.visibility = View.GONE
-            }
-            10  // ConstantManager.ONE_ROW_LAYOUT
-            -> {
-                holder.keyDes.visibility = View.GONE
-            }
-            11 -> {
+            ConstantManager.DETAIL_LAYOUT -> {
                 holder.keyDes.visibility = View.VISIBLE
+                holder.price.text = "$" + (item.price.toInt()).toString() + " remain:" + item.avaliableInventory.toString()
             }
         }
-
-        holder.price.setText((item.price.toInt()).toString())
 
     }
 

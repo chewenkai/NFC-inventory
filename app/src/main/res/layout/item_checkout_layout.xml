@@ -11,16 +11,25 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:background="@color/screen_bg"
+        android:layout_margin="10dp"
         android:padding="10dp">
 
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/dollar" />
         <TextView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Total:"
             android:gravity="end"
+            android:paddingRight="10dp"
+            android:paddingEnd="10dp"
+            android:layout_gravity="center"
             android:textSize="20sp"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textStyle="bold" />
 
         <TextView
@@ -30,8 +39,9 @@
             android:layout_weight="1"
             android:text="0.0"
             android:gravity="start"
+            android:layout_gravity="center"
             android:textSize="20sp"
-            android:textColor="@color/black"
+            android:textColor="@color/white"
             android:textStyle="bold" />
     </LinearLayout>
 

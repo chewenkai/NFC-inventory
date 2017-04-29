@@ -73,10 +73,13 @@ class MyApplication : Application() {
         initSound()
         registUSBBroadCast()
         detectConnection()
-//        emulateRFIDReader()
+//        emulateRFIDReaderTagReduce()
+        emulateIncreaseTag()
     }
 
     override fun onTerminate() {
+        // TODO 关屏幕的时候崩溃
+        // TODO 关屏幕的返回登录页面
         unregisterReceiver(usbReceiver)
         stopScan()
         super.onTerminate()
@@ -418,7 +421,37 @@ class MyApplication : Application() {
         }
     }
 
-    fun emulateRFIDReader() {
+    fun emulateIncreaseTag() {
+        val cardIDs = ArrayList<String>()
+        var count = 1
+
+        doAsync {
+            while (true) {
+
+                try {
+                    Thread.sleep(500)
+                    uiThread {
+                        while (count < 10) {
+                            cardIDs.add(count.toString())
+                            count++
+                        }
+                        this@MyApplication.cardIDs = cardIDs
+                        updateSavedCardsNumber(cardIDs)
+                        val intent = Intent().setAction(NEW_RFID_CARD_BROADCAST_ACTION)
+                        intent.putStringArrayListExtra(NEW_RFID_CARD_KEY, cardIDs)
+                        sendBroadcast(intent)
+                    }
+                } catch (e: InterruptedException) {
+                }
+            }
+            // Long background task
+        }
+    }
+
+    /**
+     * id deduct from 10 to 1
+     */
+    fun emulateRFIDReaderTagReduce() {
         val cardIDs = ArrayList<String>()
         var count = 1
         while (count < 10) {
@@ -537,8 +570,6 @@ class MyApplication : Application() {
                     // Add item to List
                     itemsInDatabase.add(items[0])
                 } else {
-                    Toast.makeText(this,
-                            R.string.another_users_card, Toast.LENGTH_LONG).show()
                     return
                 }
             } else {

@@ -76,7 +76,7 @@ dependencies {
 }
 
 greendao {
-    schemaVersion 2
+    schemaVersion 3
     targetGenDir 'src/main/java'  // set the green dao generate dir in source folder
 }
 repositories {

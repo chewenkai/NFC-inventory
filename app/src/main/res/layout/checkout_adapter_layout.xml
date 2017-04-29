@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_gravity="center"
+    android:layout_margin="5dp"
     android:background="@color/white"
     android:orientation="horizontal">
 
@@ -15,78 +16,87 @@
         android:orientation="vertical">
 
         <android.support.v7.widget.AppCompatCheckBox
-        android:id="@+id/item_delete_check_box"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone" />
+            android:id="@+id/item_delete_check_box"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone" />
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:orientation="horizontal">
-
-        <at.markushi.ui.CircleButton
-            android:id="@+id/edit_item"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_margin="5dp"
-            android:padding="10dp"
-            android:src="@drawable/add"
-            app:cb_color="#00000000"
-            app:cb_pressedRingWidth="5dip" />
-
-        <TextView
-            android:id="@+id/item_count"
+        <ImageView
+            android:id="@+id/item_thumb"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
-            android:text="1"
-            android:textColor="@color/black"
-            android:textSize="13sp" />
+            android:adjustViewBounds="true"
+            android:baselineAlignBottom="true"
+            android:scaleType="centerInside"
+            android:src="@drawable/add_image" />
 
-        <at.markushi.ui.CircleButton
-            android:id="@+id/remove_item"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_margin="5dp"
-            android:padding="10dp"
-            android:src="@drawable/minus"
-            app:cb_color="#00000000"
-            app:cb_pressedRingWidth="5dip" />
-    </LinearLayout>
+        <TextView
+            android:id="@+id/list_item_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:gravity="center"
+            android:text="item_name"
+            android:textColor="@color/black" />
 
-    <ImageView
-        android:id="@+id/item_thumb"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:adjustViewBounds="true"
-        android:baselineAlignBottom="true"
-        android:scaleType="centerInside"
-        android:src="@drawable/add_image" />
+        <TextView
+            android:id="@+id/price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|center_horizontal"
+            android:gravity="center"
+            android:text="item_name" />
 
-    <TextView
-        android:id="@+id/list_item_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center_horizontal"
-        android:gravity="center"
-        android:text="remove"
-        android:textColor="@color/black" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <at.markushi.ui.CircleButton
+                android:id="@+id/edit_item"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_margin="5dp"
+                android:padding="10dp"
+                android:src="@drawable/add"
+                app:cb_color="#00000000"
+                app:cb_pressedRingWidth="5dip" />
+
+            <TextView
+                android:id="@+id/item_count"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="1"
+                android:textColor="@color/black"
+                android:textSize="13sp" />
+
+            <at.markushi.ui.CircleButton
+                android:id="@+id/remove_item"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_margin="5dp"
+                android:padding="10dp"
+                android:src="@drawable/minus"
+                app:cb_color="#00000000"
+                app:cb_pressedRingWidth="5dip" />
+        </LinearLayout>
     </LinearLayout>
 
     <TextView
         android:id="@+id/itemlist_key_des"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="2"
-        android:padding="10dp"
-        android:gravity="left|center_vertical"
-        android:textSize="18sp"
-        android:elegantTextHeight="true"
         android:layout_gravity="center_vertical"
-        android:text="remove\njfdh"
-        android:textColor="@color/item_list_key_des" />
+        android:layout_weight="2"
+        android:elegantTextHeight="true"
+        android:gravity="left|center_vertical"
+        android:hint="@string/no_key_description_information"
+        android:padding="10dp"
+        android:text="* key description 1\n* key description 2\n* key description 3\n* key description 4\n* key description 5"
+        android:textColor="@color/item_list_key_des"
+        android:textSize="18sp" />
 </LinearLayout>
 

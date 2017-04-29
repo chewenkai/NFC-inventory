@@ -109,14 +109,13 @@
                     android:id="@+id/et_price"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="15"
+                    android:text="$15"
                     android:gravity="end"
                     android:layout_gravity="end"
                     android:padding="2dp"
                     android:layout_marginRight="10dp"
                     android:layout_marginEnd="10dp"
-                    android:textColor="@color/black"
-                    android:textSize="20sp"
+                    android:textSize="18sp"
                     android:textStyle="bold" />
             </LinearLayout>
 

@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.wifi.WifiManager
 import android.os.Bundle
+import android.provider.Settings
 import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
 import android.support.v4.content.ContextCompat
@@ -40,7 +41,6 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        checkIsNeedPassword()  // If do not need password, go to main page directly.
         setContentView(R.layout.activity_login)
         val actionBar = supportActionBar
         actionBar!!.hide()   // Hide ActionBar
@@ -54,17 +54,18 @@ class LoginActivity : AppCompatActivity() {
      * This method will get a unique code of device.
      */
     private fun checkUUID(){
-        val telephonyManager: TelephonyManager
-
-        telephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+        val telephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
 
         /*
         * getDeviceId() returns the unique device ID.
         * For example,the IMEI for GSM and the MEID or ESN for CDMA phones.
         */
-        val deviceId = telephonyManager.deviceId
-//        toast(deviceId)  /// This code will make your device show an message of Unique ID
-        if (!deviceId.equals(ConstantManager.UniqueCode)){
+        var deviceId = telephonyManager.deviceId
+        if (deviceId == null) {
+            deviceId = Settings.System.getString(contentResolver, Settings.System.ANDROID_ID)
+        }
+//        toast("Your unique code:" + deviceId)  /// This code will make your device show an message of Unique ID
+        if (deviceId != ConstantManager.UniqueCode) {
             toast("This device is not supported.")
             finish()
         }
@@ -91,17 +92,22 @@ class LoginActivity : AppCompatActivity() {
         when (requestCode) {
             PHONE_STAT_PERMISSION_REQUEST_CODE -> {
                 // If request is cancelled, the result arrays are empty.
-                if (grantResults.size > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // permission was granted, yay!
                     checkUUID()
+                    checkIsNeedPassword()  // If do not need password, go to main page directly.
                 } else {
 
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
                 }
                 return
+            }
+            PERMISSION_REQUEST_CODE -> {
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    toast("permission granted")
+                } else {
+                    toast("RFID manager cannot run without granting permission")
+                    finish()
+                }
             }
         }// other 'case' lines to check for other
         // permissions this app might request
@@ -276,8 +282,10 @@ class LoginActivity : AppCompatActivity() {
         val phoneStatePermissionCheck = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)
         if (phoneStatePermissionCheck != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_PHONE_STATE), PHONE_STAT_PERMISSION_REQUEST_CODE)
-        }else
+        } else {
             checkUUID()
+            checkIsNeedPassword()  // If do not need password, go to main page directly.
+        }
     }
 
     /*

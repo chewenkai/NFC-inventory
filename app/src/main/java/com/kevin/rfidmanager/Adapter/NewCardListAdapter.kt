@@ -1,7 +1,6 @@
 package com.kevin.rfidmanager.Adapter
 
 import android.content.Context
-import android.support.design.widget.TextInputEditText
 import android.support.v7.widget.AppCompatRadioButton
 import android.view.LayoutInflater
 import android.view.View
@@ -13,13 +12,11 @@ import com.kevin.rfidmanager.R
  * Created by kevin on 17-4-5.
  * Mail: chewenkaich@gmail.com
  */
-class NewCardListAdapter(context: Context, newCardIDs: MutableList<String>, etID: TextInputEditText) : ArrayAdapter<String>(context, R.layout.recycle_adapter_new_cards, newCardIDs) {
-    var radioButtons: MutableList<AppCompatRadioButton> = ArrayList()
-    val etID: TextInputEditText
+class NewCardListAdapter(context: Context, newCardIDs: MutableList<String>) : ArrayAdapter<String>(context, R.layout.recycle_adapter_new_cards, newCardIDs) {
+    var radioButtons = ArrayList<AppCompatRadioButton>()
     var newCardIDs: MutableList<String>
-
+    var selectedTagId = ""  // used to save the selected status
     init {
-        this.etID = etID
         this.newCardIDs = newCardIDs
     }
 
@@ -56,12 +53,14 @@ class NewCardListAdapter(context: Context, newCardIDs: MutableList<String>, etID
         // set text
         radioButton?.text = cardID
 
-        if (!radioButtons.contains(radioButton))
-            radioButtons.add(radioButton!!)
+        radioButton?.isChecked = radioButton?.text.toString() == selectedTagId
 
-        radioButton!!.setOnClickListener {
+        radioButtons.add(radioButton!!)
+
+        radioButton.setOnClickListener {
             clearAllRadioButtons()
             radioButton.isChecked = true
+            selectedTagId = radioButton.text.toString()
         }
 
         // Return the completed view to render on screen
@@ -70,23 +69,16 @@ class NewCardListAdapter(context: Context, newCardIDs: MutableList<String>, etID
 
     fun clearAllRadioButtons() {
         for (radioButton in radioButtons) {
-            radioButton.isChecked = false
+            if (radioButton != null)
+                radioButton.isChecked = false
         }
-    }
-
-    fun getSelectedRadioButton(): AppCompatRadioButton? {
-        for (radioButton in radioButtons) {
-            if (radioButton.isChecked) return radioButton
-        }
-        return null
     }
 
     fun updateList(cardIDs: ArrayList<String>) {
+        radioButtons.clear()
         newCardIDs.clear()
         newCardIDs.addAll(cardIDs)
         // Clear radio button and ID edittext when add or remove tags
-        clearAllRadioButtons()
-        etID.setText("")
         this.notifyDataSetChanged()
     }
 

@@ -25,6 +25,7 @@ import com.kevin.rfidmanager.Utils.ScreenUtil
 import com.kevin.rfidmanager.database.Items
 import com.kevin.rfidmanager.database.KeyDescription
 import com.squareup.picasso.Picasso
+import org.jetbrains.anko.toast
 import java.io.File
 
 /**
@@ -33,7 +34,8 @@ import java.io.File
  */
 class CheckoutAdaper(val activity: Activity, var recyclerView: RecyclerView? = null,
                      var deleteItemsButton: CircleButton, var tv_checkout_result: TextView) : RecyclerView.Adapter<CheckoutAdaper.ViewHolder>() {
-    val detectedItems: MutableList<ItemWithCount> = ArrayList<ItemWithCount>()
+    var detectedItems = ArrayList<ItemWithCount>()
+    val backupDetectedItems = ArrayList<ItemWithCount>()
     val circleDialog: ProgressDialog = ProgressDialog(activity)
     var deleteMdoe = false
     val checkedItems: MutableList<ItemWithCount> = ArrayList<ItemWithCount>()
@@ -105,27 +107,50 @@ class CheckoutAdaper(val activity: Activity, var recyclerView: RecyclerView? = n
         }
         image.setOnLongClickListener(longClickListener)
 
+        holder.count.text = item.count.toString()
+
+        //  Add one
         holder.add.setOnClickListener {
+            // if avaliable inventory > 0, then can add item
+            if (item.item?.avaliableInventory!! <= 0) {
+                activity.toast("Out of stock.")
+                return@setOnClickListener
+            }
+            // deduct one from database
+            item.item?.avaliableInventory = item.item?.avaliableInventory!! - 1
+
             item.countIncrease()
-            holder.count.setText(item.count.toString())
+            holder.count.text = item.count.toString()
+            holder.price.text = "$" + (item.item?.price?.toInt()).toString() + "\nremain:" + item?.item?.avaliableInventory.toString()
             refreshPriceTextView()
         }
 
+        //  Deduct one
         holder.deduct.setOnClickListener {
+            if (item.count <= 0)
+                return@setOnClickListener
+            else {
+                item.item?.avaliableInventory = item.item?.avaliableInventory!! + 1
+            }
+
             item.countDecrease()
-            holder.count.setText(item.count.toString())
+            holder.count.text = item.count.toString()
+            holder.price.text = "$" + (item.item?.price?.toInt()).toString() + "\nremain:" + item?.item?.avaliableInventory.toString()
             refreshPriceTextView()
         }
 
         val itemName = holder.itemName
         itemName.text = item.item!!.itemName
 
+        holder.price.text = "$" + (item.item?.price?.toInt()).toString() + "\nremain:" + item?.item?.avaliableInventory.toString()
+
         val keys = DatabaseUtil.queryItemsKeyDes(activity, item.item!!.rfid)
         var keyText: StringBuffer = StringBuffer()
         for (key: KeyDescription in keys) {
             keyText.append(" * " + key.keyDescription + "\n")
         }
-        holder.keyDes.setText(keyText)
+
+        holder.keyDes.text = keyText
         when (SPUtil.getInstence(activity).apperance) {
             8  // ConstantManager.LINEAR_LAYOUT
             -> {
@@ -180,7 +205,14 @@ class CheckoutAdaper(val activity: Activity, var recyclerView: RecyclerView? = n
             }
         }
         if (!isContain) {
-            detectedItems!!.add(item)
+            if (item.item?.avaliableInventory == 0)
+                item.count = 0
+            else {
+                item.count = 1
+                item.item?.avaliableInventory = item.item?.avaliableInventory!! - 1
+            }
+            detectedItems.add(item)
+            backupDetectedItems.add(item)
             updateUI()
         }
     }
@@ -191,13 +223,13 @@ class CheckoutAdaper(val activity: Activity, var recyclerView: RecyclerView? = n
     fun countTotalMoney(): Float {
         var result = 0f
         for (item: ItemWithCount in detectedItems!!) {
-            result = result + item.item!!.price * item.count
+            result += item.item!!.price * item.count
         }
         return result
     }
 
     fun refreshPriceTextView() {
-        tv_checkout_result.setText(countTotalMoney().toString())
+        tv_checkout_result.text = countTotalMoney().toString()
     }
 
     fun updateUI() {
@@ -230,6 +262,7 @@ class CheckoutAdaper(val activity: Activity, var recyclerView: RecyclerView? = n
         // for any view that will be set as you render a row
         var image: ImageView
         var itemName: TextView
+        var price: TextView
         var add: CircleButton
         var count: TextView
         var deduct: CircleButton
@@ -239,6 +272,7 @@ class CheckoutAdaper(val activity: Activity, var recyclerView: RecyclerView? = n
         init {
             image = itemView.findViewById(R.id.item_thumb) as ImageView
             itemName = itemView.findViewById(R.id.list_item_name) as TextView
+            price = itemView.findViewById(R.id.price) as TextView
             add = itemView.findViewById(R.id.edit_item) as CircleButton
             count = itemView.findViewById(R.id.item_count) as TextView
             deduct = itemView.findViewById(R.id.remove_item) as CircleButton
@@ -257,7 +291,7 @@ class CheckoutAdaper(val activity: Activity, var recyclerView: RecyclerView? = n
         }
 
         fun countDecrease() {
-            if (count > 1)
+            if (count >= 1)
                 count--
         }
     }

@@ -24,18 +24,22 @@ public class Items {
 
     private float price;  // item price
 
+    private int avaliableInventory;  // item amount
+
     private String mainImagePath;  // thumb of item
 
     private String detailDescription;  // description of item
 
-    @Generated(hash = 371423760)
+    @Generated(hash = 373437410)
     public Items(Long id, String userName, String rfid, String itemName,
-                 float price, String mainImagePath, String detailDescription) {
+                 float price, int avaliableInventory, String mainImagePath,
+                 String detailDescription) {
         this.id = id;
         this.userName = userName;
         this.rfid = rfid;
         this.itemName = itemName;
         this.price = price;
+        this.avaliableInventory = avaliableInventory;
         this.mainImagePath = mainImagePath;
         this.detailDescription = detailDescription;
     }
@@ -98,6 +102,14 @@ public class Items {
 
     public void setDetailDescription(String detailDescription) {
         this.detailDescription = detailDescription;
+    }
+
+    public int getAvaliableInventory() {
+        return this.avaliableInventory;
+    }
+
+    public void setAvaliableInventory(int avaliableInventory) {
+        this.avaliableInventory = avaliableInventory;
     }
 
 

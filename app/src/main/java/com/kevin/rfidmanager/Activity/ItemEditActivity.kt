@@ -130,6 +130,10 @@ class ItemEditActivity : AppCompatActivity() {
         }
         )
 
+        et_available_inventory.enabled = true
+        et_available_inventory.textColor = resources.getColor(R.color.black)
+        et_available_inventory.setText(item!!.avaliableInventory.toString())
+
         et_price.enabled = true
         et_price.textColor = resources.getColor(R.color.black)
         et_price.setText(item!!.price.toInt().toString())
@@ -305,6 +309,10 @@ class ItemEditActivity : AppCompatActivity() {
                     return true
                 }
                 if (!DatabaseUtil.updateItemPrice(this@ItemEditActivity, et_price.text.toString().toFloat(), this.item)) {
+                    Toast.makeText(this, R.string.save_item_failed, Toast.LENGTH_LONG).show()
+                    return true
+                }
+                if (!DatabaseUtil.updateItemAvailableInventory(this@ItemEditActivity, et_available_inventory.text.toString().toInt(), this.item)) {
                     Toast.makeText(this, R.string.save_item_failed, Toast.LENGTH_LONG).show()
                     return true
                 }

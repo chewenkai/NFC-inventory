@@ -132,6 +132,10 @@ class ItemDetailActivity : AppCompatActivity() {
         addKeyDes = findViewById(R.id.button_add_item_key_des) as TextView
         addKeyDes!!.visibility = View.GONE
 
+        et_available_inventory.enabled = false
+        et_available_inventory.textColor = resources.getColor(R.color.black)
+        et_available_inventory.setText(item!!.avaliableInventory.toString())
+
         et_price.enabled = false
         et_price.textColor = resources.getColor(R.color.black)
         et_price.setBackgroundColor(resources.getColor(R.color.white))

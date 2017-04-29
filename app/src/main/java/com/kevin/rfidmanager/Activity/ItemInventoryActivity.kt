@@ -243,9 +243,6 @@ class ItemInventoryActivity : AppCompatActivity() {
                     id.add(ID)
                     updateCardsList(id)
                 } else {
-                    if (items[0].userName != ConstantManager.DEFAULT_USER)
-                        Toast.makeText(this@ItemInventoryActivity,
-                                R.string.another_users_card, Toast.LENGTH_LONG).show()
                     return
                 }
             } else {
@@ -312,25 +309,22 @@ class ItemInventoryActivity : AppCompatActivity() {
         val dialogView = inflater.inflate(R.layout.dialog_layout_two_edit_text, null)
         dialogBuilder.setView(dialogView)
 
-        val itemID = dialogView.findViewById(R.id.edit_key_des_text_editor) as TextInputEditText
         val itemName = dialogView.findViewById(R.id.item_name_edit) as TextInputEditText
         val saveButton = dialogView.findViewById(R.id.dialog_change) as Button
         val cancleButton = dialogView.findViewById(R.id.dialog_cancle) as Button
         val cardsList = dialogView.findViewById(R.id.new_cards_list) as ListView
-        newCardListAdapter = NewCardListAdapter(this@ItemInventoryActivity, newCardsIDsStringList, itemID)
+        newCardListAdapter = NewCardListAdapter(this@ItemInventoryActivity, newCardsIDsStringList)
         cardsList.adapter = newCardListAdapter
-
-        itemID.visibility = View.GONE  // Hooman said do not need this.
 
         dialogBuilder.setTitle("Add new item: ")
         dialogBuilder.setMessage("Take your RFID card close to card reader, the id will appear in the list.")
         alertDialog = dialogBuilder.create()
 
         saveButton.setOnClickListener(View.OnClickListener {
-            val new_id = newCardListAdapter?.getSelectedRadioButton()?.text.toString()
-            if (new_id.isEmpty()) {
+            val new_id = newCardListAdapter?.selectedTagId ?: ""
+            if (new_id == "null" || new_id.isEmpty()) {
                 Toast.makeText(this@ItemInventoryActivity,
-                        "please close your card to reader.",
+                        "Please select at least one tag ID",
                         Toast.LENGTH_LONG).show()
                 return@OnClickListener
             }
@@ -345,6 +339,9 @@ class ItemInventoryActivity : AppCompatActivity() {
             }
             DatabaseUtil.insertNewItem(this@ItemInventoryActivity,
                     new_id, itemName.text.toString(), currentUser)
+
+            newCardListAdapter?.selectedTagId = "" // reset selected radio
+
             val intent = Intent(this@ItemInventoryActivity, ItemEditActivity::class.java)
             intent.putExtra(ConstantManager.CURRENT_ITEM_ID, new_id)
             startActivity(intent)
@@ -887,9 +884,9 @@ class ItemInventoryActivity : AppCompatActivity() {
             }
             R.id.checkout -> {
                 // Goto Check out Page
-//                intent = Intent(this@ItemInventoryActivity, CheckoutActivity::class.java)
-//                intent.putExtra(ConstantManager.CURRENT_USER_NAME, currentUser)
-//                startActivity(intent)
+                intent = Intent(this@ItemInventoryActivity, CheckoutActivity::class.java)
+                intent.putExtra(ConstantManager.CURRENT_USER_NAME, currentUser)
+                startActivity(intent)
             }
         }
         return true

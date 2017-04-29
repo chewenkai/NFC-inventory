@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Reader Test</string>
+    <string name="app_name">RFID manager</string>
     <string name="action_settings">Settings</string>
     <string name="btn_connect">Open</string>
     <string name="btn_disconnect">Close</string>
