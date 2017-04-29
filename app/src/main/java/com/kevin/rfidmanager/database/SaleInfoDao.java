@@ -47,7 +47,7 @@ public class SaleInfoDao extends AbstractDao<SaleInfo, Long> {
      * Creates the underlying database table.
      */
     public static void createTable(Database db, boolean ifNotExists) {
-        String constraint = ifNotExists ? "IF NOT EXISTS " : "";
+        String constraint = ifNotExists ? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "\"SALE_INFO\" (" + //
                 "\"_id\" INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE ," + // 0: id
                 "\"USER_NAME\" TEXT," + // 1: userName
@@ -60,9 +60,7 @@ public class SaleInfoDao extends AbstractDao<SaleInfo, Long> {
                 "\"SALE_VOLUME\" INTEGER NOT NULL );"); // 8: saleVolume
     }
 
-    /**
-     * Drops the underlying database table.
-     */
+    /** Drops the underlying database table. */
     public static void dropTable(Database db, boolean ifExists) {
         String sql = "DROP TABLE " + (ifExists ? "IF EXISTS " : "") + "\"SALE_INFO\"";
         db.execSQL(sql);
@@ -71,38 +69,38 @@ public class SaleInfoDao extends AbstractDao<SaleInfo, Long> {
     @Override
     protected final void bindValues(DatabaseStatement stmt, SaleInfo entity) {
         stmt.clearBindings();
-
+ 
         Long id = entity.getId();
         if (id != null) {
             stmt.bindLong(1, id);
         }
-
+ 
         String userName = entity.getUserName();
         if (userName != null) {
             stmt.bindString(2, userName);
         }
-
+ 
         String rfid = entity.getRfid();
         if (rfid != null) {
             stmt.bindString(3, rfid);
         }
-
+ 
         String itemName = entity.getItemName();
         if (itemName != null) {
             stmt.bindString(4, itemName);
         }
         stmt.bindDouble(5, entity.getPrice());
-
+ 
         String mainImagePath = entity.getMainImagePath();
         if (mainImagePath != null) {
             stmt.bindString(6, mainImagePath);
         }
-
+ 
         String detailDescription = entity.getDetailDescription();
         if (detailDescription != null) {
             stmt.bindString(7, detailDescription);
         }
-
+ 
         Long saleTime = entity.getSaleTime();
         if (saleTime != null) {
             stmt.bindLong(8, saleTime);
@@ -113,38 +111,38 @@ public class SaleInfoDao extends AbstractDao<SaleInfo, Long> {
     @Override
     protected final void bindValues(SQLiteStatement stmt, SaleInfo entity) {
         stmt.clearBindings();
-
+ 
         Long id = entity.getId();
         if (id != null) {
             stmt.bindLong(1, id);
         }
-
+ 
         String userName = entity.getUserName();
         if (userName != null) {
             stmt.bindString(2, userName);
         }
-
+ 
         String rfid = entity.getRfid();
         if (rfid != null) {
             stmt.bindString(3, rfid);
         }
-
+ 
         String itemName = entity.getItemName();
         if (itemName != null) {
             stmt.bindString(4, itemName);
         }
         stmt.bindDouble(5, entity.getPrice());
-
+ 
         String mainImagePath = entity.getMainImagePath();
         if (mainImagePath != null) {
             stmt.bindString(6, mainImagePath);
         }
-
+ 
         String detailDescription = entity.getDetailDescription();
         if (detailDescription != null) {
             stmt.bindString(7, detailDescription);
         }
-
+ 
         Long saleTime = entity.getSaleTime();
         if (saleTime != null) {
             stmt.bindLong(8, saleTime);
@@ -155,7 +153,7 @@ public class SaleInfoDao extends AbstractDao<SaleInfo, Long> {
     @Override
     public Long readKey(Cursor cursor, int offset) {
         return cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
-    }
+    }    
 
     @Override
     public SaleInfo readEntity(Cursor cursor, int offset) {
@@ -172,7 +170,7 @@ public class SaleInfoDao extends AbstractDao<SaleInfo, Long> {
         );
         return entity;
     }
-
+     
     @Override
     public void readEntity(Cursor cursor, SaleInfo entity, int offset) {
         entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
@@ -184,14 +182,14 @@ public class SaleInfoDao extends AbstractDao<SaleInfo, Long> {
         entity.setDetailDescription(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
         entity.setSaleTime(cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7));
         entity.setSaleVolume(cursor.getInt(offset + 8));
-    }
-
+     }
+    
     @Override
     protected final Long updateKeyAfterInsert(SaleInfo entity, long rowId) {
         entity.setId(rowId);
         return rowId;
     }
-
+    
     @Override
     public Long getKey(SaleInfo entity) {
         if (entity != null) {
@@ -210,5 +208,5 @@ public class SaleInfoDao extends AbstractDao<SaleInfo, Long> {
     protected final boolean isEntityUpdateable() {
         return true;
     }
-
+    
 }

@@ -15,6 +15,7 @@ import android.os.Handler
 import android.os.Message
 import android.widget.Toast
 import com.github.yuweiguocn.library.greendao.MigrationHelper
+import com.kevin.rfidmanager.Activity.LoginActivity
 import com.kevin.rfidmanager.Utils.ConstantManager
 import com.kevin.rfidmanager.Utils.ConstantManager.NEW_RFID_CARD_BROADCAST_ACTION
 import com.kevin.rfidmanager.Utils.ConstantManager.NEW_RFID_CARD_KEY
@@ -72,6 +73,7 @@ class MyApplication : Application() {
         startScan()
         initSound()
         registUSBBroadCast()
+        registScreenAction()
         detectConnection()
 //        emulateRFIDReaderTagReduce()
         emulateIncreaseTag()
@@ -81,6 +83,7 @@ class MyApplication : Application() {
         // TODO 关屏幕的时候崩溃
         // TODO 关屏幕的返回登录页面
         unregisterReceiver(usbReceiver)
+        unregisterReceiver(screenReceiver)
         stopScan()
         super.onTerminate()
     }
@@ -502,6 +505,22 @@ class MyApplication : Application() {
                 1f)// 回放速度，值在0.5-2.0之间，1为正常速度
     }
 
+    private fun registScreenAction() {
+        val filter = IntentFilter()
+        filter.addAction(Intent.ACTION_SCREEN_ON)
+        filter.addAction(Intent.ACTION_SCREEN_OFF)
+        registerReceiver(screenReceiver, filter)
+    }
+
+    private val screenReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            val action = intent?.action
+            if (action == Intent.ACTION_SCREEN_OFF) {
+                startActivity(Intent(this@MyApplication, LoginActivity::class.java))
+            }
+        }
+
+    }
     private fun registUSBBroadCast() {
         val filter = IntentFilter(ConstantManager.ACTION_USB_PERMISSION)
         filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED)

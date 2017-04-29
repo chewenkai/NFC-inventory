@@ -71,7 +71,7 @@ class ItemInventoryActivity : AppCompatActivity() {
         initActionBar()
         initUI()
         initAddItemDialog()
-        initNFC()
+//        initNFC()
     }
 
     private fun initActionBar() {
@@ -212,16 +212,16 @@ class ItemInventoryActivity : AppCompatActivity() {
 
     public override fun onResume() {
         super.onResume()
-        itemListAdapter!!.notifyDataSetChanged()
-        if (mNfcAdapter != null)
-            mNfcAdapter!!.enableForegroundDispatch(this, pendingIntent, null, null)
+//        itemListAdapter!!.notifyDataSetChanged()
+//        if (mNfcAdapter != null)
+//            mNfcAdapter!!.enableForegroundDispatch(this, pendingIntent, null, null)
     }
 
     override fun onPause() {
         super.onPause()
-        if (mNfcAdapter != null) {
-            mNfcAdapter!!.disableForegroundDispatch(this)
-        }
+//        if (mNfcAdapter != null) {
+//            mNfcAdapter!!.disableForegroundDispatch(this)
+//        }
     }
 
     override fun onNewIntent(intent: Intent?) {
