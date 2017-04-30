@@ -6,8 +6,8 @@ package com.kevin.rfidmanager.Utils;
  */
 
 public class ConstantManager {
-    public static String UniqueCode = "868030021837446";  // mi5's unique code
-    //    public static String UniqueCode = "32febcde30525d88";  // Hooman's unique code
+    //    public static String UniqueCode = "868030021837446";  // mi5's unique code
+    public static String UniqueCode = "32febcde30525d88";  // Hooman's unique code
     public static boolean IS_DEBUGING = false;
 
     // Main page

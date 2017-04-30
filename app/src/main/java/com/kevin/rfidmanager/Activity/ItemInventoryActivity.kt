@@ -371,11 +371,12 @@ class ItemInventoryActivity : AppCompatActivity() {
         val unRecordedItemsIDs = ArrayList<String>()
 
         // Are there any user info?
+        (application as MyApplication).newDatabaseSession()
         val daoSession = (application as MyApplication).getmDaoSession()
         val itemsDao = daoSession.itemsDao
 
         for (cardID in cardIDs) {
-            val items = itemsDao.queryBuilder().where(ItemsDao.Properties.Rfid.like(cardID)).build().list()
+            val items = itemsDao.queryBuilder().where(ItemsDao.Properties.Rfid.eq(cardID)).build().list()
             if (items.size > 1) {
 //                Toast.makeText(this@ItemInventoryActivity,
 //                        R.string.one_ID_multi_items_warning, Toast.LENGTH_LONG).show()

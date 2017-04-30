@@ -40,7 +40,7 @@ class ItemListActivity : AppCompatActivity() {
         setContentView(R.layout.item_inventory_list_layout)
         initActionBar()
         initUI()
-//        registNewCardsBroadCast()
+        registNewCardsBroadCast()
     }
 
     private fun initActionBar() {
@@ -75,7 +75,7 @@ class ItemListActivity : AppCompatActivity() {
     }
 
     override fun onDestroy() {
-//        unregisterReceiver(newCardsReceiver)
+        unregisterReceiver(newCardsReceiver)
         super.onDestroy()
     }
 

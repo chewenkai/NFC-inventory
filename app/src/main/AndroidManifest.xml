@@ -53,14 +53,20 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.kevin.rfidmanager.Activity.ItemInventoryActivity" />
         </activity>
-        <activity android:name=".Activity.ItemInventoryActivity">
+        <activity
+            android:name=".Activity.ItemInventoryActivity"
+            android:launchMode="singleTask">
             <intent-filter>
                 <action android:name="android.nfc.action.TAG_DISCOVERED" />
+                <action android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED" />
             </intent-filter>
 
             <meta-data
                 android:name="android.nfc.action.TECH_DISCOVERED"
                 android:resource="@xml/nfc_tech_filter" />
+            <meta-data
+                android:name="android.hardware.usb.action.USB_DEVICE_ATTACHED"
+                android:resource="@xml/usb_device_filter" />
         </activity>
         <activity
             android:name=".Activity.CheckoutActivity"

@@ -5,7 +5,7 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.support.design.widget.TabLayout
 import android.support.v7.app.AppCompatActivity
-import android.text.format.DateUtils
+import android.view.KeyEvent
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -67,7 +67,30 @@ class StatisticActivity : AppCompatActivity() {
         tab_layout.addTab(tab_layout.newTab().setText(CUSTOM))
         tab_layout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabReselected(tab: TabLayout.Tab?) {
-
+                when (tab?.text) {
+                    DAY -> {
+                        selectedButton = isStatisticDay; refreshData()
+                        select_date_layout.visibility = View.GONE
+                    }
+                    WEEK -> {
+                        selectedButton = isStatisticWeek; refreshData()
+                        select_date_layout.visibility = View.GONE
+                    }
+                    MONTH -> {
+                        selectedButton = isStatisticMonth; refreshData()
+                        select_date_layout.visibility = View.GONE
+                    }
+                    YEAR -> {
+                        selectedButton = isStatisticYear; refreshData()
+                        select_date_layout.visibility = View.GONE
+                    }
+                    CUSTOM -> {
+                        select_date_layout.visibility = View.VISIBLE
+                        start_date_picker_layout.removeAllViews()
+                        end_date_picker_layout.removeAllViews()
+                        initDatePicker()
+                    }
+                }
             }
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {
@@ -133,8 +156,8 @@ class StatisticActivity : AppCompatActivity() {
                 }
             }
             statisticAdapter?.updateDate(saleList)
-            total_volume.text = "Total volume: ${saleList.sumBy { it.volume }}"
-            total_price.text = "Total price: ${saleList.sumByDouble { it.price.toDouble() }}"
+            total_volume.text = "volume: ${saleList.sumBy { it.volume }}"
+            total_price.text = "price: ${saleList.sumByDouble { it.price.toDouble() }}"
         }
 
         // init the list
@@ -154,23 +177,28 @@ class StatisticActivity : AppCompatActivity() {
     }
 
     private fun refreshData() {
+        val calendar = Calendar.getInstance()
         var thresholdMills = 0L
         when (selectedButton) {
             isStatisticDay -> {
-                thresholdMills = System.currentTimeMillis() - DateUtils.DAY_IN_MILLIS
+                thresholdMills = TimeUtil.getMillisTime(calendar.get(Calendar.YEAR).toString() + "-" +
+                        (calendar.get(Calendar.MONTH) + 1).toString() + "-" +
+                        calendar.get(Calendar.DAY_OF_MONTH).toString(), SimpleDateFormat("yyyy-M-d"))
             }
             isStatisticWeek -> {
-                thresholdMills = System.currentTimeMillis() - DateUtils.WEEK_IN_MILLIS
+                thresholdMills = TimeUtil.getMillisTime(calendar.get(Calendar.YEAR).toString() + "-" +
+                        (calendar.get(Calendar.MONTH) + 1).toString() + "-" +
+                        (calendar.get(Calendar.DAY_OF_MONTH) - calendar.get(Calendar.DAY_OF_WEEK)).toString(),
+                        SimpleDateFormat("yyyy-M-d"))
             }
             isStatisticMonth -> {
-                val calendar = Calendar.getInstance()
-                thresholdMills = System.currentTimeMillis() -
-                        TimeUtil.getMillisTime(calendar.get(Calendar.YEAR).toString() + "-" +
-                                calendar.get(Calendar.MONTH).toString() + "-01", SimpleDateFormat("yyyy-MM-dd"))
+                thresholdMills = TimeUtil.getMillisTime(calendar.get(Calendar.YEAR).toString() + "-" +
+                        (calendar.get(Calendar.MONTH) + 1).toString() + "-01", SimpleDateFormat("yyyy-M-d"))
 
             }
             isStatisticYear -> {
-                thresholdMills = System.currentTimeMillis() - DateUtils.YEAR_IN_MILLIS
+                thresholdMills = TimeUtil.getMillisTime(calendar.get(Calendar.YEAR).toString() + "-01" + "-01",
+                        SimpleDateFormat("yyyy-M-d"))
             }
         }
         val result = (application as MyApplication).daoSession?.saleInfoDao?.queryBuilder()?.
@@ -190,8 +218,8 @@ class StatisticActivity : AppCompatActivity() {
             }
         }
         statisticAdapter?.updateDate(saleList)
-        total_volume.text = "Total volume: ${saleList.sumBy { it.volume }}"
-        total_price.text = "Total price: ${saleList.sumByDouble { it.price.toDouble() }}"
+        total_volume.text = "volume: ${saleList.sumBy { it.volume }}"
+        total_price.text = "price: ${saleList.sumByDouble { it.price.toDouble() }}"
     }
 
     fun initDatePicker() {
@@ -229,6 +257,14 @@ class StatisticActivity : AppCompatActivity() {
 
         start_date_picker_layout.addView(startDatePicker?.contentView)
         end_date_picker_layout.addView(endDatePicker?.contentView)
+    }
+
+    override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            finish()
+            return true
+        }
+        return super.onKeyUp(keyCode, event)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

@@ -66,26 +66,33 @@ class MyApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        val helper = MySQLiteOpenHelper(this,
-                resources.getString(R.string.database_name), null)
-        val db = helper.writableDb
-        daoSession = DaoMaster(db).newSession()
+        newDatabaseSession()
         startScan()
         initSound()
         registUSBBroadCast()
         registScreenAction()
         detectConnection()
 //        emulateRFIDReaderTagReduce()
-        emulateIncreaseTag()
+//        emulateIncreaseTag()
     }
 
     override fun onTerminate() {
-        // TODO 关屏幕的时候崩溃
-        // TODO 关屏幕的返回登录页面
-        unregisterReceiver(usbReceiver)
+//        unregisterReceiver(usbReceiver)
         unregisterReceiver(screenReceiver)
         stopScan()
         super.onTerminate()
+    }
+
+    fun newDatabaseSession() {
+        val helper = MySQLiteOpenHelper(this,
+                resources.getString(R.string.database_name), null)
+        val db = helper.writableDb
+        if (daoSession == null)
+            daoSession = DaoMaster(db).newSession()
+        else {
+            daoSession?.clear()
+            daoSession = DaoMaster(db).newSession()
+        }
     }
 
     fun getmDaoSession(): DaoSession {
