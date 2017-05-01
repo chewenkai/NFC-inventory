@@ -26,14 +26,14 @@ import com.github.mjdev.libaums.fs.FileSystem
 import com.github.mjdev.libaums.fs.UsbFile
 import com.github.mjdev.libaums.fs.UsbFileOutputStream
 import com.github.mjdev.libaums.fs.UsbFileStreamFactory
+import com.github.yuweiguocn.library.greendao.MigrationHelper
 import com.kevin.rfidmanager.Adapter.ItemListAdaper
 import com.kevin.rfidmanager.Adapter.NewCardListAdapter
 import com.kevin.rfidmanager.Adapter.StorageDevicesAdaper
 import com.kevin.rfidmanager.MyApplication
 import com.kevin.rfidmanager.R
 import com.kevin.rfidmanager.Utils.*
-import com.kevin.rfidmanager.database.Items
-import com.kevin.rfidmanager.database.ItemsDao
+import com.kevin.rfidmanager.database.*
 import com.nightonke.boommenu.BoomButtons.ButtonPlaceEnum
 import com.nightonke.boommenu.BoomButtons.HamButton
 import com.nightonke.boommenu.BoomMenuButton
@@ -157,6 +157,8 @@ class ItemInventoryActivity : AppCompatActivity() {
 
     private fun initUI() {
         currentUser = intent.getStringExtra(ConstantManager.CURRENT_USER_NAME)
+        if (currentUser == null)
+            finish()
         recyclerView = findViewById(R.id.recycle_item_list) as RecyclerView
         deleteItemsButton = delete_items_button
         emptyHint.setText(R.string.inventory_empty_hint)
@@ -776,6 +778,10 @@ class ItemInventoryActivity : AppCompatActivity() {
                 textView.setText(R.string.no_backup_File_TF)
                 return false
             }
+
+            //update db
+            updateBackupDB()
+
             val param = CopyTaskParam()
             param.from = srcFile
             param.to = backupDB
@@ -840,6 +846,9 @@ class ItemInventoryActivity : AppCompatActivity() {
                 return false
             }
 
+            //update db
+            updateBackupDB()
+
             val src = FileInputStream(currentDB).channel
             val dst = FileOutputStream(backupDB).channel
             dst.transferFrom(src, 0, src.size())
@@ -851,6 +860,14 @@ class ItemInventoryActivity : AppCompatActivity() {
             return false
         }
 
+    }
+
+    fun updateBackupDB() {
+        val helper = MyApplication.MySQLiteOpenHelper(this,
+                resources.getString(R.string.database_name), null)
+        val db = helper.writableDatabase
+        MigrationHelper.migrate(db, ItemsDao::class.java, KeyDescriptionDao::class.java, ImagesPathDao::class.java,
+                UsersDao::class.java, SaleInfoDao::class.java)
     }
 
     private fun exit() {

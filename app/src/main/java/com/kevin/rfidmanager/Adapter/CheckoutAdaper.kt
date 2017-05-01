@@ -121,7 +121,7 @@ class CheckoutAdaper(val activity: Activity, var recyclerView: RecyclerView? = n
 
             item.countIncrease()
             holder.count.text = item.count.toString()
-            holder.price.text = "$" + (item.item?.price?.toInt()).toString() + "\nremain:" + item?.item?.avaliableInventory.toString()
+            holder.price.text = "$" + (item.item?.price?.toInt()).toString()
             refreshPriceTextView()
         }
 
@@ -135,14 +135,14 @@ class CheckoutAdaper(val activity: Activity, var recyclerView: RecyclerView? = n
 
             item.countDecrease()
             holder.count.text = item.count.toString()
-            holder.price.text = "$" + (item.item?.price?.toInt()).toString() + "\nremain:" + item?.item?.avaliableInventory.toString()
+            holder.price.text = "$" + (item.item?.price?.toInt()).toString()
             refreshPriceTextView()
         }
 
         val itemName = holder.itemName
         itemName.text = item.item!!.itemName
 
-        holder.price.text = "$" + (item.item?.price?.toInt()).toString() + "\nremain:" + item?.item?.avaliableInventory.toString()
+        holder.price.text = "$" + (item.item?.price?.toInt()).toString()
 
         val keys = DatabaseUtil.queryItemsKeyDes(activity, item.item!!.rfid)
         var keyText: StringBuffer = StringBuffer()

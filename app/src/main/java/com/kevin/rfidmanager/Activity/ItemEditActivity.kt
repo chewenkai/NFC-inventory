@@ -102,7 +102,7 @@ class ItemEditActivity : AppCompatActivity() {
                                 image.originalPath)
                         // Add file path to database
                         val daoSession = (application as MyApplication).getmDaoSession()
-                        daoSession.insert(imagePath)
+                        daoSession.imagesPathDao.insert(imagePath)
                         gallaryAdaper!!.updateUI()
                     } else if (image.requestId == ConstantManager.REQUEST_MAIN_IMAGE_FILE) {
                         // Add file path to database
@@ -113,7 +113,7 @@ class ItemEditActivity : AppCompatActivity() {
                             return
                         }
                         item.mainImagePath = image.originalPath
-                        daoSession.insertOrReplace(item)
+                        daoSession.itemsDao.insertOrReplace(item)
 
                         if (ContextCompat.checkSelfPermission(this@ItemEditActivity, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                             Picasso.with(this@ItemEditActivity).load(File(item.mainImagePath)).resize(ScreenUtil.getScreenWidth(this@ItemEditActivity) / 2, 0).into(mainImage)

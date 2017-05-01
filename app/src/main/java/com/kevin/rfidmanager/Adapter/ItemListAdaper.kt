@@ -162,13 +162,12 @@ class ItemListAdaper(val activity: Activity, internal var itemes: MutableList<It
             ConstantManager.LINEAR_LAYOUT, ConstantManager.STAGGER_LAYOUT, ConstantManager.ONE_ROW_LAYOUT  // ConstantManager.LINEAR_LAYOUT
             -> {
                 holder.keyDes.visibility = View.GONE
-                holder.price.text = "$" + (item.price.toInt()).toString() + "\nremain:" + item.avaliableInventory.toString()
             }
             ConstantManager.DETAIL_LAYOUT -> {
                 holder.keyDes.visibility = View.VISIBLE
-                holder.price.text = "$" + (item.price.toInt()).toString() + " remain:" + item.avaliableInventory.toString()
             }
         }
+        holder.price.text = "$" + (item.price.toInt()).toString()
 
     }
 
