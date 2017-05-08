@@ -57,6 +57,9 @@ dependencies {
     compile project(path: ':RFID_demo')
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
+    // wheel picker
+    // use a deffirent build version, be careful, it may cause manifest merge error.
+
     compile 'org.greenrobot:greendao:3.2.0'
     compile 'com.github.yuweiguocn:GreenDaoUpgradeHelper:v1.3.0'
     compile 'com.nightonke:boommenu:2.0.7'
@@ -73,11 +76,8 @@ dependencies {
     compile 'com.nbsp:library:1.2'
     compile 'com.github.mjdev:libaums:0.5.0'
     compile 'com.android.support.constraint:constraint-layout:1.0.0-beta4'
-    testCompile 'junit:junit:4.12'
-    // wheel picker
     compile 'cn.qqtheme.framework:WheelPicker:1.4.5'
-    // use a deffirent build version, be careful, it may cause manifest merge error.
-
+    testCompile 'junit:junit:4.12'
 }
 
 greendao {

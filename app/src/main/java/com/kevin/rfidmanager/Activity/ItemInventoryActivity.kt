@@ -171,6 +171,7 @@ class ItemInventoryActivity : AppCompatActivity() {
 
         registUSBBroadCast()
         registNewCardsBroadCast()
+        registPayResultBroadCast()
     }
 
     private fun clearAllRadioButtonInPowerChangeDialog(rbs: ArrayList<AppCompatRadioButton>) {
@@ -199,6 +200,11 @@ class ItemInventoryActivity : AppCompatActivity() {
     private fun registNewCardsBroadCast() {
         val filter = IntentFilter(ConstantManager.NEW_RFID_CARD_BROADCAST_ACTION)
         registerReceiver(newCardsReceiver, filter)
+    }
+
+    private fun registPayResultBroadCast() {
+        val filter = IntentFilter(ConstantManager.PAY_SUCCESSFUL_BROADCAST)
+        registerReceiver(payResultReceiver, filter)
     }
 
     private fun initNFC(): Boolean {
@@ -270,6 +276,7 @@ class ItemInventoryActivity : AppCompatActivity() {
     override fun onDestroy() {
         unregisterReceiver(usbReceiver)
         unregisterReceiver(newCardsReceiver)
+        unregisterReceiver(payResultReceiver)
         super.onDestroy()
     }
 
@@ -397,7 +404,7 @@ class ItemInventoryActivity : AppCompatActivity() {
             }
         }
         //modify the count number
-        actionBarTitle?.setText(getString(R.string.item_number) + itemsInDatabase.size)
+        actionBarTitle?.text = getString(R.string.item_number) + itemsInDatabase.size + "PCs"
 
         // Notify update the item list, show the newest cards which are read from card reader.
         itemListAdapter!!.updateUI(itemsInDatabase)
@@ -902,8 +909,9 @@ class ItemInventoryActivity : AppCompatActivity() {
             }
             R.id.checkout -> {
                 // Goto Check out Page
-                intent = Intent(this@ItemInventoryActivity, CheckoutActivity::class.java)
+                intent = Intent(this@ItemInventoryActivity, CartActivity::class.java)
                 intent.putExtra(ConstantManager.CURRENT_USER_NAME, currentUser)
+                intent.putStringArrayListExtra(ConstantManager.CART_ITEM_RFID, itemListAdapter?.itemsIDInCart)
                 startActivity(intent)
             }
         }
@@ -1044,6 +1052,20 @@ class ItemInventoryActivity : AppCompatActivity() {
             if (ConstantManager.NEW_RFID_CARD_BROADCAST_ACTION == action) {
                 val newCards = intent.getStringArrayListExtra(ConstantManager.NEW_RFID_CARD_KEY)
                 updateCardsList(newCards)
+            }
+        }
+    }
+
+    /**
+     * Receive notification of pay result
+     */
+    private val payResultReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val action = intent.action
+            if (ConstantManager.PAY_SUCCESSFUL_BROADCAST == action) {
+                val paySuc = intent.getBooleanExtra(ConstantManager.PAY_SUCCESSFUL, false)
+                if (paySuc)
+                    itemListAdapter?.itemsIDInCart?.clear()
             }
         }
     }

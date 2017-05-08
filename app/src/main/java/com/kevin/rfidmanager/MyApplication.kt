@@ -73,7 +73,7 @@ class MyApplication : Application() {
         registScreenAction()
         detectConnection()
 //        emulateRFIDReaderTagReduce()
-//        emulateIncreaseTag()
+        emulateIncreaseTag()
     }
 
     override fun onTerminate() {
@@ -96,7 +96,10 @@ class MyApplication : Application() {
     }
 
     fun getmDaoSession(): DaoSession {
-        return daoSession!!
+        val helper = MySQLiteOpenHelper(this,
+                resources.getString(R.string.database_name), null)
+        val db = helper.writableDb
+        return daoSession ?: DaoMaster(db).newSession()
     }
 
     fun toast(s: String) {
@@ -123,7 +126,7 @@ class MyApplication : Application() {
                             startScan()
                         }
                     }
-                } catch (e: Throwable ) {
+                } catch (e: Throwable) {
                     uiThread {
                         toast(e.toString())
                     }
@@ -131,6 +134,7 @@ class MyApplication : Application() {
             }
         }
     }
+
     /**
      * start scan RFID cards and show at the dialog
      */
@@ -439,7 +443,7 @@ class MyApplication : Application() {
             while (true) {
 
                 try {
-                    Thread.sleep(500)
+                    Thread.sleep(2000)
                     uiThread {
                         while (count < 10) {
                             cardIDs.add(count.toString())
@@ -528,6 +532,7 @@ class MyApplication : Application() {
         }
 
     }
+
     private fun registUSBBroadCast() {
         val filter = IntentFilter(ConstantManager.ACTION_USB_PERMISSION)
         filter.addAction(UsbManager.ACTION_USB_DEVICE_ATTACHED)
@@ -578,31 +583,37 @@ class MyApplication : Application() {
      * Update the item count number in UI
      */
     fun updateSavedCardsNumber(cardIDs: ArrayList<String>) {
-        // Init the arraylist of items in database
-        val itemsInDatabase = ArrayList<Items>()
-        // Init the arraylist of un-recorded items ID
-        val unRecordedItemsIDs = ArrayList<String>()
+        try {
+// Init the arraylist of items in database
+            val itemsInDatabase = ArrayList<Items>()
+            // Init the arraylist of un-recorded items ID
+            val unRecordedItemsIDs = ArrayList<String>()
 
-        // Are there any user info?
-        val daoSession = getmDaoSession()
-        val itemsDao = daoSession.itemsDao
+            // Are there any user info?
+            val daoSession = getmDaoSession()
+            val itemsDao = daoSession.itemsDao
 
-        for (cardID in cardIDs) {
-            val items = itemsDao.queryBuilder().where(ItemsDao.Properties.Rfid.like(cardID)).build().list()
-            if (items.size > 1) {
-                return
-            } else if (items.size == 1) {  // Database have an item bind with this card
-                if (items[0].userName.equals(currentUser)) {
-                    // Add item to List
-                    itemsInDatabase.add(items[0])
-                } else {
+            for (cardID in cardIDs) {
+
+                val items = itemsDao.queryBuilder().where(ItemsDao.Properties.Rfid.eq(cardID)).build().list()
+                if (items.size > 1) {
                     return
+                } else if (items.size == 1) {  // Database have an item bind with this card
+                    if (items[0].userName.equals(currentUser)) {
+                        // Add item to List
+                        itemsInDatabase.add(items[0])
+                    } else {
+                        return
+                    }
+                } else {
+                    unRecordedItemsIDs.add(cardID)
                 }
-            } else {
-                unRecordedItemsIDs.add(cardID)
             }
+            //modify the count number
+            savedCardsNumber = itemsInDatabase.size
+        } catch (e: Exception) {
+
         }
-        //modify the count number
-        savedCardsNumber = itemsInDatabase.size
+
     }
 }

@@ -201,7 +201,7 @@ class ItemDetailActivity : AppCompatActivity() {
             val action = intent.action
             if (ConstantManager.NEW_RFID_CARD_BROADCAST_ACTION == action) {
                 supportActionBar!!.title = getString(R.string.item_number) +
-                        (application as MyApplication).savedCardsNumber
+                        (application as MyApplication).savedCardsNumber + "PCs"
             }
         }
     }

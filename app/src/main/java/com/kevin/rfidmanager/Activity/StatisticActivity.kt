@@ -17,7 +17,7 @@ import com.kevin.rfidmanager.MyApplication
 import com.kevin.rfidmanager.R
 import com.kevin.rfidmanager.Utils.ConstantManager
 import com.kevin.rfidmanager.Utils.TimeUtil
-import com.kevin.rfidmanager.database.SaleInfo
+import com.kevin.rfidmanager.database.ItemsDao
 import com.kevin.rfidmanager.database.SaleInfoDao
 import kotlinx.android.synthetic.main.activity_statistic.*
 import org.jetbrains.anko.onClick
@@ -41,7 +41,7 @@ class StatisticActivity : AppCompatActivity() {
     var isStatisticMonth = 1
     var isStatisticWeek = 2
     var isStatisticDay = 3
-    var selectedButton = isStatisticYear
+    var selectedButton = isStatisticDay
 
     private var selected_start_year = ""
     private var selected_start_month = ""
@@ -54,6 +54,7 @@ class StatisticActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_statistic)
         supportActionBar?.title = "Statistic"
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         initUI()
         refreshData()
     }
@@ -137,27 +138,11 @@ class StatisticActivity : AppCompatActivity() {
                 toast("Please select date.")
                 return@onClick
             }
-            val result = (application as MyApplication).daoSession?.saleInfoDao?.queryBuilder()?.
-                    where(SaleInfoDao.Properties.SaleTime.gt(startMills),
-                            SaleInfoDao.Properties.SaleTime.lt(endMills),
-                            SaleInfoDao.Properties.UserName.eq(currentUser))?.
-                    orderDesc(SaleInfoDao.Properties.SaleTime)?.list()
-            result?.groupBy { SaleInfo::getItemName }
-            val groupMap = result?.groupBy { it.rfid }
-            val saleList = ArrayList<SaleStasticInfo>()
-            if (groupMap != null) {
-                for ((key, value) in groupMap) {
-                    val sale = SaleStasticInfo()
-                    sale.itemName = value[0].itemName
-                    sale.unitPrice = value[0].price
-                    sale.volume = value.sumBy { it.saleVolume }
-                    sale.price = sale.volume * sale.unitPrice
-                    saleList.add(sale)
-                }
-            }
+            val saleList = queryStatisticInfo(startMills, endMills)
+
             statisticAdapter?.updateDate(saleList)
-            total_volume.text = "volume: ${saleList.sumBy { it.volume }}"
-            total_price.text = "price: ${saleList.sumByDouble { it.price.toDouble() }}"
+            total_volume.text = "Sold Units:: ${saleList.sumBy { it.volume }}"
+            total_price.text = "Product Sales: " + String.format("%.0f", saleList.sumByDouble { it.price.toDouble() })
         }
 
         // init the list
@@ -165,13 +150,15 @@ class StatisticActivity : AppCompatActivity() {
         statistic_list.adapter = statisticAdapter!!
         // set head view
         val v = layoutInflater.inflate(R.layout.statistic_adaper_layout, null)
-        (v.findViewById(R.id.item_name) as TextView).text = "Item Name"
+        (v.findViewById(R.id.item_name) as TextView).text = "Product Name"
         (v.findViewById(R.id.item_name) as TextView).typeface = Typeface.DEFAULT_BOLD
         (v.findViewById(R.id.unit_price) as TextView).text = "Unit Price"
         (v.findViewById(R.id.unit_price) as TextView).typeface = Typeface.DEFAULT_BOLD
-        (v.findViewById(R.id.volume) as TextView).text = "Volume"
+        (v.findViewById(R.id.volume) as TextView).text = "Sold Units"
         (v.findViewById(R.id.volume) as TextView).typeface = Typeface.DEFAULT_BOLD
-        (v.findViewById(R.id.price) as TextView).text = "Price"
+        (v.findViewById(R.id.stock) as TextView).text = "Stock"
+        (v.findViewById(R.id.stock) as TextView).typeface = Typeface.DEFAULT_BOLD
+        (v.findViewById(R.id.price) as TextView).text = "Product Sales"
         (v.findViewById(R.id.price) as TextView).typeface = Typeface.DEFAULT_BOLD
         statistic_list.addHeaderView(v)
     }
@@ -201,30 +188,47 @@ class StatisticActivity : AppCompatActivity() {
                         SimpleDateFormat("yyyy-M-d"))
             }
         }
-        val result = (application as MyApplication).daoSession?.saleInfoDao?.queryBuilder()?.
-                where(SaleInfoDao.Properties.SaleTime.gt(thresholdMills), SaleInfoDao.Properties.UserName.eq(currentUser))?.
-                orderDesc(SaleInfoDao.Properties.SaleTime)?.list()
-        result?.groupBy { SaleInfo::getItemName }
-        val groupMap = result?.groupBy { it.rfid }
+
+        val saleList = queryStatisticInfo(thresholdMills, System.currentTimeMillis())
+        statisticAdapter?.updateDate(saleList)
+        total_volume.text = "Sold Units: ${saleList.sumBy { it.volume }}"
+        total_price.text = "Product Sales: " + String.format("%.0f", saleList.sumByDouble { it.price.toDouble() })
+    }
+
+    fun queryStatisticInfo(startThresholdMills: Long, endThresholdMills: Long): ArrayList<SaleStasticInfo> {
         val saleList = ArrayList<SaleStasticInfo>()
-        if (groupMap != null) {
-            for ((key, value) in groupMap) {
+        val allItems = (application as MyApplication).daoSession?.itemsDao?.queryBuilder()?.
+                where(ItemsDao.Properties.UserName.eq(currentUser))?.list()
+        if (allItems != null) {
+            for (item in allItems) {
                 val sale = SaleStasticInfo()
-                sale.itemName = value[0].itemName
-                sale.unitPrice = value[0].price
-                sale.volume = value.sumBy { it.saleVolume }
-                sale.price = sale.volume * sale.unitPrice
+                sale.itemName = item.itemName
+                sale.unitPrice = item.price
+                sale.stock = item.avaliableInventory
+                val saleRecords = (application as MyApplication).daoSession?.saleInfoDao?.queryBuilder()?.
+                        where(SaleInfoDao.Properties.Rfid.eq(item.rfid), SaleInfoDao.Properties.SaleTime.gt(startThresholdMills),
+                                SaleInfoDao.Properties.Rfid.eq(item.rfid), SaleInfoDao.Properties.SaleTime.lt(endThresholdMills))?.list()
+                if (saleRecords == null) {
+                    sale.volume = 0
+                    sale.price = 0f
+                } else {
+                    sale.volume = saleRecords.sumBy { it.saleVolume }
+                    sale.price = saleRecords.sumByDouble { it.price.toDouble() }.toFloat()
+                }
                 saleList.add(sale)
             }
-        }
-        statisticAdapter?.updateDate(saleList)
-        total_volume.text = "volume: ${saleList.sumBy { it.volume }}"
-        total_price.text = "price: ${saleList.sumByDouble { it.price.toDouble() }}"
+        } else
+            return ArrayList<SaleStasticInfo>()
+
+        saleList.sortByDescending { it.volume }
+        return saleList
     }
 
     fun initDatePicker() {
         startDatePicker = DatePicker(this@StatisticActivity, DatePicker.YEAR_MONTH_DAY)
+        startDatePicker?.setLabel(getString(R.string.year_label), getString(R.string.month_label), getString(R.string.day_label))
         endDatePicker = DatePicker(this@StatisticActivity, DatePicker.YEAR_MONTH_DAY)
+        endDatePicker?.setLabel(getString(R.string.year_label), getString(R.string.month_label), getString(R.string.day_label))
         startDatePicker!!.setOnWheelListener(object : DatePicker.OnWheelListener {
             override fun onMonthWheeled(index: Int, month: String?) {
                 selected_start_month = month ?: ""
@@ -261,6 +265,9 @@ class StatisticActivity : AppCompatActivity() {
 
     override fun onKeyUp(keyCode: Int, event: KeyEvent): Boolean {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
+            val intent = Intent(this, ItemListActivity::class.java)
+            intent.putExtra(ConstantManager.CURRENT_USER_NAME, currentUser)
+            startActivity(intent)
             finish()
             return true
         }
@@ -278,6 +285,7 @@ class StatisticActivity : AppCompatActivity() {
                 intent.putExtra(ConstantManager.CURRENT_USER_NAME, currentUser)
                 startActivity(intent)
                 finish()
+                return true
             }
         }
         return super.onOptionsItemSelected(item)

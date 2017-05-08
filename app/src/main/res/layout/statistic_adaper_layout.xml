@@ -2,66 +2,83 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:elevation="0dp"
     android:orientation="horizontal">
 
 
     <TextView
         android:id="@+id/item_name"
         android:layout_width="0dp"
-        android:layout_weight="1"
         android:layout_height="wrap_content"
-        android:text="item name"
-        android:gravity="center"
         android:layout_gravity="center"
         android:layout_marginLeft="5dp"
         android:layout_marginStart="5dp"
-        android:textSize="16sp"
+        android:layout_weight="1"
+        android:background="@color/slight_gray"
+        android:gravity="center"
+        android:text="item name"
         android:textColor="@color/black"
-        android:textStyle="normal"
-        android:background="@color/slight_gray" />
+        android:textSize="16sp"
+        android:textStyle="normal" />
 
     <TextView
         android:id="@+id/unit_price"
         android:layout_width="0dp"
-        android:layout_weight="1"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginLeft="5dp"
         android:layout_marginStart="5dp"
-        android:text="unit price"
+        android:layout_weight="1"
+        android:background="@color/slight_gray"
+        android:elevation="0dp"
         android:gravity="center"
+        android:text="unit price"
         android:textColor="@color/black"
         android:textSize="16sp"
-        android:textStyle="normal"
-        android:background="@color/slight_gray" />
+        android:textStyle="normal" />
 
     <TextView
         android:id="@+id/volume"
         android:layout_width="0dp"
-        android:layout_weight="1"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginLeft="5dp"
         android:layout_marginStart="5dp"
-        android:text="volume"
+        android:layout_weight="1"
+        android:background="@color/slight_gray"
         android:gravity="center"
+        android:text="volume"
         android:textColor="@color/black"
         android:textSize="16sp"
-        android:textStyle="normal"
-        android:background="@color/slight_gray" />
+        android:textStyle="normal" />
+
+    <TextView
+        android:id="@+id/stock"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginLeft="5dp"
+        android:layout_marginStart="5dp"
+        android:layout_weight="1"
+        android:background="@color/slight_gray"
+        android:gravity="center"
+        android:text="stock"
+        android:textColor="@color/black"
+        android:textSize="16sp"
+        android:textStyle="normal" />
 
     <TextView
         android:id="@+id/price"
         android:layout_width="0dp"
-        android:layout_weight="1"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginLeft="5dp"
         android:layout_marginStart="5dp"
-        android:text="price"
+        android:layout_weight="1"
+        android:background="@color/slight_gray"
         android:gravity="center"
+        android:text="price"
         android:textColor="@color/black"
         android:textSize="16sp"
-        android:textStyle="normal"
-        android:background="@color/slight_gray" />
+        android:textStyle="normal" />
 </LinearLayout>

@@ -20,6 +20,7 @@ class StatisticListAdapter(context: Context, var saleInfos: ArrayList<SaleStasti
         internal var itemName: TextView? = null
         internal var unitPrice: TextView? = null
         internal var volume: TextView? = null
+        internal var stock: TextView? = null
         internal var price: TextView? = null
     }
 
@@ -37,6 +38,7 @@ class StatisticListAdapter(context: Context, var saleInfos: ArrayList<SaleStasti
             viewHolder.itemName = convertView!!.findViewById(R.id.item_name) as TextView
             viewHolder.unitPrice = convertView.findViewById(R.id.unit_price) as TextView
             viewHolder.volume = convertView.findViewById(R.id.volume) as TextView
+            viewHolder.stock = convertView.findViewById(R.id.stock) as TextView
             viewHolder.price = convertView.findViewById(R.id.price) as TextView
             // Cache the viewHolder object inside the fresh view
             convertView.tag = viewHolder
@@ -48,9 +50,10 @@ class StatisticListAdapter(context: Context, var saleInfos: ArrayList<SaleStasti
         // into the template view.
 
         viewHolder.itemName?.text = saleInfo.itemName
-        viewHolder.unitPrice?.text = saleInfo.price.toString()
+        viewHolder.unitPrice?.text = String.format("%.0f", saleInfo.price)
         viewHolder.volume?.text = saleInfo.volume.toString()
-        viewHolder.price?.text = (saleInfo.price * saleInfo.volume).toString()
+        viewHolder.stock?.text = String.format("%d", saleInfo.stock)
+        viewHolder.price?.text = String.format("%.0f", saleInfo.price * saleInfo.volume)
         return convertView
     }
 

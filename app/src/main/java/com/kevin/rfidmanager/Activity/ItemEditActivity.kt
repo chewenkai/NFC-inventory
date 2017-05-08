@@ -33,6 +33,7 @@ import com.kevin.rfidmanager.R
 import com.kevin.rfidmanager.Utils.ConstantManager
 import com.kevin.rfidmanager.Utils.ConstantManager.PERMISSION_REQUEST_CODE
 import com.kevin.rfidmanager.Utils.DatabaseUtil
+import com.kevin.rfidmanager.Utils.DatabaseUtil.getCurrentItem
 import com.kevin.rfidmanager.Utils.ScreenUtil
 import com.kevin.rfidmanager.database.ImagesPath
 import com.kevin.rfidmanager.database.Items
@@ -80,7 +81,7 @@ class ItemEditActivity : AppCompatActivity() {
     private fun initUI() {
         // IMPORTANT: Below Line Must At The First Line Of The Method!
         currentID = intent.getStringExtra(ConstantManager.CURRENT_ITEM_ID)
-        if (currentID == ConstantManager.DEFAULT_RFID)
+        if (currentID == ConstantManager.DEFAULT_RFID || currentID == null)
             return
 
         // Get and check the current item
@@ -287,7 +288,7 @@ class ItemEditActivity : AppCompatActivity() {
      */
     private fun packUpImm() {
         val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm?.hideSoftInputFromWindow(window.decorView.windowToken, 0)
+        imm.hideSoftInputFromWindow(window.decorView.windowToken, 0)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -300,22 +301,13 @@ class ItemEditActivity : AppCompatActivity() {
         when (item.itemId) {
             R.id.action_bar_save -> {
                 packUpImm()
-                if (!DatabaseUtil.updateItemName(this@ItemEditActivity, itemName!!.text.toString(), currentID)) {
-                    Toast.makeText(this, R.string.save_item_failed, Toast.LENGTH_LONG).show()
-                    return true
-                }
-                if (!DatabaseUtil.updateDetailDescription(this@ItemEditActivity, detailDescription!!.text.toString(), currentID)) {
-                    Toast.makeText(this, R.string.save_item_failed, Toast.LENGTH_LONG).show()
-                    return true
-                }
-                if (!DatabaseUtil.updateItemPrice(this@ItemEditActivity, et_price.text.toString().toFloat(), this.item)) {
-                    Toast.makeText(this, R.string.save_item_failed, Toast.LENGTH_LONG).show()
-                    return true
-                }
-                if (!DatabaseUtil.updateItemAvailableInventory(this@ItemEditActivity, et_available_inventory.text.toString().toInt(), this.item)) {
-                    Toast.makeText(this, R.string.save_item_failed, Toast.LENGTH_LONG).show()
-                    return true
-                }
+                val daoSession = (application as MyApplication).daoSession
+                val currentItem = getCurrentItem(this@ItemEditActivity, currentID)
+                currentItem?.itemName = itemName?.text.toString()
+                currentItem?.detailDescription = detailDescription?.text.toString()
+                currentItem?.price = et_price.text.toString().toFloat()
+                currentItem?.avaliableInventory = et_available_inventory.text.toString().toInt()
+                daoSession?.itemsDao?.insertOrReplace(currentItem)
                 Toast.makeText(this@ItemEditActivity, R.string.saved_item, Toast.LENGTH_LONG).show()
                 val intent = Intent(this, ItemDetailActivity::class.java)
                 intent.putExtra(ConstantManager.CURRENT_ITEM_ID, currentID)
@@ -323,9 +315,9 @@ class ItemEditActivity : AppCompatActivity() {
                 finish()
             }
             android.R.id.home -> {
-                val intent1 = Intent(this, ItemDetailActivity::class.java)
-                intent1.putExtra(ConstantManager.CURRENT_ITEM_ID, currentID)
-                startActivity(intent1)
+                val intent = Intent(this, ItemDetailActivity::class.java)
+                intent.putExtra(ConstantManager.CURRENT_ITEM_ID, currentID)
+                startActivity(intent)
                 finish()
             }
         }
@@ -348,7 +340,7 @@ class ItemEditActivity : AppCompatActivity() {
             val action = intent.action
             if (ConstantManager.NEW_RFID_CARD_BROADCAST_ACTION == action) {
                 supportActionBar!!.title = getString(R.string.item_number) +
-                        (application as MyApplication).savedCardsNumber
+                        (application as MyApplication).savedCardsNumber + "PCs"
             }
         }
     }

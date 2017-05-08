@@ -119,17 +119,34 @@
                     android:textStyle="bold" />
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/itemlist_key_des"
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:padding="10dp"
+                android:orientation="horizontal"
                 android:gravity="start|center_vertical"
-                android:textSize="18sp"
-                android:elegantTextHeight="true"
-                android:layout_gravity="center_vertical"
-                android:text="remove\njfdh"
-                android:textColor="@color/item_list_key_des" />
+                android:layout_gravity="center_vertical">
+
+                <TextView
+                    android:id="@+id/itemlist_key_des"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:padding="10dp"
+                    android:gravity="start|center_vertical"
+                    android:textSize="18sp"
+                    android:layout_gravity="center_vertical"
+                    android:text="remove\njfdh"
+                    android:textColor="@color/item_list_key_des" />
+
+                <ImageView
+                    android:id="@+id/add_to_cart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:padding="5dp"
+                    android:src="@drawable/add_shopping" />
+            </LinearLayout>
+
         </LinearLayout>
 
 

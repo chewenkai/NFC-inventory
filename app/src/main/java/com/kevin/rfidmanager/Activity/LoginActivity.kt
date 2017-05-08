@@ -53,7 +53,7 @@ class LoginActivity : AppCompatActivity() {
     /**
      * This method will get a unique code of device.
      */
-    private fun checkUUID(){
+    private fun checkUUID(): Boolean {
         val telephonyManager = getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
 
         /*
@@ -68,7 +68,9 @@ class LoginActivity : AppCompatActivity() {
         if (deviceId != ConstantManager.UniqueCode) {
             toast("This device is not supported.")
             finish()
+            return false
         }
+        return true
     }
 
     /**
@@ -94,8 +96,8 @@ class LoginActivity : AppCompatActivity() {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // permission was granted, yay!
-                    checkUUID()
-                    checkIsNeedPassword()  // If do not need password, go to main page directly.
+                    if (checkUUID())
+                        checkIsNeedPassword()  // If do not need password, go to main page directly.
                 } else {
 
                 }
@@ -283,8 +285,8 @@ class LoginActivity : AppCompatActivity() {
         if (phoneStatePermissionCheck != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_PHONE_STATE), PHONE_STAT_PERMISSION_REQUEST_CODE)
         } else {
-            checkUUID()
-            checkIsNeedPassword()  // If do not need password, go to main page directly.
+            if (checkUUID())
+                checkIsNeedPassword()  // If do not need password, go to main page directly.
         }
     }
 

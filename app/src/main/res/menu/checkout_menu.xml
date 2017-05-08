@@ -2,9 +2,8 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/action_bar_checkout_done"
-        android:icon="@drawable/done_black"
         android:orderInCategory="100"
         app:showAsAction="always"
-        android:title="@string/done"></item>
+        android:title="Checkout" />
 
 </menu>

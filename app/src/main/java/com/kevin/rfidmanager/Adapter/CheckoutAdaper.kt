@@ -6,6 +6,8 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Parcel
+import android.os.Parcelable
 import android.support.v4.content.ContextCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
@@ -47,7 +49,7 @@ class CheckoutAdaper(val activity: Activity, var recyclerView: RecyclerView? = n
         val inflater = LayoutInflater.from(context)
 
         // Inflate the custom layout
-        val contactView = inflater.inflate(R.layout.checkout_adapter_layout, parent, false)
+        val contactView = inflater.inflate(R.layout.cart_adapter_layout, parent, false)
 
         // Return a new holder instance
         return ViewHolder(contactView)
@@ -229,7 +231,7 @@ class CheckoutAdaper(val activity: Activity, var recyclerView: RecyclerView? = n
     }
 
     fun refreshPriceTextView() {
-        tv_checkout_result.text = countTotalMoney().toString()
+        tv_checkout_result.text = String.format("%.0f", countTotalMoney())
     }
 
     fun updateUI() {
@@ -283,9 +285,11 @@ class CheckoutAdaper(val activity: Activity, var recyclerView: RecyclerView? = n
     }
 
 
-    class ItemWithCount {
+    class ItemWithCount() : Parcelable {
         var item: Items? = null
+
         var count: Int = 1
+
         fun countIncrease() {
             count++
         }
@@ -294,5 +298,18 @@ class CheckoutAdaper(val activity: Activity, var recyclerView: RecyclerView? = n
             if (count >= 1)
                 count--
         }
+
+        companion object {
+            @JvmField val CREATOR: Parcelable.Creator<ItemWithCount> = object : Parcelable.Creator<ItemWithCount> {
+                override fun createFromParcel(source: Parcel): ItemWithCount = ItemWithCount(source)
+                override fun newArray(size: Int): Array<ItemWithCount?> = arrayOfNulls(size)
+            }
+        }
+
+        constructor(source: Parcel) : this()
+
+        override fun describeContents() = 0
+
+        override fun writeToParcel(dest: Parcel?, flags: Int) {}
     }
 }

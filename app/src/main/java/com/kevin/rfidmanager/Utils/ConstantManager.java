@@ -6,15 +6,15 @@ package com.kevin.rfidmanager.Utils;
  */
 
 public class ConstantManager {
-    //    public static String UniqueCode = "868030021837446";  // mi5's unique code
-    public static String UniqueCode = "32febcde30525d88";  // Hooman's unique code
+    public static String UniqueCode = "868030021837446";  // mi5's unique code
+    //    public static String UniqueCode = "32febcde30525d88";  // Hooman's unique code
     public static boolean IS_DEBUGING = false;
 
     // Main page
     public static int REQUEST_MAIN_IMAGE_FILE = 5;
     public static int REQUEST_GALLERY_IMAGE_FILE = 6;
-    public static int PERMISSION_REQUEST_CODE=7;
-    public static int PHONE_STAT_PERMISSION_REQUEST_CODE=12;
+    public static int PERMISSION_REQUEST_CODE = 7;
+    public static int PHONE_STAT_PERMISSION_REQUEST_CODE = 12;
     public static String DEFAULT_RFID = "-1";
     public static String DEFAULT_USER = "default user";
 
@@ -42,7 +42,12 @@ public class ConstantManager {
     public final static String CURRENT_ITEM_ID = "current_item_id";
     public final static String INTENT_STRING_EXTRA_FILE_PATH = "image_view_file_path_extra";  // Extra name in PhotoActivity
     public final static String GALLERY_CLICK_POSITION = "click_position";  // Extra name in PhotoActivity
+    public final static String CART_ITEM_RFID = "cart_item_rfid";  // items in cart
+    public final static String CHECKOUT_ITEMS = "checkout_items";
+    public final static String CHECKOUT_ITEMS_ID = "checkout_items_id";
+    public final static String PAY_SUCCESSFUL_BROADCAST = "com.pay.successful";
 
+    public final static String PAY_SUCCESSFUL = "pay_succ";
 
 
 }

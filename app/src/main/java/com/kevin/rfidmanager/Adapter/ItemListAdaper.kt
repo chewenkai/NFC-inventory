@@ -34,6 +34,8 @@ import com.kevin.rfidmanager.database.Items
 import com.kevin.rfidmanager.database.KeyDescription
 import com.kevin.rfidmanager.database.KeyDescriptionDao
 import com.squareup.picasso.Picasso
+import org.jetbrains.anko.onClick
+import org.jetbrains.anko.toast
 import java.io.File
 
 /**
@@ -47,6 +49,7 @@ class ItemListAdaper(val activity: Activity, internal var itemes: MutableList<It
     val circleDialog: ProgressDialog = ProgressDialog(activity)
     var deleteMdoe = false
     val checkedItems: ArrayList<Items> = ArrayList<Items>()
+    val itemsIDInCart = ArrayList<String>()
     val context: Context
         get() = activity.applicationContext
 
@@ -109,10 +112,6 @@ class ItemListAdaper(val activity: Activity, internal var itemes: MutableList<It
         }
 
         image.setOnClickListener {
-            if (isItemListAdapter)
-                (activity as ItemListActivity).currentID = item.rfid
-            else
-                (activity as ItemInventoryActivity).currentID = item.rfid
             val intent = Intent(activity, ItemDetailActivity::class.java)
             intent.putExtra(ConstantManager.CURRENT_ITEM_ID, item.rfid)
             activity.startActivity(intent)
@@ -136,10 +135,6 @@ class ItemListAdaper(val activity: Activity, internal var itemes: MutableList<It
         }
 
         holder.editItem.setOnClickListener {
-            if (isItemListAdapter)
-                (activity as ItemListActivity).currentID = item.rfid
-            else
-                (activity as ItemInventoryActivity).currentID = item.rfid
             //                ((MainActivity)activity).viewPager.setCurrentItem(ConstantManager.EDIT, false);
             //                ((MainActivity)activity).adapter.tab3.refreshUI();
             val intent = Intent(activity, ItemEditActivity::class.java)
@@ -157,7 +152,7 @@ class ItemListAdaper(val activity: Activity, internal var itemes: MutableList<It
             keyText.append(" * " + key.keyDescription + "\n")
         }
         holder.keyDes.hint = context.getString(R.string.no_key_description_information)
-        holder.keyDes.setText(keyText)
+        holder.keyDes.text = keyText
         when (SPUtil.getInstence(activity).apperance) {
             ConstantManager.LINEAR_LAYOUT, ConstantManager.STAGGER_LAYOUT, ConstantManager.ONE_ROW_LAYOUT  // ConstantManager.LINEAR_LAYOUT
             -> {
@@ -167,7 +162,40 @@ class ItemListAdaper(val activity: Activity, internal var itemes: MutableList<It
                 holder.keyDes.visibility = View.VISIBLE
             }
         }
-        holder.price.text = "$" + (item.price.toInt()).toString()
+
+        if (ItemListActivity::class.java.isInstance(activity))
+            holder.price.text = "$" + (item.price.toInt()).toString() + " Stock:" + (item.avaliableInventory.toString())
+        else if (ItemInventoryActivity::class.java.isInstance(activity))
+            holder.price.text = "$" + (item.price.toInt()).toString()
+
+        // Add To Cart part
+        if (isItemListAdapter) {
+            holder.addToCart.visibility = View.GONE
+        } else {
+            holder.addToCart.visibility = View.VISIBLE
+
+            if (itemsIDInCart.contains(item.rfid))
+                holder.addToCart.setImageResource(R.drawable.remove_shopping)
+            else
+                holder.addToCart.setImageResource(R.drawable.add_shopping)
+
+            holder.addToCart.onClick {
+                if (itemsIDInCart.contains(item.rfid)) {
+                    itemsIDInCart.remove(item.rfid)
+                    holder.addToCart.setImageResource(R.drawable.add_shopping)
+                } else {
+                    // check the stock
+                    if (item.avaliableInventory > 0) {
+                        itemsIDInCart.add(item.rfid)
+                        activity.toast("Added to cart.")
+                        holder.addToCart.setImageResource(R.drawable.remove_shopping)
+                    } else {
+                        activity.toast("Out of stock")
+                        return@onClick
+                    }
+                }
+            }
+        }
 
     }
 
@@ -288,6 +316,7 @@ class ItemListAdaper(val activity: Activity, internal var itemes: MutableList<It
         var deleteCheckBox: CheckBox
         var keyDes: TextView
         var price: TextView
+        var addToCart: ImageView
 
         init {
             swipeLayout = itemView.findViewById(R.id.swipe_layout) as SwipeLayout
@@ -298,6 +327,7 @@ class ItemListAdaper(val activity: Activity, internal var itemes: MutableList<It
             deleteCheckBox = itemView.findViewById(R.id.item_delete_check_box) as CheckBox
             keyDes = itemView.findViewById(R.id.itemlist_key_des) as TextView
             price = itemView.findViewById(R.id.et_price) as TextView
+            addToCart = itemView.findViewById(R.id.add_to_cart) as ImageView
         }// Stores the itemView in a public final member variable that can be used
         // to access the context from any ViewHolder instance.
     }

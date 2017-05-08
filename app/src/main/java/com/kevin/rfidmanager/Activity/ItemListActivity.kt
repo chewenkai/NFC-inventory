@@ -31,7 +31,6 @@ class ItemListActivity : AppCompatActivity() {
     val items: MutableList<Items> = ArrayList<Items>()
     private var deleteItemsButton: CircleButton? = null
     var currentUser = ConstantManager.DEFAULT_USER
-    var currentID = ConstantManager.DEFAULT_RFID
 
 
 
@@ -128,6 +127,7 @@ class ItemListActivity : AppCompatActivity() {
                 val intent = Intent(this, StatisticActivity::class.java)
                 intent.putExtra(ConstantManager.CURRENT_USER_NAME, currentUser)
                 startActivity(intent)
+                finish()
             }
             android.R.id.home -> finish()
         }
@@ -150,7 +150,7 @@ class ItemListActivity : AppCompatActivity() {
             val action = intent.action
             if (ConstantManager.NEW_RFID_CARD_BROADCAST_ACTION == action) {
                 supportActionBar!!.title = getString(R.string.item_number) +
-                        (application as MyApplication).savedCardsNumber
+                        (application as MyApplication).savedCardsNumber + "PCs"
             }
         }
     }

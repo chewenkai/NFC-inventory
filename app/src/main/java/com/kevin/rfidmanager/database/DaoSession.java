@@ -20,14 +20,14 @@ public class DaoSession extends AbstractDaoSession {
     private final DaoConfig imagesPathDaoConfig;
     private final DaoConfig itemsDaoConfig;
     private final DaoConfig keyDescriptionDaoConfig;
-    private final DaoConfig usersDaoConfig;
     private final DaoConfig saleInfoDaoConfig;
+    private final DaoConfig usersDaoConfig;
 
     private final ImagesPathDao imagesPathDao;
     private final ItemsDao itemsDao;
     private final KeyDescriptionDao keyDescriptionDao;
-    private final UsersDao usersDao;
     private final SaleInfoDao saleInfoDao;
+    private final UsersDao usersDao;
 
     public DaoSession(Database db, IdentityScopeType type, Map<Class<? extends AbstractDao<?, ?>>, DaoConfig>
             daoConfigMap) {
@@ -42,31 +42,31 @@ public class DaoSession extends AbstractDaoSession {
         keyDescriptionDaoConfig = daoConfigMap.get(KeyDescriptionDao.class).clone();
         keyDescriptionDaoConfig.initIdentityScope(type);
 
-        usersDaoConfig = daoConfigMap.get(UsersDao.class).clone();
-        usersDaoConfig.initIdentityScope(type);
-
         saleInfoDaoConfig = daoConfigMap.get(SaleInfoDao.class).clone();
         saleInfoDaoConfig.initIdentityScope(type);
+
+        usersDaoConfig = daoConfigMap.get(UsersDao.class).clone();
+        usersDaoConfig.initIdentityScope(type);
 
         imagesPathDao = new ImagesPathDao(imagesPathDaoConfig, this);
         itemsDao = new ItemsDao(itemsDaoConfig, this);
         keyDescriptionDao = new KeyDescriptionDao(keyDescriptionDaoConfig, this);
-        usersDao = new UsersDao(usersDaoConfig, this);
         saleInfoDao = new SaleInfoDao(saleInfoDaoConfig, this);
+        usersDao = new UsersDao(usersDaoConfig, this);
 
         registerDao(ImagesPath.class, imagesPathDao);
         registerDao(Items.class, itemsDao);
         registerDao(KeyDescription.class, keyDescriptionDao);
-        registerDao(Users.class, usersDao);
         registerDao(SaleInfo.class, saleInfoDao);
+        registerDao(Users.class, usersDao);
     }
     
     public void clear() {
         imagesPathDaoConfig.clearIdentityScope();
         itemsDaoConfig.clearIdentityScope();
         keyDescriptionDaoConfig.clearIdentityScope();
-        usersDaoConfig.clearIdentityScope();
         saleInfoDaoConfig.clearIdentityScope();
+        usersDaoConfig.clearIdentityScope();
     }
 
     public ImagesPathDao getImagesPathDao() {
@@ -81,12 +81,12 @@ public class DaoSession extends AbstractDaoSession {
         return keyDescriptionDao;
     }
 
-    public UsersDao getUsersDao() {
-        return usersDao;
-    }
-
     public SaleInfoDao getSaleInfoDao() {
         return saleInfoDao;
+    }
+
+    public UsersDao getUsersDao() {
+        return usersDao;
     }
 
 }
