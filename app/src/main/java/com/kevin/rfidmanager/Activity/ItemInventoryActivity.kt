@@ -172,6 +172,7 @@ class ItemInventoryActivity : AppCompatActivity() {
         registUSBBroadCast()
         registNewCardsBroadCast()
         registPayResultBroadCast()
+        clearCartBroadCast()
     }
 
     private fun clearAllRadioButtonInPowerChangeDialog(rbs: ArrayList<AppCompatRadioButton>) {
@@ -205,6 +206,11 @@ class ItemInventoryActivity : AppCompatActivity() {
     private fun registPayResultBroadCast() {
         val filter = IntentFilter(ConstantManager.PAY_SUCCESSFUL_BROADCAST)
         registerReceiver(payResultReceiver, filter)
+    }
+
+    private fun clearCartBroadCast() {
+        val filter = IntentFilter(ConstantManager.CLEAR_CART_BROADCAST)
+        registerReceiver(clearCartReceiver, filter)
     }
 
     private fun initNFC(): Boolean {
@@ -277,6 +283,7 @@ class ItemInventoryActivity : AppCompatActivity() {
         unregisterReceiver(usbReceiver)
         unregisterReceiver(newCardsReceiver)
         unregisterReceiver(payResultReceiver)
+        unregisterReceiver(clearCartReceiver)
         super.onDestroy()
     }
 
@@ -596,7 +603,7 @@ class ItemInventoryActivity : AppCompatActivity() {
 
 //        toast("Please record this number and tell Kevin:" + (mPower - 1).toString()) //1
 
-        if (SPUtil.getInstence(this@ItemInventoryActivity).powerValue>=0)
+        if (SPUtil.getInstence(this@ItemInventoryActivity).powerValue >= 0)
             rbs.get(SPUtil.getInstence(this@ItemInventoryActivity).powerValue).isChecked = true
         dialogBuilder.setTitle(resources.getString(R.string.change_power))
         val b = dialogBuilder.create()
@@ -609,7 +616,7 @@ class ItemInventoryActivity : AppCompatActivity() {
             if (nret_set == ApiErrDefinition.NO_ERROR) {
                 str = getString(com.example.AnReaderDemo.R.string.tx_setPower_ok)
                 SPUtil.getInstence(this@ItemInventoryActivity).
-                        savePowerValue(getSelectedPower(rbs)-1)
+                        savePowerValue(getSelectedPower(rbs) - 1)
             } else {
                 str = getString(com.example.AnReaderDemo.R.string.tx_setPower_fail)
             }
@@ -1066,6 +1073,18 @@ class ItemInventoryActivity : AppCompatActivity() {
                 val paySuc = intent.getBooleanExtra(ConstantManager.PAY_SUCCESSFUL, false)
                 if (paySuc)
                     itemListAdapter?.itemsIDInCart?.clear()
+            }
+        }
+    }
+
+    /**
+     * Receive notification of clear cart
+     */
+    private val clearCartReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context, intent: Intent) {
+            val action = intent.action
+            if (ConstantManager.CLEAR_CART_BROADCAST == action) {
+                itemListAdapter?.itemsIDInCart?.clear()
             }
         }
     }

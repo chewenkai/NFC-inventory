@@ -73,7 +73,7 @@ class MyApplication : Application() {
         registScreenAction()
         detectConnection()
 //        emulateRFIDReaderTagReduce()
-        emulateIncreaseTag()
+//        emulateIncreaseTag()
     }
 
     override fun onTerminate() {
@@ -445,7 +445,7 @@ class MyApplication : Application() {
                 try {
                     Thread.sleep(2000)
                     uiThread {
-                        while (count < 10) {
+                        while (count < 11) {
                             cardIDs.add(count.toString())
                             count++
                         }

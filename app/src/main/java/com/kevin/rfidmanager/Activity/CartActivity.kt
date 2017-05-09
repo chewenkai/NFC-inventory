@@ -187,6 +187,13 @@ class CartActivity : AppCompatActivity() {
                 startActivity(intent)
                 finish()
             }
+            R.id.clear_cart -> {
+                itemListAdapter?.detectedItems?.clear()
+                itemListAdapter?.backupDetectedItems?.clear()
+                val intent = Intent().setAction(ConstantManager.CLEAR_CART_BROADCAST)
+                sendBroadcast(intent)
+                finish()
+            }
             android.R.id.home -> {
                 itemListAdapter?.detectedItems = itemListAdapter?.backupDetectedItems!!
                 finish()

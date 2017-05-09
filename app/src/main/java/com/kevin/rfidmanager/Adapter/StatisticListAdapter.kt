@@ -50,7 +50,7 @@ class StatisticListAdapter(context: Context, var saleInfos: ArrayList<SaleStasti
         // into the template view.
 
         viewHolder.itemName?.text = saleInfo.itemName
-        viewHolder.unitPrice?.text = String.format("%.0f", saleInfo.price)
+        viewHolder.unitPrice?.text = String.format("%.0f", saleInfo.unitPrice)
         viewHolder.volume?.text = saleInfo.volume.toString()
         viewHolder.stock?.text = String.format("%d", saleInfo.stock)
         viewHolder.price?.text = String.format("%.0f", saleInfo.price * saleInfo.volume)
