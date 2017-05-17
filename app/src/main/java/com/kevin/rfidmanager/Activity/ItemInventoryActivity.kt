@@ -162,11 +162,14 @@ class ItemInventoryActivity : AppCompatActivity() {
         recyclerView = findViewById(R.id.recycle_item_list) as RecyclerView
         deleteItemsButton = delete_items_button
         emptyHint.setText(R.string.inventory_empty_hint)
+        (recyclerView?.itemAnimator as DefaultItemAnimator).supportsChangeAnimations = false
+        recyclerView?.itemAnimator?.endAnimations()
+        setRecyclerViewLayout()
         itemListAdapter = ItemListAdaper(this@ItemInventoryActivity, items, recyclerView,
                 deleteItemsButton!!, emptyHint, false)
+        itemListAdapter?.setHasStableIds(true)
         recyclerView!!.adapter = itemListAdapter
-        setRecyclerViewLayout()
-        recyclerView!!.setHasFixedSize(true)
+
         deleteItemsButton!!.setOnClickListener { itemListAdapter!!.deleteSelectedItems() }
 
         registUSBBroadCast()
@@ -292,7 +295,7 @@ class ItemInventoryActivity : AppCompatActivity() {
             8  // ConstantManager.LINEAR_LAYOUT
             -> {
                 val gridLayoutManager = GridLayoutManager(this@ItemInventoryActivity,
-                        3, GridLayoutManager.VERTICAL, false)
+                        3)
                 recyclerView!!.layoutManager = gridLayoutManager// Attach the layout manager to
             }
             9  // ConstantManager.STAGGER_LAYOUT

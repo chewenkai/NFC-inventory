@@ -19,6 +19,7 @@ import org.jetbrains.anko.toast
 class CheckoutActivity : AppCompatActivity() {
     var checkItems: ArrayList<CheckoutAdaper.ItemWithCount>? = null
     var itemID = ArrayList<String>()
+    var count = ArrayList<String>()
     var invoice = ""
     var totalPrice = 0.0
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,12 +29,13 @@ class CheckoutActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         checkItems = intent.getParcelableArrayListExtra(ConstantManager.CHECKOUT_ITEMS)
         itemID = intent.getStringArrayListExtra(ConstantManager.CHECKOUT_ITEMS_ID)
+        count = intent.getStringArrayListExtra(ConstantManager.CHECKOUT_ITEMS_COUNT_EXTRA)
         for (i in checkItems!!.indices) {
             checkItems?.get(i)?.item = DatabaseUtil.queryItemsById(this, itemID.get(i))
             val price = checkItems?.get(i)?.item?.price!! * checkItems?.get(i)?.count!!
-            totalPrice += price
+            totalPrice += price * count?.get(i)?.toInt()
             invoice += "Item: " + checkItems?.get(i)?.item?.itemName + "\t Amount: \t" +
-                    checkItems?.get(i)?.count + "\t Price: " + String.format("%.0f", price) + "\n------------------------\n"
+                    count?.get(i) + "\t Price: " + String.format("%.0f", price) + "\n------------------------\n"
         }
         invoice += "\n\n    Total:" + String.format("%.0f", totalPrice) + "\n\n"
 

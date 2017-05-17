@@ -178,12 +178,15 @@ class CartActivity : AppCompatActivity() {
             R.id.action_bar_checkout_done -> {
 
                 val itemID = ArrayList<String>()
+                val count = java.util.ArrayList<String>()
                 for (item in itemListAdapter?.detectedItems!!) {
                     itemID.add(item.item?.rfid!!)
+                    count.add(item.count.toString())
                 }
                 val intent = Intent(this@CartActivity, CheckoutActivity::class.java)
                 intent.putParcelableArrayListExtra(ConstantManager.CHECKOUT_ITEMS, itemListAdapter?.detectedItems!!)
                 intent.putStringArrayListExtra(ConstantManager.CHECKOUT_ITEMS_ID, itemID)
+                intent.putStringArrayListExtra(ConstantManager.CHECKOUT_ITEMS_COUNT_EXTRA, count)
                 startActivity(intent)
                 finish()
             }

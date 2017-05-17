@@ -74,6 +74,7 @@ class MyApplication : Application() {
         detectConnection()
 //        emulateRFIDReaderTagReduce()
 //        emulateIncreaseTag()
+//        emulateDiffTag()
     }
 
     override fun onTerminate() {
@@ -383,7 +384,7 @@ class MyApplication : Application() {
                     m_reader.RDR_Open(String.format("RDType=%s;CommType=USB;Description=", "TPAD"))
                     m_reader.RDR_OpenRFTransmitter()
                     try {
-                        Thread.sleep(2000)  // delay two seconds
+                        Thread.sleep(5000)  // delay two seconds
                     } catch (e: InterruptedException) {
                     }
 
@@ -418,6 +419,14 @@ class MyApplication : Application() {
                     for (tagData in tagList) {
                         cardIDs.add(GFunction.encodeHexStr(tagData.uid))
                     }
+                    // Sorts tags
+                    // Sorting
+//                    Collections.sort(cardIDs, object : Comparator<String> {
+//                        override fun compare(ID2: String, ID1: String): Int {
+//
+//                            return ID1.compareTo(ID2)
+//                        }
+//                    })
                     myApplication.cardIDs = cardIDs
                     myApplication.updateSavedCardsNumber(cardIDs)
                     val intent = Intent().setAction(NEW_RFID_CARD_BROADCAST_ACTION)
@@ -454,6 +463,49 @@ class MyApplication : Application() {
                         val intent = Intent().setAction(NEW_RFID_CARD_BROADCAST_ACTION)
                         intent.putStringArrayListExtra(NEW_RFID_CARD_KEY, cardIDs)
                         sendBroadcast(intent)
+                    }
+                } catch (e: InterruptedException) {
+                }
+            }
+            // Long background task
+        }
+    }
+
+    fun emulateDiffTag() {
+        var final = ArrayList<String>()
+        val cardIDs = ArrayList<String>()
+        cardIDs.add("1")
+        cardIDs.add("2")
+        cardIDs.add("3")
+        cardIDs.add("4")
+        cardIDs.add("5")
+        cardIDs.add("6")
+
+        val newCardIDs = ArrayList<String>()
+        newCardIDs.add("2")
+        newCardIDs.add("3")
+        newCardIDs.add("4")
+        newCardIDs.add("5")
+        newCardIDs.add("6")
+        newCardIDs.add("7")
+        var count = 1
+
+        doAsync {
+            while (true) {
+
+                try {
+                    Thread.sleep(4000)
+                    uiThread {
+                        if (count % 2 == 0) {
+                            final = newCardIDs
+                        } else
+                            final = cardIDs
+                        this@MyApplication.cardIDs = final
+                        updateSavedCardsNumber(final)
+                        val intent = Intent().setAction(NEW_RFID_CARD_BROADCAST_ACTION)
+                        intent.putStringArrayListExtra(NEW_RFID_CARD_KEY, final)
+                        sendBroadcast(intent)
+                        count++
                     }
                 } catch (e: InterruptedException) {
                 }

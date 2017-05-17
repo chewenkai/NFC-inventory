@@ -46,10 +46,11 @@ import java.io.File
 class ItemListAdaper(val activity: Activity, internal var itemes: MutableList<Items>,
                      var recyclerView: RecyclerView? = null, var deleteItemsButton: CircleButton,
                      internal var emptyHint: TextView, internal val isItemListAdapter: Boolean) : RecyclerView.Adapter<ItemListAdaper.ViewHolder>() {
-    val circleDialog: ProgressDialog = ProgressDialog(activity)
+    val circleDialog: ProgressDialog = ProgressDialog(activity.applicationContext)
     var deleteMdoe = false
     val checkedItems: ArrayList<Items> = ArrayList<Items>()
     val itemsIDInCart = ArrayList<String>()
+    val loadedImagesPath = ArrayList<String>()
     val context: Context
         get() = activity.applicationContext
 
@@ -102,7 +103,13 @@ class ItemListAdaper(val activity: Activity, internal var itemes: MutableList<It
         } else {
             if (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
                 if (File(item.mainImagePath).exists()) {
-                    Picasso.with(activity).load(File(item.mainImagePath)).resize(ScreenUtil.getScreenWidth(activity), 0).into(image)
+                    // Do not reload image if it already shown
+                    if (holder.image.tag != item.mainImagePath) {
+                        Picasso.with(activity).load(File(item.mainImagePath)).resize(ScreenUtil.getScreenWidth(activity), 0).placeholder(R.drawable.loading_image)
+                                .into(image)
+                        holder.image.tag = item.mainImagePath
+                        loadedImagesPath.add(item.mainImagePath)
+                    }
                 } else {
                     Picasso.with(activity).load(R.drawable.image_read_fail).resize(ScreenUtil.getScreenWidth(activity), 0).into(image)
                 }
@@ -207,6 +214,10 @@ class ItemListAdaper(val activity: Activity, internal var itemes: MutableList<It
         return itemes.size
     }
 
+    override fun getItemId(position: Int): Long {
+        return itemes.get(position).id
+    }
+
     fun setCachedCheckBoxVisible() {
         for (i: Int in 0..this.itemCount - 1) {
             val defaultViewHolder = this.recyclerView!!.findViewHolderForAdapterPosition(i)
@@ -257,7 +268,10 @@ class ItemListAdaper(val activity: Activity, internal var itemes: MutableList<It
      */
     fun updateUI() {
         this.itemes.clear()
-        this.itemes.addAll(DatabaseUtil.queryItems(activity, (activity as ItemListActivity).currentUser))
+        // Sorts the items
+        val items = DatabaseUtil.queryItems(activity, (activity as ItemListActivity).currentUser)
+        items.sortBy { it.itemName }
+        this.itemes.addAll(items)
         this.notifyDataSetChanged()
         getItemCount()
     }
@@ -285,6 +299,7 @@ class ItemListAdaper(val activity: Activity, internal var itemes: MutableList<It
 //            }
 //        }
         this.itemes.removeAll(this.itemes)
+        items.sortBy { it.itemName }
         this.itemes.addAll(items)
         this.notifyDataSetChanged()
         getItemCount()
@@ -305,30 +320,19 @@ class ItemListAdaper(val activity: Activity, internal var itemes: MutableList<It
 
     // Provide a direct reference to each of the views within a data item
     // Used to cache the views within the item layout for fast access
-    class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    open class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         // Your holder should contain a member variable
         // for any view that will be set as you render a row
-        var swipeLayout: SwipeLayout
-        var image: ImageView
-        var itemName: TextView
-        var editItem: CircleButton
-        var deleteItem: CircleButton
-        var deleteCheckBox: CheckBox
-        var keyDes: TextView
-        var price: TextView
-        var addToCart: ImageView
+        var swipeLayout: SwipeLayout = itemView.findViewById(R.id.swipe_layout) as SwipeLayout
+        var image: ImageView = itemView.findViewById(R.id.item_thumb) as ImageView
+        var itemName: TextView = itemView.findViewById(R.id.list_item_name) as TextView
+        var editItem: CircleButton = itemView.findViewById(R.id.edit_item) as CircleButton
+        var deleteItem: CircleButton = itemView.findViewById(R.id.remove_item) as CircleButton
+        var deleteCheckBox: CheckBox = itemView.findViewById(R.id.item_delete_check_box) as CheckBox
+        var keyDes: TextView = itemView.findViewById(R.id.itemlist_key_des) as TextView
+        var price: TextView = itemView.findViewById(R.id.et_price) as TextView
+        var addToCart: ImageView = itemView.findViewById(R.id.add_to_cart) as ImageView
 
-        init {
-            swipeLayout = itemView.findViewById(R.id.swipe_layout) as SwipeLayout
-            image = itemView.findViewById(R.id.item_thumb) as ImageView
-            itemName = itemView.findViewById(R.id.list_item_name) as TextView
-            editItem = itemView.findViewById(R.id.edit_item) as CircleButton
-            deleteItem = itemView.findViewById(R.id.remove_item) as CircleButton
-            deleteCheckBox = itemView.findViewById(R.id.item_delete_check_box) as CheckBox
-            keyDes = itemView.findViewById(R.id.itemlist_key_des) as TextView
-            price = itemView.findViewById(R.id.et_price) as TextView
-            addToCart = itemView.findViewById(R.id.add_to_cart) as ImageView
-        }// Stores the itemView in a public final member variable that can be used
         // to access the context from any ViewHolder instance.
     }
 
