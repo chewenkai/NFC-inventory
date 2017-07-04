@@ -1,2 +1,1 @@
-include ':app', ':RFID_demo'
-project(':RFID_demo').projectDir = new File('RFIDdemo')
+include ':app'

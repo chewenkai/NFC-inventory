@@ -71,7 +71,7 @@ class ItemInventoryActivity : AppCompatActivity() {
         initActionBar()
         initUI()
         initAddItemDialog()
-//        initNFC()
+        initNFC()
     }
 
     private fun initActionBar() {
@@ -229,16 +229,16 @@ class ItemInventoryActivity : AppCompatActivity() {
 
     public override fun onResume() {
         super.onResume()
-//        itemListAdapter!!.notifyDataSetChanged()
-//        if (mNfcAdapter != null)
-//            mNfcAdapter!!.enableForegroundDispatch(this, pendingIntent, null, null)
+        itemListAdapter!!.notifyDataSetChanged()
+        if (mNfcAdapter != null)
+            mNfcAdapter!!.enableForegroundDispatch(this, pendingIntent, null, null)
     }
 
     override fun onPause() {
         super.onPause()
-//        if (mNfcAdapter != null) {
-//            mNfcAdapter!!.disableForegroundDispatch(this)
-//        }
+        if (mNfcAdapter != null) {
+            mNfcAdapter!!.disableForegroundDispatch(this)
+        }
     }
 
     override fun onNewIntent(intent: Intent?) {
@@ -267,17 +267,6 @@ class ItemInventoryActivity : AppCompatActivity() {
                 id.add(ID)
                 updateCardsList(id)
             }
-
-            //            Parcelable[] rawMessages =
-            //                    intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
-            //            if (rawMessages != null) {
-            //                NdefMessage[] messages = new NdefMessage[rawMessages.length];
-            //                for (int i = 0; i < rawMessages.length; i++) {
-            //                    messages[i] = (NdefMessage) rawMessages[i];
-            //                }
-            //                Toast.makeText(ItemInventoryActivity.this, messages.toString(), Toast.LENGTH_LONG).show();
-            //
-            //            }
         }
         super.onNewIntent(intent)
     }
@@ -417,11 +406,15 @@ class ItemInventoryActivity : AppCompatActivity() {
         actionBarTitle?.text = getString(R.string.item_number) + itemsInDatabase.size + "PCs"
 
         // Notify update the item list, show the newest cards which are read from card reader.
-        itemListAdapter!!.updateUI(itemsInDatabase)
+        if (itemsInDatabase.size==1)
+            itemListAdapter?.addNewItemToList(itemsInDatabase[0])
+        else
+            itemListAdapter!!.updateUI(itemsInDatabase)
 
         // Update the un-recorded item list, show the newest cards which are read from card reader.
         if (!unRecordedItemsIDs.isEmpty()) {
-            newCardListAdapter!!.updateList(unRecordedItemsIDs)
+            if (unRecordedItemsIDs.size==1)
+                newCardListAdapter?.addNewCardToList(unRecordedItemsIDs[0])
             if (!alertDialog!!.isShowing)
                 alertDialog!!.show()
         }

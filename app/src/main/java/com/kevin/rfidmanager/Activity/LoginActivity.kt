@@ -65,11 +65,11 @@ class LoginActivity : AppCompatActivity() {
             deviceId = Settings.System.getString(contentResolver, Settings.System.ANDROID_ID)
         }
 //        toast("Your unique code:" + deviceId)  /// This code will make your device show an message of Unique ID
-        if (deviceId != ConstantManager.UniqueCode) {
-            toast("This device is not supported.")
-            finish()
-            return false
-        }
+//        if (deviceId != ConstantManager.UniqueCode) {
+//            toast("This device is not supported.")
+//            finish()
+//            return false
+//        }
         return true
     }
 

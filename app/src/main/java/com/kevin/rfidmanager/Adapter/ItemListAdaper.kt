@@ -124,7 +124,7 @@ class ItemListAdaper(val activity: Activity, internal var itemes: MutableList<It
             activity.startActivity(intent)
         }
 
-        if (isItemListAdapter) {
+        if (true) { //isItemListAdapter
             val longClickListener = { v: View ->
                 deleteMdoe = !deleteMdoe
                 if (deleteMdoe) {
@@ -310,10 +310,12 @@ class ItemListAdaper(val activity: Activity, internal var itemes: MutableList<It
      * Then add it in the item list.
      */
     fun addNewItemToList(item: Items) {
-        if (itemes.contains(item))
+        val isContain = itemes.filter { it.rfid==item.rfid }.size!=0
+        if (isContain)
             return
         else {
             itemes.add(item)
+            itemes.sortBy { it.itemName }
             this.notifyDataSetChanged()
         }
     }

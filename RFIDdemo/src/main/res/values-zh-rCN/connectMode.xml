@@ -1,8 +1,0 @@
-<resources>
-
-    <string-array name="tagConnectMode">
-        <item>有地址</item>
-        <item>无地址</item>
-    </string-array>
-
-</resources>

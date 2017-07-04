@@ -6,9 +6,9 @@ import android.database.sqlite.SQLiteDatabase.CursorFactory;
 import android.util.Log;
 
 import org.greenrobot.greendao.AbstractDaoMaster;
+import org.greenrobot.greendao.database.StandardDatabase;
 import org.greenrobot.greendao.database.Database;
 import org.greenrobot.greendao.database.DatabaseOpenHelper;
-import org.greenrobot.greendao.database.StandardDatabase;
 import org.greenrobot.greendao.identityscope.IdentityScopeType;
 
 
@@ -21,20 +21,20 @@ public class DaoMaster extends AbstractDaoMaster {
 
     /** Creates underlying database table using DAOs. */
     public static void createAllTables(Database db, boolean ifNotExists) {
-        ImagesPathDao.createTable(db, ifNotExists);
         ItemsDao.createTable(db, ifNotExists);
-        KeyDescriptionDao.createTable(db, ifNotExists);
-        SaleInfoDao.createTable(db, ifNotExists);
         UsersDao.createTable(db, ifNotExists);
+        KeyDescriptionDao.createTable(db, ifNotExists);
+        ImagesPathDao.createTable(db, ifNotExists);
+        SaleInfoDao.createTable(db, ifNotExists);
     }
 
     /** Drops underlying database table using DAOs. */
     public static void dropAllTables(Database db, boolean ifExists) {
-        ImagesPathDao.dropTable(db, ifExists);
         ItemsDao.dropTable(db, ifExists);
-        KeyDescriptionDao.dropTable(db, ifExists);
-        SaleInfoDao.dropTable(db, ifExists);
         UsersDao.dropTable(db, ifExists);
+        KeyDescriptionDao.dropTable(db, ifExists);
+        ImagesPathDao.dropTable(db, ifExists);
+        SaleInfoDao.dropTable(db, ifExists);
     }
 
     /**
@@ -53,11 +53,11 @@ public class DaoMaster extends AbstractDaoMaster {
 
     public DaoMaster(Database db) {
         super(db, SCHEMA_VERSION);
-        registerDaoClass(ImagesPathDao.class);
         registerDaoClass(ItemsDao.class);
-        registerDaoClass(KeyDescriptionDao.class);
-        registerDaoClass(SaleInfoDao.class);
         registerDaoClass(UsersDao.class);
+        registerDaoClass(KeyDescriptionDao.class);
+        registerDaoClass(ImagesPathDao.class);
+        registerDaoClass(SaleInfoDao.class);
     }
 
     public DaoSession newSession() {

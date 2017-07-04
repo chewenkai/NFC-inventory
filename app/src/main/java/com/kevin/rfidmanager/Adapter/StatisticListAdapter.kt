@@ -1,6 +1,7 @@
 package com.kevin.rfidmanager.Adapter
 
 import android.content.Context
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -50,6 +51,7 @@ class StatisticListAdapter(context: Context, var saleInfos: ArrayList<SaleStasti
         // into the template view.
 
         viewHolder.itemName?.text = saleInfo.itemName
+        viewHolder.itemName?.gravity = Gravity.START
         viewHolder.unitPrice?.text = String.format("%.0f", saleInfo.unitPrice)
         viewHolder.volume?.text = saleInfo.volume.toString()
         viewHolder.stock?.text = String.format("%d", saleInfo.stock)
