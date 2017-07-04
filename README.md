@@ -1,3 +1,3 @@
-#RFID-system
 
-### The detail of this system will be desciped later.
+# NFC-inventory
+An android app used for inventory by scanning RFID card from phone which has a NFC reader.
