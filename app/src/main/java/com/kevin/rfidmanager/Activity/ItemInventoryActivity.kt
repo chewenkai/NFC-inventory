@@ -39,7 +39,6 @@ import com.nightonke.boommenu.BoomButtons.HamButton
 import com.nightonke.boommenu.BoomMenuButton
 import com.nightonke.boommenu.ButtonEnum
 import com.nightonke.boommenu.Piece.PiecePlaceEnum
-import com.rfid.def.ApiErrDefinition
 import kotlinx.android.synthetic.main.item_inventory_list_layout.*
 import org.jetbrains.anko.onClick
 import java.io.*
@@ -556,75 +555,7 @@ class ItemInventoryActivity : AppCompatActivity() {
     This is a dialog used for changing RF power.
      */
     fun showRFPowerChangeDialog() {
-        val dialogBuilder = AlertDialog.Builder(this@ItemInventoryActivity)
-        val inflater = layoutInflater
-        val dialogView = inflater.inflate(R.layout.rf_power_change_dialog_layout, null)
-        dialogBuilder.setView(dialogView)
-        val rbs = ArrayList<AppCompatRadioButton>()
-        rbs.add(dialogView.findViewById(R.id.RBDot25W) as AppCompatRadioButton)
-        rbs.add(dialogView.findViewById(R.id.RBDot50W) as AppCompatRadioButton)
-        rbs.add(dialogView.findViewById(R.id.RBDot75W) as AppCompatRadioButton)
-        rbs.add(dialogView.findViewById(R.id.RB1W) as AppCompatRadioButton)
-        rbs.add(dialogView.findViewById(R.id.RB1Dot25W) as AppCompatRadioButton)
-        rbs.add(dialogView.findViewById(R.id.RB1Dot50W) as AppCompatRadioButton)
-        for (rb in rbs) {
-            rb.onClick {
-                clearAllRadioButtonInPowerChangeDialog(rbs)
-                rb.isChecked = true
-            }
-        }
-
-        val saveButton = dialogView.findViewById(R.id.dialog_change) as Button
-        val cancleButton = dialogView.findViewById(R.id.dialog_cancle) as Button
-
-//        clearAllRadioButtonInPowerChangeDialog(rbs)
-//        for (i in 1..6){
-//            val mPower = i.toByte()
-//            val nret = (application as MyApplication).
-//                    m_reader.RDR_GetRFPower(mPower)
-//            if (nret == ApiErrDefinition.NO_ERROR) {
-//                rbs.get(i-1).isChecked = true
-//                break
-//            }
-//        }
-
-        clearAllRadioButtonInPowerChangeDialog(rbs)
-//        val mPower = 0.toByte()
-//        val nret = (application as MyApplication).
-//                m_reader.RDR_GetRFPower(mPower)
-//        if (nret != ApiErrDefinition.NO_ERROR) {
-//            toast(getString(com.example.AnReaderDemo.R.string.tx_getRFPower_fail) + nret)
-//            return
-//        }
-
-//        toast("Please record this number and tell Kevin:" + (mPower - 1).toString()) //1
-
-        if (SPUtil.getInstence(this@ItemInventoryActivity).powerValue >= 0)
-            rbs.get(SPUtil.getInstence(this@ItemInventoryActivity).powerValue).isChecked = true
-        dialogBuilder.setTitle(resources.getString(R.string.change_power))
-        val b = dialogBuilder.create()
-        b.show()
-
-        saveButton.setOnClickListener(View.OnClickListener {
-            var str = ""
-            val nret_set = (application as MyApplication).
-                    m_reader.RDR_SetRFPower(getSelectedPower(rbs))
-            if (nret_set == ApiErrDefinition.NO_ERROR) {
-                str = getString(com.example.AnReaderDemo.R.string.tx_setPower_ok)
-                SPUtil.getInstence(this@ItemInventoryActivity).
-                        savePowerValue(getSelectedPower(rbs) - 1)
-            } else {
-                str = getString(com.example.AnReaderDemo.R.string.tx_setPower_fail)
-            }
-            Toast.makeText(applicationContext,
-                    str, Toast.LENGTH_LONG).show()
-            b.dismiss()
-        })
-
-        cancleButton.setOnClickListener {
-            //dismiss dialog
-            b.dismiss()
-        }
+        // TODO
     }
 
 

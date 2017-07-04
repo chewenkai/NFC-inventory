@@ -1,34 +1,18 @@
 package com.kevin.rfidmanager
 
 import android.app.Application
-import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.database.sqlite.SQLiteDatabase
-import android.hardware.usb.UsbDevice
-import android.hardware.usb.UsbManager
 import android.media.AudioManager
 import android.media.SoundPool
-import android.os.Handler
-import android.os.Message
 import android.widget.Toast
 import com.github.yuweiguocn.library.greendao.MigrationHelper
 import com.kevin.rfidmanager.Activity.LoginActivity
 import com.kevin.rfidmanager.Utils.ConstantManager
-import com.kevin.rfidmanager.Utils.ConstantManager.NEW_RFID_CARD_BROADCAST_ACTION
-import com.kevin.rfidmanager.Utils.ConstantManager.NEW_RFID_CARD_KEY
 import com.kevin.rfidmanager.database.*
-import com.rfid.api.ADReaderInterface
-import com.rfid.api.GFunction
-import com.rfid.api.ISO15693Interface
-import com.rfid.api.ISO15693Tag
-import com.rfid.def.ApiErrDefinition
-import com.rfid.def.RfidDef
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.uiThread
-import java.lang.ref.WeakReference
 import java.util.*
 
 /**
@@ -41,8 +25,6 @@ class MyApplication : Application() {
     var daoSession: DaoSession? = null  // database session
     var savedCardsNumber = 0
     var currentUser = ConstantManager.DEFAULT_USER
-
-    var m_reader: ADReaderInterface = ADReaderInterface()
 
     private var soundPool: SoundPool? = null
     private var soundID = 0
@@ -91,14 +73,6 @@ class MyApplication : Application() {
             MigrationHelper.migrate(db, ItemsDao::class.java, KeyDescriptionDao::class.java, ImagesPathDao::class.java,
                     UsersDao::class.java, SaleInfoDao::class.java)
         }
-    }
-
-
-    private fun initSound() {
-        // 初始化声音
-        // Initialize the sound
-        soundPool = SoundPool(5, AudioManager.STREAM_MUSIC, 5)
-        soundID = soundPool!!.load(this, R.raw.msg, 1)
     }
 
     // 播放声音池声音

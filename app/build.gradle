@@ -54,7 +54,6 @@ dependencies {
     // In case you need support-v4 bindings
     compile "org.jetbrains.anko:anko-appcompat-v7:$anko_version"
     // For appcompat-v7 bindings
-    compile project(path: ':RFID_demo')
     compile "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
     // wheel picker
